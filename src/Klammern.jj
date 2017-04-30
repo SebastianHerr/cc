@@ -29,15 +29,21 @@ public class Klammern {
 
 PARSER_END(Klammern)
 
-SKIP : { " " | "\t" | "\n" | "\r" }
+SKIP : 
+{ 
+	" " | "\t" | "\n" | "\r" 
+}
 
 void Input() :
 {}
 {
 	MatchedBraces() <EOF>
-}
+}	
 void MatchedBraces() :
 {}
 {
-	"{" [ MatchedBraces() ] "}" | "(" [ MatchedBraces() ] ")" | "[" [ MatchedBraces() ] "]"
+	"{" [ MatchedBraces() ] "}" | 
+	"(" [ MatchedBraces() ] ")" | 
+	"[" [ MatchedBraces() ] "]" |
+	"<" [ MatchedBraces() ] ">"
 }
