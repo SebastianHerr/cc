@@ -1,40 +1,102 @@
-PARSER_BEGIN(Parser)
+PARSER_BEGIN(C0)
 
-public class Parser {
-   public static void main(String[] args) throws Exception {
-        Parser parser = new Parser(System.in);
-	parser.S();
-    }
+public class C0 {
+	public static void main(String args[]) {
+        C0 parser = new C0(System.in);
+		try {
+			parser.Init();
+		} catch (Exception ex) {
+			System.out.println(ex.getMessage());
+		}
+	}
 }
 
-PARSER_END(Parser)
+PARSER_END(C0)
 
-SKIP:  { " " | "\t" | "\r"                    }
-TOKEN: { "(" | ")" | "+" | "*" | <NUM: (["0"-"9"])+> }
-
-void S(): {}
-{
-  E() "\n" 
+SKIP : 
+{ 
+	" " | "\t" | "\n" | "\r" 
 }
 
-void E(): {}
+// Keywords
+TOKEN :
 {
-  T() ("+" T() )* 
+      < INT:        "int" >
+    | < BOOLEAN:    "bool" >
+    | < STRING:     "string" >
+    | < CHAR:       "char" >
+    | < VOID:       "void" >
+    | < STRUCT:     "struct" >
+    | < TYPEDEF:    "typedef" >
+    | < IF:         "if" >
+    | < ELSE:       "else" >
+    | < WHILE:      "while" >
+    | < FOR:        "for" >
+    | < CONTINUE:   "continue" >
+    | < BREAK:      "break" >
+    | < RETURN:     "return" >
+    | < ASSERT:     "assert" >
+    | < TRUE:       "true" >
+    | < FALSE:      "false" >
+    | < NULL:       "NULL" >
+    | < ALLOC:      "alloc" >
+    | < ALLOC_ARR:  "alloc_array" >
 }
 
-void M(): {}
+// Lexical Tokens
+TOKEN :
 {
-  T() ("-" T() )* 
+        < ID: <LETTER> ( <ALPHANUM> )* >
+    |   < #LETTER: ["$","A"-"Z","a"-"z","_"] >
+    |   < #ALPHANUM: ["$","A"-"Z","a"-"z","0"-"9","_"] >
+    |   < NUM: <DECNUM> | <HEXNUM> >
+    |   < DECNUM: "0" | ["1"-"9"](["1"-"9"])* >
+    |   < HEXNUM: "0" ("x" | "X") (["0"-"9","a"-"f","A"-"F"])* >
 }
 
-void T(): {}
+void Init() : 
+{}
 {
-  F() ("*" F() )* 
+    Method()
+    <EOF>
 }
 
-void F(): {}
+void Method() : 
+{}
 {
-  <NUM> 
-|
-  "(" E() ")" 
+    Methodtype() <ID> Params() "{" MethodBody() "}"
+}
+
+void Params() :
+{}
+{
+    "(" [ParamsType() <ID> ("," ParamsType() <ID>)*] ")"
+}
+
+void ConditionalType() :
+{}
+{
+    <IF> "(" EvaluationType() ")" 
+}
+
+void EvaluationType() :
+{}
+{
+    
+}
+
+void Methodtype() : 
+{}
+{
+    <VOID> | <INT> | <CHAR> | <STRING> | <BOOLEAN>
+}
+void ParamsType() :
+{}
+{
+    (<INT> | <CHAR> | <STRING> | <BOOLEAN>) ("[" "]")*
+}
+void MethodBody() :
+{}
+{
+    (<ID>)*
 }
