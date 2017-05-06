@@ -102,6 +102,7 @@ Whitespace separates tokens, but is otherwise ignored. Other control (non-printi
 <liblit>    ::= <<lchar>*>
 <schar>     ::= <nchar> | <esc>
 <cchar>     ::= <nchar> | <esc> | " | \0 
+<nchar>     ::= (normal printing character except ") 
 <lchar>     ::= (normal printing character except >) 
 <esc>       ::= \n | \t | \v | \b | \r | \f | \a | \\ | \’ | \"
 <sep>       ::= ( | ) | [ | ] | { | } | , | ; 

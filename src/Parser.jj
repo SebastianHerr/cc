@@ -1,6 +1,6 @@
 PARSER_BEGIN(C0)
 public class C0 {
-	public static void main(String args[]) throws ParserException {
+	public static void main(String args[]) throws ParseException {
         new C0(System.in).Init();
 	}
 }
@@ -34,6 +34,11 @@ TOKEN :
     | < ALLOC_ARR:  "alloc_array" >
 }
 
+TOKEN : 
+{
+    < USE: "#use" >
+}
+
 // Lexical Tokens
 TOKEN :
 {
@@ -42,7 +47,20 @@ TOKEN :
     |   < #ALPHANUM: ["$","A"-"Z","a"-"z","0"-"9","_"] >
     |   < NUM: <DECNUM> | <HEXNUM> >
     |   < DECNUM: "0" | ["1"-"9"](["1"-"9"])* >
-    |   < HEXNUM: "0" ("x" | "X") (["0"-"9","a"-"f","A"-"F"])* >
+    |   < HEXNUM: "0" ("x" | "X") (["0"-"9","a"-"f","A"-"F"])+ >
+    |   < STRLIT: "\"" (<SCHAR>)* "\"" >
+    |   < CHRLIT: "'" <CCHAR> "'" >
+    |   < LIBLIT: "<" (<LCHAR>)* ">" >
+    |   < SCHAR: <NCHAR> | <ESC> >
+    |   < CCHAR: <NCHAR> | <ESC> | "\"" | "\0" >
+    |   < NCHAR: (~["\""])+ >
+    |   < LCHAR: (~[">"])+ >
+    |   < ESC: "\n" | "\t" | "\\v" | "\b" | "\r" | "\f" | "\\a" | "\\" | "\'" | "\"" >
+    |   < SEP: "(" | ")" | "[" | "]" | "{" | "}" | "," | ";" >
+    |   < UNOP: "!" | "~" | "-" | "*" >
+    |   < BINOP: "." | "->" | "*" | "/" | "%" | "+" | "-" | "<<" | ">>" | "<" | "<=" | ">=" | ">" | "==" | "!=" | "&" | "^" | "|" | "&&" | "||" | "?" | ":" >
+    |   < ASNOP: "=" | "+=" | "-=" | "*=" | "/=" | "%=" | "<<=" | ">>=" | "&=" | "^=" | "|=" >
+    |   < POSTOP: "--" | "++" >
 }
 
 void Init() : 
