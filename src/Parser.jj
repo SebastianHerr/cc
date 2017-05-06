@@ -6,7 +6,8 @@ public class C0 {
 }
 PARSER_END(C0)
 
-SKIP : { " " | "\t" | "\n" | "\r" }
+// Whitespace separates tokens, but is otherwise ignored. Other control (non-printing) characters in the input constitute an error.
+SKIP : { " " }
 
 // Keywords
 TOKEN :
@@ -47,34 +48,5 @@ TOKEN :
 void Init() : 
 {}
 {
-    Method()
     <EOF>
-}
-
-void Method() : 
-{}
-{
-    Methodtype() <ID> "(" Params() ")" "{" MethodBody() "}"
-}
-
-void Params() :
-{}
-{
-    [ParamsType() <ID> ("," ParamsType() <ID>)*]
-}
-
-void Methodtype() : 
-{}
-{
-    (<VOID> | <INT> | <CHAR> | <STRING> | <BOOLEAN>) ("[" "]")*
-}
-void ParamsType() :
-{}
-{
-    (<INT> | <CHAR> | <STRING> | <BOOLEAN>) ("[" "]")*
-}
-void MethodBody() :
-{}
-{
-    (<ID>)*
 }

@@ -12,35 +12,33 @@ SKIP:  { " " | "\t" | "\r" }
 TOKEN: { "(" | ")" | "+" | "*" | <NUM: (["0"-"9"])+> }
 
 void S(): 
+{}
 {
-  System.out.print("S->");
-}
-{
-  E() "\n" 
+	E() "\n" 
 }
 
 void E(): 
 {
-  System.out.print("E->");
+	System.out.print("E->");
 }
 {
-  T() ("+" T() )* 
+	T() ("+" T() )* 
 }
 
 void T(): 
 {
-  System.out.print("T->");
+	System.out.print("T->");
 }
 {
-  F() ("*" F() )* 
+	F() ("*" F() )* 
 }
 
 void F(): 
 {
-  System.out.print("F->");
+	System.out.print("F->");
 }
 {
-  <NUM> 
+	<NUM> 
 |
-  "(" E() ")" 
+	"(" E() ")" 
 }
