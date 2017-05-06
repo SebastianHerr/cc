@@ -52,6 +52,13 @@ TOKEN :
     |   < NUM: <DECNUM> | <HEXNUM> >
     |   < DECNUM: "0" | ["1"-"9"](["1"-"9"])* >
     |   < HEXNUM: "0" ("x" | "X") (["0"-"9","a"-"f","A"-"F"])* >
+/* following lexical tokens are missing:
+ * <sep>
+ * <unop>
+ * <binop>
+ * <asnop>
+ * <postop>
+ */
 }
 
 void Init() : 
@@ -76,7 +83,7 @@ void Params() :
 void ConditionalType() :
 {}
 {
-    <IF> "(" EvaluationType() ")" 
+    <IF> "(" EvaluationType() ")"  "{" MethodBody() "}" [ <ELSE>  "{" MethodBody() "}"]
 }
 
 void EvaluationType() :
