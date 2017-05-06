@@ -1,0 +1,5 @@
+.vscode
+*.java
+*.class
+/doc/examples
+javacc-examples 
