@@ -113,8 +113,7 @@ void Conditional() :
 void EvaluationExpression() :
 {}
 {
-      OperandType() <EQOP> OperandType() [ <CONCATOP> ( OperandType() <EQOP> OperandType() )* ]
-    | OperandType()
+      OperandType() [ <EQOP> OperandType() [ <CONCATOP> ( OperandType() <EQOP> OperandType() )* ] ]
 }
 
 void OperandType() :
