@@ -64,6 +64,7 @@ TOKEN :
     |   < UNOP: "!" | "~" | "-" | "*" >
     |   < BINOP: "." | "->" | "*" | "/" | "%" | "+" | "-" | "<<" | ">>" | "<" | "<=" | ">=" | ">" | "==" | "!=" | "&" | "^" | "|" | "&&" | "||" | "?" | ":" >
     |   < EQOP: "<" | "<=" | ">=" | ">" | "==" | "!=" | "&&" | "||" >
+    |   < CONCATOP: "&&" | "||" >
     |   < ASNOP: "=" | "+=" | "-=" | "*=" | "/=" | "%=" | "<<=" | ">>=" | "&=" | "^=" | "|=" >
     |   < POSTOP: "--" | "++" >
 }
@@ -103,14 +104,21 @@ void MethodBody() :
     (<ID>)*
 }
 
-void ConditionalType() :
+void Conditional() :
 {}
 {
-    <IF> "(" EvaluationType() ")"  "{" MethodBody() "}" [ <ELSE>  "{" MethodBody() "}"]
+    <IF> "(" EvaluationExpression() ")"  "{" MethodBody() "}" [ <ELSE>  "{" MethodBody() "}"]
 }
 
-void EvaluationType() :
+void EvaluationExpression() :
 {}
 {
-    
+      OperandType() <EQOP> OperandType() [ <CONCATOP> ( OperandType() <EQOP> OperandType() )* ]
+    | OperandType()
+}
+
+void OperandType() :
+{}
+{
+      ["!"]<ID>
 }
