@@ -1,0 +1,34 @@
+PARSER_BEGIN(AST)
+
+public class AST {
+   public static void main(String[] args) throws Exception {
+        Exp ast = new AST(System.in).S();
+    }
+}
+
+PARSER_END(AST)
+
+SKIP:  { " " | "\t" | "\r"                    }
+TOKEN: { "(" | ")" | "+" | "*" | <NUM: (["0"-"9"])+> }
+
+Exp S(): {Exp e;}
+{
+	e=E() "\n" {return e;}
+}
+
+Exp E(): {Exp e1, e2;}
+{
+	e1=T() ("+" e2=T() {e1 = new BinExp("+",e1,e2); } )* {return e1;}
+}
+
+Exp T(): {Exp e1, e2;}
+{
+	e1=F() ("*" e2=F() {e1 = new BinExp("*",e1,e2); } )* {return e1;}
+}
+
+Exp F(): {Exp e; Token n;}
+{
+	n=<NUM> {return new Zahl(Integer.parseInt(n.image));}
+|
+	"(" e=E() ")" {return e;}
+}

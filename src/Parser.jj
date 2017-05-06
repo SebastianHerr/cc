@@ -1,22 +1,12 @@
 PARSER_BEGIN(C0)
-
 public class C0 {
-	public static void main(String args[]) {
-        C0 parser = new C0(System.in);
-		try {
-			parser.Init();
-		} catch (Exception ex) {
-			System.out.println(ex.getMessage());
-		}
+	public static void main(String args[]) throws ParserException {
+        new C0(System.in).Init();
 	}
 }
-
 PARSER_END(C0)
 
-SKIP : 
-{ 
-	" " | "\t" | "\n" | "\r" 
-}
+SKIP : { " " | "\t" | "\n" | "\r" }
 
 // Keywords
 TOKEN :
@@ -64,19 +54,19 @@ void Init() :
 void Method() : 
 {}
 {
-    Methodtype() <ID> Params() "{" MethodBody() "}"
+    Methodtype() <ID> "(" Params() ")" "{" MethodBody() "}"
 }
 
 void Params() :
 {}
 {
-    "(" [ParamsType() <ID> ("," ParamsType() <ID>)*] ")"
+    [ParamsType() <ID> ("," ParamsType() <ID>)*]
 }
 
 void Methodtype() : 
 {}
 {
-    <VOID> | <INT> | <CHAR> | <STRING> | <BOOLEAN>
+    (<VOID> | <INT> | <CHAR> | <STRING> | <BOOLEAN>) ("[" "]")*
 }
 void ParamsType() :
 {}
