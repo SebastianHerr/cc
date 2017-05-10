@@ -1,3 +1,7 @@
+/**
+ * Einfacher Parser der nicht nur einen arithmetischen Ausdruck
+ * parst, sondern diesen auch ausrechnet. Unterstuetzt + - * /.
+ */
 PARSER_BEGIN(Calc)
 public class Calc {
 	public static void main(String args[]) throws ParseException {
@@ -7,7 +11,8 @@ public class Calc {
 PARSER_END(Calc)
 
 SKIP : { " " | "\t" }
-TOKEN : { "(" | ")" | "+" | "*" | <NUM: (["0"-"9"])+> } 
+//                              keine Zweistellige Zahl faengt mit 0 an
+TOKEN : { "(" | ")" | "+" | "*" | <NUM: "0" | ["1"-"9"] (["0"-"9"])*> } 
 
 int S() : { int res; }
 {
@@ -19,11 +24,15 @@ int E() : { int sum, x; }
     sum = T() (("-" x = T() {sum -= x;}) | ("+" x = T() {sum += x;}))* { return sum; }
 }
 
-int T() : {int prod, x;}
+int T() : { int prod, x; }
 {   
     prod = F() (("/" x = F() {prod /= x;}) | ("*" x = F() {prod *= x;}))* { return prod; }
 }
 
+/**
+ * Nach dem Kompilieren wird eine Token.java erstellt. Jedes Token hat 
+ * ein image-Attribut, das die Stringrepraesentation seines Wertes haelt.
+ */
 int F() : {int x; Token t;}
 {
     t = <NUM> { return Integer.parseInt(t.image); }
