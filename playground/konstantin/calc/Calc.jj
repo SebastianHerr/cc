@@ -4,9 +4,13 @@
  */
 PARSER_BEGIN(Calc)
 public class Calc {
-	public static void main(String args[]) throws ParseException {
-        System.out.println("=" + new Calc(System.in).S());
-        System.out.println("numberCount=" + CalcTokenManager.numberCount);
+	public static void main(String args[]) {
+        try{
+            Calc c = new Calc(new java.io.FileInputStream(new java.io.File(args[0])));
+            System.out.println(c.S());
+        } catch (Exception ex) {
+            System.out.println("err" + ex.getMessage());
+        }
 	}
 }
 PARSER_END(Calc)
@@ -17,16 +21,16 @@ PARSER_END(Calc)
  */
 TOKEN_MGR_DECLS : 
 { 
-    static int numberCount = 0;
+    static int numbers = 0;
 } 
 
-SKIP : { " " | "\t" }
+SKIP : { " " | "\t" | "\n" | "\r" }
 //                              keine Zweistellige Zahl faengt mit 0 an
-TOKEN : { "(" | ")" | "+" | "*" | <NUM: "0" | ["1"-"9"] (["0"-"9"])*> { numberCount++; } } 
+TOKEN : { "(" | ")" | "+" | "*" | <NUM: "0" | ["1"-"9"] (["0"-"9"])*> }
 
 int S() : { int res; }
 {
-    res = E() (<EOF> | "\n" | "\r" ) { return res; }
+    res = E() (<EOF>) { return res; }
 }
 
 int E() : { int sum, x; }

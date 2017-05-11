@@ -68,9 +68,6 @@ Basic assignments `x = e;`
 
 ### Errors
 
-
-## Pointers [9]
-
 ## Structs [10]
 
 ## Compiler directives [15]
