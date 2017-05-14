@@ -1,31 +1,31 @@
 # Compilerbau - Sommersemester 2017
-* [Dokumentation](/doc)
-* [Quellcode](/src)
+* [Dokumentation](/doc) (doc/)
+* [Spielplatz](/doc) (playground/)
+* [Quellcode](/src) (src/)
 
 ## Übersicht
 ```
-doc
-|-- examples/
-|-- slides/
-|   |-- examples/
-|   |   '-- lookahead/
-|   '-- parseInterpreterAST/
-|-- C0-reference.pdf
-'-- specifications.md
-
-playground
-|-- jeurgen/ 
-|-- konstantin/ 
-'-- calc
-    |-- grammars/
-    |-- Calc.jj
-    '-- test.bat
-
-src
-|-- grammars/
-|-- C0.jj
-|-- Calc.jj
-|-- Klammern.jj
-|-- Uebung.jj
-'-- test.bat
+./
+|- doc/................................... Projektdokumentation
+|  |- examples/........................... C0 Beispiele
+|  |- slides/............................. Vorlesungsfolien
+|  |  |- examples/........................ Beispiele aus der Vorlesung
+|  |  |  '- lookahead/.................... Beispiel für Lookahead
+|  |  '- parseInterpreterAST/2............
+|  |- C0-reference.pdf.................... C0-Spezifikation
+|  '- specifications.md................... Gefilterte C0 Spezifikationen
+|- playground/............................ Experimentelle Umgebung
+|  |- jeurgen/............................
+|  '- konstantin/.........................
+|     |- calc/............................ 
+|     |  |- grammars/..................... Testgrammatiken
+|     |  |- Calc.jj....................... Einfacher Taschenrechner Parser
+|     |  '- test.bat...................... Buildscript für Calc (Windows)
+|     |- Klammern/........................ Einfacher Klammern Parser
+|     '- Uebung2/......................... Beispielgrammatik
+|- src/................................... Projekt Quellcode
+|  |- grammars/........................... Testgrammatiken
+|  |- C0.jj............................... C0 Parser
+|  '- test.bat............................ Buildscript für C0 (Windows)
+'- README.md.............................. Allgemeine Hinweise
 ```

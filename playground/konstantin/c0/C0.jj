@@ -1,0 +1,86 @@
+PARSER_BEGIN(C0)
+public class C0 {
+	public static void main(String args[]) throws ParseException {
+        try {
+            C0 c = new C0(new java.io.FileInputStream(new java.io.File(args[0])));
+            c.Init();
+        } catch (Exception ex) {
+            System.out.println("err: " + ex.getMessage());
+        }
+	}
+}
+PARSER_END(C0)
+
+// Whitespace separates tokens, but is otherwise ignored. Other control (non-printing) characters in the input constitute an error.
+SKIP : { " " | "\r" | "\n" }
+
+// Keywords
+TOKEN :
+{
+      < INT:        "int" >
+    | < BOOLEAN:    "bool" >
+    | < STRING:     "string" >
+    | < CHAR:       "char" >
+    | < VOID:       "void" >
+    | < STRUCT:     "struct" >
+    | < TYPEDEF:    "typedef" >
+    | < IF:         "if" >
+    | < ELSE:       "else" >
+    | < WHILE:      "while" >
+    | < FOR:        "for" >
+    | < CONTINUE:   "continue" >
+    | < BREAK:      "break" >
+    | < RETURN:     "return" >
+    | < ASSERT:     "assert" >
+    | < TRUE:       "true" >
+    | < FALSE:      "false" >
+    | < NULL:       "NULL" >
+    | < ALLOC:      "alloc" >
+    | < ALLOC_ARR:  "alloc_array" >
+}
+
+TOKEN : 
+{
+    < USE: "#use" >
+}
+
+// Lexical Tokens
+TOKEN :
+{
+        < ID: <LETTER> ( <ALPHANUM> )* >
+    |   < #LETTER: ["$","A"-"Z","a"-"z","_"] >
+    |   < #ALPHANUM: ["$","A"-"Z","a"-"z","0"-"9","_"] >
+    |   < NUM: <DECNUM> | <HEXNUM> >
+    |   < DECNUM: "0" | ["1"-"9"](["1"-"9"])* >
+    |   < HEXNUM: "0" ("x" | "X") (["0"-"9","a"-"f","A"-"F"])+ >
+    // |   < STRLIT: "\"" (<SCHAR>)* "\"" >
+    // |   < CHRLIT: "'" <CCHAR> "'" >
+    // |   < LIBLIT: "<" (<LCHAR>)* ">" >
+    // |   < SCHAR: <NCHAR> | <ESC> >
+    // |   < CCHAR: <NCHAR> | <ESC> | "\"" | "\0" >
+    // |   < NCHAR: (~["\""])+ >
+    // |   < LCHAR: (~[">"])+ >
+    |   < ESC: "\n" | "\t" | "\\v" | "\b" | "\r" | "\f" | "\\a" | "\\" | "\'" | "\"" >
+    |   < SEP: "(" | ")" | "[" | "]" | "{" | "}" | "," | ";" >
+    |   < UNOP: "!" | "~" | "-" | "*" >
+    |   < BINOP: "." | "->" | "*" | "/" | "%" | "+" | "-" | "<<" | ">>" | "<" | "<=" | ">=" | ">" | "==" | "!=" | "&" | "^" | "|" | "&&" | "||" | "?" | ":" >
+    |   < ASNOP: "=" | "+=" | "-=" | "*=" | "/=" | "%=" | "<<=" | ">>=" | "&=" | "^=" | "|=" >
+    |   < POSTOP: "--" | "++" >
+}
+
+void Init() : 
+{}
+{
+    <ID> (<ID>)* <EOF>
+}
+
+void Method() : {}
+{
+    
+}
+
+void MethodType() : {}
+{
+
+}
+
