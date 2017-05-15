@@ -1,6 +1,6 @@
 #!/bin/sh
 
-PARSER='C0'
+PARSER='Calc'
 javacc=/home/png/programme/javacc-5.0/bin/javacc
 javac=/usr/lib/jvm/java-8-openjdk/bin/javac
 java=/usr/lib/jvm/java-8-openjdk/jre/bin/java
