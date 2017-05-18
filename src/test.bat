@@ -1,4 +1,3 @@
-
 SET "parser=C0"
 CALL javacc "%parser%.jj"
 CALL javac *.java

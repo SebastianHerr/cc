@@ -34,11 +34,6 @@ TOKEN :
     | < ALLOC_ARR:  "alloc_array" >
 }
 
-TOKEN : 
-{
-    < USE: "#use" >
-}
-
 // Lexical Tokens
 TOKEN :
 {
@@ -55,8 +50,8 @@ TOKEN :
     // |   < CCHAR: <NCHAR> | <ESC> | "\"" | "\0" >
     // |   < NCHAR: (~["\""])+ >
     // |   < LCHAR: (~[">"])+ >
-    |   < ESC: "\n" | "\t" | "\\v" | "\b" | "\r" | "\f" | "\\a" | "\\" | "\'" | "\"" >
-    |   < SEP: "(" | ")" | "[" | "]" | "{" | "}" | "," | ";" >
+    // |   < ESC: "\n" | "\t" | "\\v" | "\b" | "\r" | "\f" | "\\a" | "\\" | "\'" | "\"" >
+    // |   < SEP: "(" | ")" | "[" | "]" | "{" | "}" | "," | ";" >
     |   < UNOP: "!" | "~" | "-" | "*" >
     |   < BINOP: "." | "->" | "*" | "/" | "%" | "+" | "-" | "<<" | ">>" | "<" | "<=" | ">=" | ">" | "==" | "!=" | "&" | "^" | "|" | "&&" | "||" | "?" | ":" >
     |   < ASNOP: "=" | "+=" | "-=" | "*=" | "/=" | "%=" | "<<=" | ">>=" | "&=" | "^=" | "|=" >
@@ -66,5 +61,35 @@ TOKEN :
 void Init() : 
 {}
 {
-    <EOF>
+    Method() <EOF>
+}
+
+void Method() : {} 
+{
+    MethodType() <ID> "(" Params() ")" "{" ExecutionContext() "}"
+}
+
+void MethodType() : {}
+{
+    <VOID> | <INT> | <BOOLEAN> | <STRING> | <CHAR>
+}
+
+void VariableType() : {}
+{
+    (<INT> | <BOOLEAN> | <STRING> | <CHAR>) ["[" "]"]
+}
+
+void Params() : {}
+{
+    [ParamsType() <ID> ("," ParamsType() <ID>)*]
+}
+
+void ParamsType() : {}
+{
+    (<INT> | <CHAR> | <STRING> | <BOOLEAN>) ("[" "]")*
+}
+
+void ExecutionContext() : {}
+{
+    (<ID>)*
 }

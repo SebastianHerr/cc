@@ -24,7 +24,7 @@ TOKEN_MGR_DECLS :
     static int numbers = 0;
 } 
 
-SKIP : { " " | "\t" | "\n" | "\r" }
+SKIP : { " " | "\t" | "\n" | "\r" | "\r\n" }
 //                              keine Zweistellige Zahl faengt mit 0 an
 TOKEN : { "(" | ")" | "+" | "*" | <NUM: "0" | ["1"-"9"] (["0"-"9"])*> }
 

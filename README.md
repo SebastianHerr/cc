@@ -1,6 +1,6 @@
 # Compilerbau - Sommersemester 2017
 * [Dokumentation](/doc) (doc/)
-* [Spielplatz](/doc) (playground/)
+* [Spielplatz](/playground) (playground/)
 * [Quellcode](/src) (src/)
 
 ## Übersicht
