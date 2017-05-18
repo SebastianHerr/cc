@@ -18,7 +18,7 @@ public class C0 {
 PARSER_END(C0)
 
 /*  
-	Whitespace separates tokens, but is otherwise ignored. 
+	Whitespace separates tokens, but is oth erwise ignored. 
 	Other control (non-printing) characters in the input 
 	constitute an error. 
 */
@@ -84,8 +84,32 @@ TOKEN :
 	|   < POSTOP: "--" | "++" >
 }
 
-void S() : 
-{}
+void S() : {}
 {
-	<ID> (<ID>)* <EOF>
+	Method() <EOF> 
+}
+
+void Method() : {}
+{
+	MethodType() <ID> "(" Params() ")" "{" ( Expression() )+ "}"
+}
+
+void Params() : {}
+{
+	Type() <ID> ["," Params()]
+}
+
+void Type() : {}
+{
+	(<INT> | <BOOLEAN> | <CHAR> | <STRING>) ["[" "]"]
+}
+
+void MethodType() : {}
+{
+	("void" | Type())
+}
+
+void Expression() : {}
+{
+	<ID>
 }
