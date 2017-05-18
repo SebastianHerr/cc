@@ -2,13 +2,18 @@
 
 PARSER='C0'
 
+if [ ! -f "bin/" ]
+then
+  mkdir bin
+fi
+
 javacc $PARSER.jj
-javac *.java
+javac -d bin *.java
 
 echo -e "\n\e[1mBuilding completed. \e[0m \n"
 
-for grammar in grammars/*.grm
+for testfile in test/*.grm
 do
-  echo -e "\e[1m$grammar:\e[0m"
-  java $PARSER $grammar
+  echo -e "\e[1m$testfile:\e[0m"
+  java -cp bin $PARSER $testfile
 done

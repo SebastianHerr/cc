@@ -1,3 +1,3 @@
 #!/bin/sh
 
-rm *.java *.class
+rm bin/*.class
