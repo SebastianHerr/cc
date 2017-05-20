@@ -1,26 +1,25 @@
-PARSER_BEGIN(C0)
+PARSER_BEGIN (C0)
 public class C0 {
-	public static void main(String args[]) throws ParseException {
+	public static void main (String args[]) throws ParseException {
 		try {
 			C0 parser;
 			if (args.length > 0) {
-				parser = new C0(new java.io.FileInputStream(new java.io.File(args[0])));
+				parser = new C0 (new java.io.FileInputStream(new java.io.File(args[0])));
 			} else {
-				parser = new C0(System.in);
+				parser = new C0 (System.in);
 			}
 			parser.S();
-			System.out.println("[  OK  ]");
+			System.out.println ("[  OK  ]");
 		} catch (Exception ex) {
-			System.out.println("[ FAIL ]\n\n" + ex.getMessage());
+			System.out.println ("[ FAIL ]\n\n" + ex.getMessage());
 		}
 	}
 }
-PARSER_END(C0)
+PARSER_END (C0)
 
 SKIP : { 
 	" " | "\t" | "\r" | "\n" | "\r\n"
 }
-
 
 SPECIAL_TOKEN: {
 	< SINGLE_LINE_COMMENT: "//" (~["\n", "\r"])* ("\n" | "\r" | "\r\n")? >
@@ -29,54 +28,51 @@ SPECIAL_TOKEN: {
 }
 
 // Keywords
-TOKEN :
-{
-	< INT:        "int" >
-| < BOOLEAN:    "bool" >
-| < STRING:     "string" >
-| < CHAR:       "char" >
-| < VOID:       "void" >
-| < STRUCT:     "struct" >
-| < TYPEDEF:    "typedef" >
-| < IF:         "if" >
-| < ELSE:       "else" >
-| < WHILE:      "while" >
-| < FOR:        "for" >
-| < CONTINUE:   "continue" >
-| < BREAK:      "break" >
-| < RETURN:     "return" >
-| < ASSERT:     "assert" >
-| < TRUE:       "true" >
-| < FALSE:      "false" >
-| < NULL:       "NULL" >
-| < ALLOC:      "alloc" >
-| < ALLOC_ARR:  "alloc_array" >
-| < INCLUDE: 		"#include" >
+TOKEN : {
+		< INT:        "int" >
+	| < BOOLEAN:    "bool" >
+	| < STRING:     "string" >
+	| < CHAR:       "char" >
+	| < VOID:       "void" >
+	| < STRUCT:     "struct" >
+	| < TYPEDEF:    "typedef" >
+	| < IF:         "if" >
+	| < ELSE:       "else" >
+	| < WHILE:      "while" >
+	| < FOR:        "for" >
+	| < CONTINUE:   "continue" >
+	| < BREAK:      "break" >
+	| < RETURN:     "return" >
+	| < ASSERT:     "assert" >
+	| < TRUE:       "true" >
+	| < FALSE:      "false" >
+	| < NULL:       "NULL" >
+	| < ALLOC:      "alloc" >
+	| < ALLOC_ARR:  "alloc_array" >
+	| < INCLUDE: 		"#include" >
 }
 
 // Separators
-TOKEN :
-{
-  < LPAREN: "(" >
-| < RPAREN: ")" >
-| < LBRACE: "{" >
-| < RBRACE: "}" >
-| < LBRACKET: "[" >
-| < RBRACKET: "]" >
-| < SEMICOLON: ";" >
-| < COMMA: "," >
-| < DOT: "." >
+TOKEN : {
+		< LPAREN: "(" >
+	| < RPAREN: ")" >
+	| < LBRACE: "{" >
+	| < RBRACE: "}" >
+	| < LBRACKET: "[" >
+	| < RBRACKET: "]" >
+	| < SEMICOLON: ";" >
+	| < COMMA: "," >
+	| < DOT: "." >
 }
 
 // Lexical Tokens
-TOKEN :
-{
-	< ID: <LETTER> ( <ALPHANUM> )* >
-|	< #LETTER: ["$","A"-"Z","a"-"z","_"] >
-|	< #ALPHANUM: ["$","A"-"Z","a"-"z","0"-"9","_"] >
-|	< NUM: <DECNUM> | <HEXNUM> >
-|	< DECNUM: "0" | ["1"-"9"](["1"-"9"])* >
-|	< HEXNUM: "0" ("x" | "X") (["0"-"9","a"-"f","A"-"F"])+ >
+TOKEN : {
+		< ID: <LETTER> ( <ALPHANUM> )* >
+	|	< #LETTER: ["$","A"-"Z","a"-"z","_"] >
+	|	< #ALPHANUM: ["$","A"-"Z","a"-"z","0"-"9","_"] >
+	|	< NUM: <DECNUM> | <HEXNUM> >
+	|	< DECNUM: "0" | ["1"-"9"] (["1"-"9"])* >
+	|	< HEXNUM: "0" ("x" | "X") (["0"-"9","a"-"f","A"-"F"])+ >
 }
 
 void S() : {}
@@ -103,12 +99,12 @@ void Params() : {}
 
 void Type() : {}
 {
-	(<INT> | <BOOLEAN> | <CHAR> | <STRING>) ["[" "]"]
+	( <INT> | <BOOLEAN> | <CHAR> | <STRING> ) ["[" "]"]
 }
 
 void MethodType() : {}
 {
-	("void" | Type())
+	( "void" | Type() )
 }
 
 void Expression() : {}
