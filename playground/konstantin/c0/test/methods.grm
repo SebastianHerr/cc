@@ -1,3 +1,6 @@
-void test1(int i) {
+
+void test1(int i, bool b) {
     Hallo
 }
+
+

@@ -17,76 +17,78 @@ public class C0 {
 }
 PARSER_END(C0)
 
-/*  
-	Whitespace separates tokens, but is oth erwise ignored. 
-	Other control (non-printing) characters in the input 
-	constitute an error. 
-*/
 SKIP : { 
-	" " | "\r" | "\n" | "\r\n"
+	" " | "\t" | "\r" | "\n" | "\r\n"
 }
 
+
 SPECIAL_TOKEN: {
-	< SINGLE_LINE_COMMENT: "//" (~["\n", "\r"])* ("\n" | "\r" | "\r\n")? >    
+	< SINGLE_LINE_COMMENT: "//" (~["\n", "\r"])* ("\n" | "\r" | "\r\n")? >
+	|
+	< MULTI_LINE_COMMENT: "/*" (~["*"])* "*" (~["*","/"] (~["*"])* "*" | "*")* "/" >
 }
 
 // Keywords
 TOKEN :
 {
-	  < INT:        "int" >
-	| < BOOLEAN:    "bool" >
-	| < STRING:     "string" >
-	| < CHAR:       "char" >
-	| < VOID:       "void" >
-	| < STRUCT:     "struct" >
-	| < TYPEDEF:    "typedef" >
-	| < IF:         "if" >
-	| < ELSE:       "else" >
-	| < WHILE:      "while" >
-	| < FOR:        "for" >
-	| < CONTINUE:   "continue" >
-	| < BREAK:      "break" >
-	| < RETURN:     "return" >
-	| < ASSERT:     "assert" >
-	| < TRUE:       "true" >
-	| < FALSE:      "false" >
-	| < NULL:       "NULL" >
-	| < ALLOC:      "alloc" >
-	| < ALLOC_ARR:  "alloc_array" >
+	< INT:        "int" >
+| < BOOLEAN:    "bool" >
+| < STRING:     "string" >
+| < CHAR:       "char" >
+| < VOID:       "void" >
+| < STRUCT:     "struct" >
+| < TYPEDEF:    "typedef" >
+| < IF:         "if" >
+| < ELSE:       "else" >
+| < WHILE:      "while" >
+| < FOR:        "for" >
+| < CONTINUE:   "continue" >
+| < BREAK:      "break" >
+| < RETURN:     "return" >
+| < ASSERT:     "assert" >
+| < TRUE:       "true" >
+| < FALSE:      "false" >
+| < NULL:       "NULL" >
+| < ALLOC:      "alloc" >
+| < ALLOC_ARR:  "alloc_array" >
+| < INCLUDE: 		"#include" >
 }
 
-// TOKEN : 
-// {
-//     < USE: "#use" >
-// }
+// Separators
+TOKEN :
+{
+  < LPAREN: "(" >
+| < RPAREN: ")" >
+| < LBRACE: "{" >
+| < RBRACE: "}" >
+| < LBRACKET: "[" >
+| < RBRACKET: "]" >
+| < SEMICOLON: ";" >
+| < COMMA: "," >
+| < DOT: "." >
+}
 
 // Lexical Tokens
 TOKEN :
 {
-		< ID: <LETTER> ( <ALPHANUM> )* >
-	|   < #LETTER: ["$","A"-"Z","a"-"z","_"] >
-	|   < #ALPHANUM: ["$","A"-"Z","a"-"z","0"-"9","_"] >
-	|   < NUM: <DECNUM> | <HEXNUM> >
-	|   < DECNUM: "0" | ["1"-"9"](["1"-"9"])* >
-	|   < HEXNUM: "0" ("x" | "X") (["0"-"9","a"-"f","A"-"F"])+ >
-	// |   < STRLIT: "\"" (<SCHAR>)* "\"" >
-	// |   < CHRLIT: "'" <CCHAR> "'" >
-	// |   < LIBLIT: "<" (<LCHAR>)* ">" >
-	// |   < SCHAR: <NCHAR> | <ESC> >
-	// |   < CCHAR: <NCHAR> | <ESC> | "\"" | "\0" >
-	// |   < NCHAR: (~["\""])+ >
-	// |   < LCHAR: (~[">"])+ >
-	// |   < ESC: "\n" | "\t" | "\\v" | "\b" | "\r" | "\f" | "\\a" | "\\" | "\'" | "\"" >
-	// |   < SEP: "(" | ")" | "[" | "]" | "{" | "}" | "," | ";" >
-	|   < UNOP: "!" | "~" | "-" | "*" >
-	|   < BINOP: "." | "->" | "*" | "/" | "%" | "+" | "-" | "<<" | ">>" | "<" | "<=" | ">=" | ">" | "==" | "!=" | "&" | "^" | "|" | "&&" | "||" | "?" | ":" >
-	|   < ASNOP: "=" | "+=" | "-=" | "*=" | "/=" | "%=" | "<<=" | ">>=" | "&=" | "^=" | "|=" >
-	|   < POSTOP: "--" | "++" >
+	< ID: <LETTER> ( <ALPHANUM> )* >
+|	< #LETTER: ["$","A"-"Z","a"-"z","_"] >
+|	< #ALPHANUM: ["$","A"-"Z","a"-"z","0"-"9","_"] >
+|	< NUM: <DECNUM> | <HEXNUM> >
+|	< DECNUM: "0" | ["1"-"9"](["1"-"9"])* >
+|	< HEXNUM: "0" ("x" | "X") (["0"-"9","a"-"f","A"-"F"])+ >
 }
 
 void S() : {}
 {
-	Method() <EOF> 
+	// #include wird soll geskipt werden -> preprocessor
+	( ProgramMember() )*
+	<EOF>
+}
+
+void ProgramMember(): {}
+{
+	Method() // | Attribute() | Definition()
 }
 
 void Method() : {}
@@ -96,7 +98,7 @@ void Method() : {}
 
 void Params() : {}
 {
-	Type() <ID> ["," Params()]
+	Type() <ID> [<COMMA> Params()]
 }
 
 void Type() : {}
