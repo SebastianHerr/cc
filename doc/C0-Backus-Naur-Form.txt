@@ -1,0 +1,60 @@
+<prog>      ::= (<gdecl> | <gdefn>)*
+
+<gdecl>     ::= struct <sid> ; 
+            | <tp> <vid> ( [<tp> <vid> (, <tp> <vid>)*] ) ; 
+            | #use <liblit> \n 
+            | #use <strlit> \n
+
+<gdefn>     ::= struct <sid> { (<tp> <fid> ;)* } ; 
+            | <tp> <vid> ( [<tp> <vid> (, <tp> <vid>)*] ) { <stmt>* } 
+            | typedef <tp> <aid> ;
+
+<stmt>      ::= <simple> ; 
+            | if ( <exp> ) <stmt> [ else <stmt> ] 
+            | while ( <exp> ) <stmt> 
+            | for ( [<simple>] ; <exp> ; [<simple>] ) <stmt> 
+            | return [<exp>] ; 
+            | { <stmt>* } 
+            | assert ( <exp> ) ; 
+            | error ( <exp> ) ;
+
+<simple>    ::= <lv> <asnop> <exp> 
+            | <lv> ++ 
+            | <lv> -
+            | <exp> 
+            | <tp> <vid> [= <exp>]
+
+<lv>        ::= <vid> 
+            | <lv> . <fid> 
+            | <lv> -> <fid> 
+            | * <lv> 
+            | <lv> [ <exp> ] 
+            | ( <lv> )
+
+<tp>        ::= int 
+            | bool 
+            | string 
+            | char 
+            | void 
+            | <tp> * 
+            | <tp> [ ] 
+            | struct <sid> 
+            | <aid>
+
+<exp>       ::= ( <exp> ) 
+            | <num> 
+            | <strlit> 
+            | <chrlit> 
+            | true 
+            | false 
+            | NULL 
+            | <vid> 
+            | <exp> <binop> <exp> 
+            | <unop> <exp> 
+            | <exp> ? <exp> : <exp> 
+            | <vid> ( [<exp> (, <exp>)*] ) 
+            | <exp> . <fid> 
+            | <exp> -> <fid> 
+            | <exp> [ <exp> ] 
+            | alloc ( <tp> ) 
+            | alloc_array ( <tp> , <exp> )

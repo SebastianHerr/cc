@@ -1,95 +1,191 @@
 PARSER_BEGIN(C0)
 public class C0 {
 	public static void main(String args[]) throws ParseException {
-        new C0(System.in).Init();
+		new C0(System.in).Program();
 	}
 }
 PARSER_END(C0)
 
 // Whitespace separates tokens, but is otherwise ignored. Other control (non-printing) characters in the input constitute an error.
-SKIP : { " " }
+SKIP : { " " | "\t" }
 
 // Keywords
-TOKEN :
-{
-      < INT:        "int" >
-    | < BOOLEAN:    "bool" >
-    | < STRING:     "string" >
-    | < CHAR:       "char" >
-    | < VOID:       "void" >
-    | < STRUCT:     "struct" >
-    | < TYPEDEF:    "typedef" >
-    | < IF:         "if" >
-    | < ELSE:       "else" >
-    | < WHILE:      "while" >
-    | < FOR:        "for" >
-    | < CONTINUE:   "continue" >
-    | < BREAK:      "break" >
-    | < RETURN:     "return" >
-    | < ASSERT:     "assert" >
-    | < TRUE:       "true" >
-    | < FALSE:      "false" >
-    | < NULL:       "NULL" >
-    | < ALLOC:      "alloc" >
-    | < ALLOC_ARR:  "alloc_array" >
+TOKEN : {
+	< INT:        "int" >
+	| < BOOLEAN:    "bool" >
+	| < STRING:     "string" >
+	| < CHAR:       "char" >
+	| < VOID:       "void" >
+	| < STRUCT:     "struct" >
+	| < TYPEDEF:    "typedef" >
+	| < IF:         "if" >
+	| < ELSE:       "else" >
+	| < WHILE:      "while" >
+	| < FOR:        "for" >
+	| < CONTINUE:   "continue" >
+	| < BREAK:      "break" >
+	| < RETURN:     "return" >
+	| < ASSERT:     "assert" >
+	| < TRUE:       "true" >
+	| < FALSE:      "false" >
+	| < NULL:       "NULL" >
+	| < ALLOC:      "alloc" >
+	| < ALLOC_ARR:  "alloc_array" >
+}
+
+// Separators
+TOKEN : {
+		< LPAREN: "(" >
+	| < RPAREN: ")" >
+	| < LBRACE: "{" >
+	| < RBRACE: "}" >
+	| < LBRACKET: "[" >
+	| < RBRACKET: "]" >
+	| < SEMICOLON: ";" >
+	| < COMMA: "," >
+	| < DOT: "." >
+	| < EOL: "\n" | "\r" | "\r\n" >
 }
 
 // Lexical Tokens
-TOKEN :
-{
-        < ID: <LETTER> ( <ALPHANUM> )* >
-    |   < #LETTER: ["$","A"-"Z","a"-"z","_"] >
-    |   < #ALPHANUM: ["$","A"-"Z","a"-"z","0"-"9","_"] >
-    |   < NUM: <DECNUM> | <HEXNUM> >
-    |   < DECNUM: "0" | ["1"-"9"](["1"-"9"])* >
-    |   < HEXNUM: "0" ("x" | "X") (["0"-"9","a"-"f","A"-"F"])+ >
-    // |   < STRLIT: "\"" (<SCHAR>)* "\"" >
-    // |   < CHRLIT: "'" <CCHAR> "'" >
-    // |   < LIBLIT: "<" (<LCHAR>)* ">" >
-    // |   < SCHAR: <NCHAR> | <ESC> >
-    // |   < CCHAR: <NCHAR> | <ESC> | "\"" | "\0" >
-    // |   < NCHAR: (~["\""])+ >
-    // |   < LCHAR: (~[">"])+ >
-    // |   < ESC: "\n" | "\t" | "\\v" | "\b" | "\r" | "\f" | "\\a" | "\\" | "\'" | "\"" >
-    // |   < SEP: "(" | ")" | "[" | "]" | "{" | "}" | "," | ";" >
-    |   < UNOP: "!" | "~" | "-" | "*" >
-    |   < BINOP: "." | "->" | "*" | "/" | "%" | "+" | "-" | "<<" | ">>" | "<" | "<=" | ">=" | ">" | "==" | "!=" | "&" | "^" | "|" | "&&" | "||" | "?" | ":" >
-    |   < ASNOP: "=" | "+=" | "-=" | "*=" | "/=" | "%=" | "<<=" | ">>=" | "&=" | "^=" | "|=" >
-    |   < POSTOP: "--" | "++" >
+TOKEN : {
+	< ID: <LETTER> ( <ALPHANUM> )* >
+	|	< #LETTER: ["$","A"-"Z","a"-"z","_"] >
+	|	< #ALPHANUM: ["$","A"-"Z","a"-"z","0"-"9","_"] >
+	|	< NUM: <DECNUM> | <HEXNUM> >
+	|	< DECNUM: "0" | ["1"-"9"](["1"-"9"])* >
+	|	< HEXNUM: "0" ("x" | "X") (["0"-"9","a"-"f","A"-"F"])+ >
+	// |   < STRLIT: "\"" (<SCHAR>)* "\"" >
+	// |   < CHRLIT: "'" <CCHAR> "'" >
+	// |   < LIBLIT: "<" (<LCHAR>)* ">" >
+	// |   < SCHAR: <NCHAR> | <ESC> >
+	// |   < CCHAR: <NCHAR> | <ESC> | "\"" | "\0" >
+	// |   < NCHAR: (~["\""])+ >
+	// |   < LCHAR: (~[">"])+ >
+	// |   < ESC: "\n" | "\t" | "\\v" | "\b" | "\r" | "\f" | "\\a" | "\\" | "\'" | "\"" >
+	// |   < SEP: "(" | ")" | "[" | "]" | "{" | "}" | "," | ";" >
+	// |	< UNOP: "!" | "~" | "-" | "*" >
+	// |	< BINOP: "." | "->" | "*" | "/" | "%" | "+" | "-" | "<<" | ">>" | "<" | "<=" | ">=" | ">" | "==" | "!=" | "&" | "^" | "|" | "&&" | "||" | "?" | ":" >
+	// |	< ASNOP: "=" | "+=" | "-=" | "*=" | "/=" | "%=" | "<<=" | ">>=" | "&=" | "^=" | "|=" >
+	// |	< POSTOP: "--" | "++" >
 }
 
-void Init() : 
+void Program() : 
 {}
 {
-    Method() <EOF>
+	( <##gdecl> | <##gdefn> )* <EOF>
 }
 
-void Method() : {} 
+void <##gdecl>() : {}
 {
-    MethodType() <ID> "(" Params() ")" "{" ExecutionContext() "}"
+	<STRUCT> <ID> <SEMICOLON> 
+	|	<##tp> <##vid> "(" [<##tp> <##vid> (<COMMA <##tp> <##vid>)* ] ")" <SEMICOLON>
+	|	"#use" <##liblit> <EOL>
+	|	"#use" <##strlit> <EOL>
 }
 
-void MethodType() : {}
+void <##gdefn>() : {}
 {
-    <VOID> | <INT> | <BOOLEAN> | <STRING> | <CHAR>
+	<STRUCT> <ID> "{" (<##tp> <##fid>)* "}" ";"
+	|	<##tp> <##vid> "(" [<##tp> <##vid> ("," <##tp> <##vid>)*] ")" "{" (<##stmt>)* "}"
+	//| "typedef" <##tp> <##aid> // C0--
 }
 
-void VariableType() : {}
+void <##stmt>() : {}
 {
-    (<INT> | <BOOLEAN> | <STRING> | <CHAR>) ["[" "]"]
+	<##simple> ";"
+	|	"if" "(" <##exp> ")" <##stmt> [ "else" <##stmt> ]
+	|	"while" "(" <##exp> ")" <##stmt>
+	|	"for" "(" [<##simple>] ";" <##exp> ";" [<##simple>] ")" <##stmt>
+	|	"return" [<##exp]
+	|	"{" (<##stmt>)* "}"
+	|	"assert" "(" <##exp> ")" ";"
+	|	"error" "(" <##exp> ")" ";"
 }
 
-void Params() : {}
+void <##simple>() : {}
 {
-    [ParamsType() <ID> ("," ParamsType() <ID>)*]
+	<##lv> <##asnop> <##exp>
+	|	<##lv> "++"
+	|	<##lv> "-"
+	|	<##exp>
+	|	<##tp> <##vid> ["=" <##exp>]
 }
 
-void ParamsType() : {}
+void <##lv>() : {}
 {
-    (<INT> | <CHAR> | <STRING> | <BOOLEAN>) ("[" "]")*
+	<##vid>
+	|	<##lv> "." <##fid>
+	|	<##lv> "->" <##fid>
+	|	"*" <##lv>
+	|	<##lv> [<##exp>]
+	|	"(" <##lv> ")"
 }
 
-void ExecutionContext() : {}
+void <##tp>() : {}
 {
-    (<ID>)*
+	<INT>
+	|	<BOOLEAN>
+	|	<STRING>
+	|	<CHAR>
+	|	<VOID>
+	|	<##tp> *
+	|	<##tp> "[" "]"
+	|	"struct" <ID>
+	|	<##aid>
 }
+
+void <##exp>() : {}
+{
+	"(" <##exp> ")"
+	|	<##num>
+	|	<##strlit>
+	|	<##chrlit>
+	|	<TRUE>
+	|	<FALSE>
+	|	<NULL>
+	|	<##vid>
+	|	<##exp>	<##binop>	<##exp>
+	| <#unop> <##exp> 
+	| <#exp> "?" <##exp> ":" <##exp> 
+	| <#vid> "(" [<##exp> ("," <##exp>)*] ")" 
+	| <#exp> "." <##fid> 
+	| <#exp> "->" <##fid> 
+	| <#exp> "[" <##exp> "]"
+	| "alloc" "(" <##tp> ")" 
+	| "alloc_array" "(" <##tp> "," <##exp> ")"
+
+}
+
+///////////////////////////////////////////
+/*
+	void Method() : {} 
+	{
+		MethodType() <ID> "(" Params() ")" "{" ExecutionContext() "}"
+	}
+
+	void MethodType() : {}
+	{
+		<VOID> | <INT> | <BOOLEAN> | <STRING> | <CHAR>
+	}
+
+	void VariableType() : {}
+	{
+		(<INT> | <BOOLEAN> | <STRING> | <CHAR>) ["[" "]"]
+	}
+
+	void Params() : {}
+	{
+		[ParamsType() <ID> ("," ParamsType() <ID>)*]
+	}
+
+	void ParamsType() : {}
+	{
+		(<INT> | <CHAR> | <STRING> | <BOOLEAN>) ("[" "]")*
+	}
+
+	void ExecutionContext() : {}
+	{
+		(<ID>)*
+	}
+*/

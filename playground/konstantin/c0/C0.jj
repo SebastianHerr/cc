@@ -22,6 +22,8 @@ SKIP : {
 }
 
 SPECIAL_TOKEN: {
+	< INCLUDE: "#" (~["\n", "\r"])* ("\n" | "\r" | "\r\n")? >
+	|
 	< SINGLE_LINE_COMMENT: "//" (~["\n", "\r"])* ("\n" | "\r" | "\r\n")? >
 	|
 	< MULTI_LINE_COMMENT: "/*" (~["*"])* "*" (~["*","/"] (~["*"])* "*" | "*")* "/" >
@@ -49,7 +51,6 @@ TOKEN : {
 	| < NULL:       "NULL" >
 	| < ALLOC:      "alloc" >
 	| < ALLOC_ARR:  "alloc_array" >
-	| < INCLUDE: 		"#include" >
 }
 
 // Separators
@@ -89,7 +90,7 @@ void ProgramMember(): {}
 
 void Method() : {}
 {
-	MethodType() <ID> "(" Params() ")" "{" ( Expression() )+ "}"
+	MethodType() <ID> <LPAREN> Params() <RPAREN> <LBRACE> ( Expression() )+ <RBRACE>
 }
 
 void Params() : {}
@@ -99,12 +100,12 @@ void Params() : {}
 
 void Type() : {}
 {
-	( <INT> | <BOOLEAN> | <CHAR> | <STRING> ) ["[" "]"]
+	( <INT> | <BOOLEAN> | <CHAR> | <STRING> ) [<LBRACKET> <RBRACKET>]
 }
 
 void MethodType() : {}
 {
-	( "void" | Type() )
+	( <VOID> | Type() )
 }
 
 void Expression() : {}
