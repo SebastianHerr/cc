@@ -47,6 +47,11 @@ TOKEN : {
 	| < EOL: "\n" | "\r" | "\r\n" >
 }
 
+// Operators
+TOKEN : {
+	< STAR: "*" >
+}
+
 // Lexical Tokens
 TOKEN : {
 	< ID: <LETTER> ( <ALPHANUM> )* >
@@ -55,105 +60,104 @@ TOKEN : {
 	|	< NUM: <DECNUM> | <HEXNUM> >
 	|	< DECNUM: "0" | ["1"-"9"](["1"-"9"])* >
 	|	< HEXNUM: "0" ("x" | "X") (["0"-"9","a"-"f","A"-"F"])+ >
-	// |   < STRLIT: "\"" (<SCHAR>)* "\"" >
+	// | < STRLIT: "\"" (<SCHAR>)* "\"" >
 	// |   < CHRLIT: "'" <CCHAR> "'" >
 	// |   < LIBLIT: "<" (<LCHAR>)* ">" >
-	// |   < SCHAR: <NCHAR> | <ESC> >
+  // |   < SCHAR: <NCHAR> | <ESC> >
 	// |   < CCHAR: <NCHAR> | <ESC> | "\"" | "\0" >
 	// |   < NCHAR: (~["\""])+ >
 	// |   < LCHAR: (~[">"])+ >
 	// |   < ESC: "\n" | "\t" | "\\v" | "\b" | "\r" | "\f" | "\\a" | "\\" | "\'" | "\"" >
 	// |   < SEP: "(" | ")" | "[" | "]" | "{" | "}" | "," | ";" >
-	// |	< UNOP: "!" | "~" | "-" | "*" >
-	// |	< BINOP: "." | "->" | "*" | "/" | "%" | "+" | "-" | "<<" | ">>" | "<" | "<=" | ">=" | ">" | "==" | "!=" | "&" | "^" | "|" | "&&" | "||" | "?" | ":" >
-	// |	< ASNOP: "=" | "+=" | "-=" | "*=" | "/=" | "%=" | "<<=" | ">>=" | "&=" | "^=" | "|=" >
+	 |	< UNOP: "!" | "~" | "-" | "*" >
+	 |	< BINOP: "." | "->" | "*" | "/" | "%" | "+" | "-" | "<<" | ">>" | "<" | "<=" | ">=" | ">" | "==" | "!=" | "&" | "^" | "|" | "&&" | "||" | "?" | ":" >
+	 |	< ASNOP: "=" | "+=" | "-=" | "*=" | "/=" | "%=" | "<<=" | ">>=" | "&=" | "^=" | "|=" >
 	// |	< POSTOP: "--" | "++" >
 }
 
-void Program() : 
-{}
+void Program() : {}
 {
-	( <##gdecl> | <##gdefn> )* <EOF>
+	( Declaration() | Definition() )* <EOF>
 }
 
-void <##gdecl>() : {}
+void Declaration() : {}
 {
-	<STRUCT> <ID> <SEMICOLON> 
-	|	<##tp> <##vid> "(" [<##tp> <##vid> (<COMMA <##tp> <##vid>)* ] ")" <SEMICOLON>
-	|	"#use" <##liblit> <EOL>
-	|	"#use" <##strlit> <EOL>
+	<STRUCT> <ID> <SEMICOLON>
+	|	Type() <ID> "(" [ Type() <ID> ( <COMMA> Type() <ID> )* ] ")" <SEMICOLON>
+	|	"#use" "<" <ID> ">" <EOL>
+	|	"#use" "\"" <ID> "\"" <EOL>
 }
 
-void <##gdefn>() : {}
+void Definition() : {}
 {
-	<STRUCT> <ID> "{" (<##tp> <##fid>)* "}" ";"
-	|	<##tp> <##vid> "(" [<##tp> <##vid> ("," <##tp> <##vid>)*] ")" "{" (<##stmt>)* "}"
-	//| "typedef" <##tp> <##aid> // C0--
+	<STRUCT> <ID> "{" ( Type() <ID> )* "}" ";"
+	|	Type() <ID> "(" [ Type() <ID> (<COMMA> Type() <ID>)* ] ")" "{" ( Statement() )* "}"
+	//| "typedef" Type() <##aid> // C0--
 }
 
-void <##stmt>() : {}
+void Statement() : {}
 {
-	<##simple> ";"
-	|	"if" "(" <##exp> ")" <##stmt> [ "else" <##stmt> ]
-	|	"while" "(" <##exp> ")" <##stmt>
-	|	"for" "(" [<##simple>] ";" <##exp> ";" [<##simple>] ")" <##stmt>
-	|	"return" [<##exp]
-	|	"{" (<##stmt>)* "}"
-	|	"assert" "(" <##exp> ")" ";"
-	|	"error" "(" <##exp> ")" ";"
+	Simple() ";"
+	|	"if" "(" Expression() ")" Statement() [ "else" Statement() ]
+	|	"while" "(" Expression() ")" Statement()
+	|	"for" "(" [ Simple() ] ";" Expression() ";" [ Simple() ] ")" Statement()
+	|	"return" [ Expression() ]
+	|	"{" ( Statement() )* "}"
+	|	"assert" "(" Expression() ")" ";"
+	|	"error" "(" Expression() ")" ";"
 }
 
-void <##simple>() : {}
+void Simple() : {}
 {
-	<##lv> <##asnop> <##exp>
-	|	<##lv> "++"
-	|	<##lv> "-"
-	|	<##exp>
-	|	<##tp> <##vid> ["=" <##exp>]
+	MemberAccess() <ASNOP> Expression()
+	|	MemberAccess() "++"
+	|	MemberAccess() "--"
+	|	Expression()
+	|	Type() <ID> [ "=" Expression() ]
 }
 
-void <##lv>() : {}
+void MemberAccess() : {}
 {
-	<##vid>
-	|	<##lv> "." <##fid>
-	|	<##lv> "->" <##fid>
-	|	"*" <##lv>
-	|	<##lv> [<##exp>]
-	|	"(" <##lv> ")"
+	<ID>
+	|	MemberAccess() "." <ID>
+	|	MemberAccess() "->" <ID>
+	|	"*" MemberAccess()
+	|	MemberAccess() [ Expression() ]
+	|	"(" MemberAccess() ")"
 }
 
-void <##tp>() : {}
+void Type() : {} 
 {
 	<INT>
 	|	<BOOLEAN>
 	|	<STRING>
 	|	<CHAR>
 	|	<VOID>
-	|	<##tp> *
-	|	<##tp> "[" "]"
-	|	"struct" <ID>
-	|	<##aid>
+	|	Type() <STAR>
+	|	Type() <LBRACKET> <RBRACKET>
+	|	<STRUCT> <ID>
+	// |	<##aid>
 }
 
-void <##exp>() : {}
+void Expression() : {}
 {
-	"(" <##exp> ")"
-	|	<##num>
-	|	<##strlit>
-	|	<##chrlit>
+	<LBRACE> Expression() <RBRACE>
+	|	<NUM>
+	// |	<##strlit>
+	// |	<##chrlit>
 	|	<TRUE>
 	|	<FALSE>
 	|	<NULL>
-	|	<##vid>
-	|	<##exp>	<##binop>	<##exp>
-	| <#unop> <##exp> 
-	| <#exp> "?" <##exp> ":" <##exp> 
-	| <#vid> "(" [<##exp> ("," <##exp>)*] ")" 
-	| <#exp> "." <##fid> 
-	| <#exp> "->" <##fid> 
-	| <#exp> "[" <##exp> "]"
-	| "alloc" "(" <##tp> ")" 
-	| "alloc_array" "(" <##tp> "," <##exp> ")"
+	|	<ID>
+	|	Expression() <BINOP> Expression()
+	| <UNOP> Expression() 
+	| Expression() "?" Expression() ":" Expression() 
+	| <ID> "(" [ Expression() ( "," Expression() )* ] ")" 
+	| Expression() "." <ID> 
+	| Expression() "->" <ID> 
+	| Expression() "[" Expression() "]"
+	| "alloc" "(" Type() ")" 
+	| "alloc_array" "(" Type() "," Expression() ")"
 
 }
 
