@@ -36,7 +36,9 @@ TOKEN : {
 	| < FALSE:      "false" >
 	| < NULL:       "NULL" >
 	| < ALLOC:      "alloc" >
-	| < ALLOC_ARR:  "alloc_array" >
+  | < ALLOC_ARR:  "alloc_array" >
+  | < USE:  "#use" >
+  | < ERROR:  "error" >
 }
 
 // Separators
@@ -46,8 +48,12 @@ TOKEN : {
 	| < LBRACE: "{" >
 	| < RBRACE: "}" >
 	| < LBRACKET: "[" >
-	| < RBRACKET: "]" >
-	| < SEMICOLON: ";" >
+  | < RBRACKET: "]" >
+  | < LWICKET: "<" >
+  | < RWICKET: ">" >
+  | < QUOTE: "\"" >
+  | < COLON: ":" >
+  | < SEMICOLON: ";" >
 	| < COMMA: "," >
 	| < DOT: "." >
 	| < EOL: "\n" | "\r" | "\r\n" >
@@ -56,6 +62,11 @@ TOKEN : {
 // Operators
 TOKEN : {
 	< STAR: "*" >
+  | < PLUSPLUS: "++">
+  | < MINUSMINUS: "--">
+  | < EQUALS: "=">
+  | < ASSIGN: "->">
+  | < QUESTION: "?">
 }
 
 // Lexical Tokens
@@ -89,47 +100,47 @@ void Program() : {}
 void Declaration() : {}
 {
 	<STRUCT> <ID> <SEMICOLON>
-	|	Type() <ID> "(" [ Type() <ID> ( <COMMA> Type() <ID> )* ] ")" <SEMICOLON>
-	|	"#use" "<" <ID> ">" <EOL>
-	|	"#use" "\"" <ID> "\"" <EOL>
+	|	Type() <ID> <LPAREN> [ Type() <ID> ( <COMMA> Type() <ID> )* ] <RPAREN> <SEMICOLON>
+	| <USE> <LWICKET> <ID> <RWICKET> <EOL>
+	| <USE> <QUOTE> <ID> <QUOTE> <EOL>
 }
 
 void Definition() : {}
 {
-	<STRUCT> <ID> "{" ( Type() <ID> )* "}" ";"
-	|	Type() <ID> "(" [ Type() <ID> (<COMMA> Type() <ID>)* ] ")" "{" ( Statement() )* "}"
+	<STRUCT> <ID> <LBRACE> ( Type() <ID> )* <RBRACE> <SEMICOLON>
+	|	Type() <ID> <LPAREN> [ Type() <ID> (<COMMA> Type() <ID>)* ] <RPAREN> <LBRACE> ( Statement() )* <RBRACE>
 	//| "typedef" Type() <##aid> // C0--
 }
 
 void Statement() : {}
 {
-	Simple() ";"
-	|	"if" "(" Expression() ")" Statement() [ "else" Statement() ]
-	|	"while" "(" Expression() ")" Statement()
-	|	"for" "(" [ Simple() ] ";" Expression() ";" [ Simple() ] ")" Statement()
-	|	"return" [ Expression() ]
-	|	"{" ( Statement() )* "}"
-	|	"assert" "(" Expression() ")" ";"
-	|	"error" "(" Expression() ")" ";"
+	Simple() <SEMICOLON>
+	|	<IF> <LPAREN> Expression() <RPAREN> Statement() [ <ELSE> Statement() ]
+	|	<WHILE> <LPAREN> Expression() <RPAREN> Statement()
+	|	<FOR> <LPAREN> [ Simple() ] <SEMICOLON> Expression() <SEMICOLON> [ Simple() ] <RPAREN> Statement()
+	|	<RETURN> [ Expression() ]
+	|	<LBRACE> ( Statement() )* <RBRACE>
+	|	<ASSERT> <LPAREN> Expression() <RPAREN> <SEMICOLON>
+	|	<ERROR> <LPAREN> Expression() <RPAREN> <SEMICOLON>
 }
 
 void Simple() : {}
 {
 	MemberAccess() <ASNOP> Expression()
-	|	MemberAccess() "++"
-	|	MemberAccess() "--"
+	|	MemberAccess() <PLUSPLUS>
+	|	MemberAccess() <MINUSMINUS>
 	|	Expression()
-	|	Type() <ID> [ "=" Expression() ]
+	|	Type() <ID> [ <EQUALS> Expression() ]
 }
 
 void MemberAccess() : {}
 {
 	<ID>
-	|	MemberAccess() "." <ID>
-	|	MemberAccess() "->" <ID>
-	|	"*" MemberAccess()
+	|	MemberAccess() <DOT> <ID>
+	|	MemberAccess() <ASSIGN> <ID>
+	|	<STAR> MemberAccess()
 	|	MemberAccess() [ Expression() ]
-	|	"(" MemberAccess() ")"
+	|	<LPAREN> MemberAccess() <RPAREN>
 }
 
 void Type() : {} 
@@ -157,13 +168,13 @@ void Expression() : {}
 	|	<ID>
 	|	Expression() <BINOP> Expression()
 	| <UNOP> Expression() 
-	| Expression() "?" Expression() ":" Expression() 
-	| <ID> "(" [ Expression() ( "," Expression() )* ] ")" 
-	| Expression() "." <ID> 
-	| Expression() "->" <ID> 
-	| Expression() "[" Expression() "]"
-	| "alloc" "(" Type() ")" 
-	| "alloc_array" "(" Type() "," Expression() ")"
+	| Expression() <QUESTION> Expression() <COLON> Expression()
+	| <ID> <LPAREN> [ Expression() ( <COMMA> Expression() )* ] <RPAREN>
+	| Expression() <DOT> <ID>
+	| Expression() <ASSIGN> <ID>
+	| Expression() <LBRACKET> Expression() <RBRACKET>
+	| <ALLOC> <LPAREN> Type() <RPAREN>
+	| <ALLOC_ARR> <LPAREN> Type() <SEMICOLON> Expression() <RPAREN>
 
 }
 
