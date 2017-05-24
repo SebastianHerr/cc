@@ -20,7 +20,7 @@
 
 <simple>    ::= <lv> <asnop> <exp> 
             | <lv> ++ 
-            | <lv> -
+            | <lv> --
             | <exp> 
             | <tp> <vid> [= <exp>]
 
