@@ -150,8 +150,12 @@ void Type() : {}
 	|	<STRING>
 	|	<CHAR>
 	|	<VOID>
-	|	Type() <STAR>
-	|	Type() <LBRACKET> <RBRACKET>
+	|	(<INT> | <BOOLEAN> | <STRING> | <CHAR> | <VOID> | <STRUCT> <ID> | 
+		(<INT> | <BOOLEAN> | <STRING> | <CHAR> | <VOID> | <STRUCT> <ID>) <LBRACKET> <RBRACKET>) <STAR>
+
+	|	(<INT> | <BOOLEAN> | <STRING> | <CHAR> | <VOID> | <STRUCT> <ID> ) <STAR>
+		(<INT> | <BOOLEAN> | <STRING> | <CHAR> | <VOID> | <STRUCT> <ID>) <LBRACKET> <RBRACKET>
+
 	|	<STRUCT> <ID>
 	// |	<##aid>
 }
