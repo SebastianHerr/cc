@@ -1,23 +1,28 @@
-options
-{
-	LOOKAHEAD=1001;
-	FORCE_LA_CHECK=false;
-}
-
 PARSER_BEGIN(C0)
 public class C0 {
-	public static void main(String args[]) throws ParseException {
-		new C0(System.in).Program();
+	public static void main(String args[]) {
+		C0 parser;
+		try {
+			if (args.length > 0) {
+				parser = new C0 (new java.io.FileInputStream(new java.io.File(args[0])));
+			} else {
+				parser = new C0 (System.in);
+			}
+			parser.Program();
+			System.out.println ("[  OK  ]");
+		} catch (Exception ex) {
+			System.out.println ("[ FAIL ]\n\n" + ex.getMessage());
+		}
 	}
 }
 PARSER_END(C0)
 
-// Whitespace separates tokens, but is otherwise ignored. Other control (non-printing) characters in the input constitute an error.
-SKIP : { " " | "\t" }
+SKIP : { " " | "\t" | "\n" | "\r" | "\r\n" | "/*" : IN_COMMENT }
+<IN_COMMENT> MORE : {	<~[]> | "*/" : DEFAULT }
 
 // Keywords
 TOKEN : {
-	< INT:        "int" >
+	< INT:        	"int" >
 	| < BOOLEAN:    "bool" >
 	| < STRING:     "string" >
 	| < CHAR:       "char" >
@@ -37,13 +42,13 @@ TOKEN : {
 	| < NULL:       "NULL" >
 	| < ALLOC:      "alloc" >
   | < ALLOC_ARR:  "alloc_array" >
-  | < USE:  "#use" >
-  | < ERROR:  "error" >
+  | < USE:  			"#use" >
+  | < ERROR:			"error" >
 }
 
 // Separators
 TOKEN : {
-		< LPAREN: "(" >
+	< LPAREN: "(" >
 	| < RPAREN: ")" >
 	| < LBRACE: "{" >
 	| < RBRACE: "}" >
@@ -55,8 +60,6 @@ TOKEN : {
   | < COLON: ":" >
   | < SEMICOLON: ";" >
 	| < COMMA: "," >
-	| < DOT: "." >
-	| < EOL: "\n" | "\r" | "\r\n" >
 }
 
 // Operators
@@ -67,6 +70,7 @@ TOKEN : {
   | < EQUALS: "=">
   | < ASSIGN: "->">
   | < QUESTION: "?">
+	| < DOT: "." >
 }
 
 // Lexical Tokens
@@ -77,140 +81,119 @@ TOKEN : {
 	|	< NUM: <DECNUM> | <HEXNUM> >
 	|	< DECNUM: "0" | ["1"-"9"](["1"-"9"])* >
 	|	< HEXNUM: "0" ("x" | "X") (["0"-"9","a"-"f","A"-"F"])+ >
-	// | < STRLIT: "\"" (<SCHAR>)* "\"" >
-	// |   < CHRLIT: "'" <CCHAR> "'" >
-	// |   < LIBLIT: "<" (<LCHAR>)* ">" >
-  // |   < SCHAR: <NCHAR> | <ESC> >
-	// |   < CCHAR: <NCHAR> | <ESC> | "\"" | "\0" >
-	// |   < NCHAR: (~["\""])+ >
-	// |   < LCHAR: (~[">"])+ >
-	// |   < ESC: "\n" | "\t" | "\\v" | "\b" | "\r" | "\f" | "\\a" | "\\" | "\'" | "\"" >
-	// |   < SEP: "(" | ")" | "[" | "]" | "{" | "}" | "," | ";" >
-	 |	< UNOP: "!" | "~" | "-" | "*" >
-	 |	< BINOP: "." | "->" | "*" | "/" | "%" | "+" | "-" | "<<" | ">>" | "<" | "<=" | ">=" | ">" | "==" | "!=" | "&" | "^" | "|" | "&&" | "||" | "?" | ":" >
-	 |	< ASNOP: "=" | "+=" | "-=" | "*=" | "/=" | "%=" | "<<=" | ">>=" | "&=" | "^=" | "|=" >
-	// |	< POSTOP: "--" | "++" >
+	|	< UNOP: "!" | "~" | "-" | "*" >
+	|	< BINOP: "." | "->" | "*" | "/" | "%" | "+" | "-" | "<<" | ">>" | "<" | "<=" | ">=" | ">" | "==" | "!=" | "&" | "^" | "|" | "&&" | "||" | "?" | ":" >
+	|	< ASNOP: "=" | "+=" | "-=" | "*=" | "/=" | "%=" | "<<=" | ">>=" | "&=" | "^=" | "|=" >
+	|	< POSTOP: "--" | "++" >
 }
 
-void Program() : {}
+void Program () : {}
 {
-	( Declaration() | Definition() )* <EOF>
+	( Import () )*
+	( LOOKAHEAD(7) Declaration () | Definition () )*
 }
 
-void Declaration() : {}
+void Import () : {}
 {
-	<STRUCT> <ID> <SEMICOLON>
-	|	Type() <ID> <LPAREN> [ Type() <ID> ( <COMMA> Type() <ID> )* ] <RPAREN> <SEMICOLON>
-	| <USE> <LWICKET> <ID> <RWICKET> <EOL>
-	| <USE> <QUOTE> <ID> <QUOTE> <EOL>
+	LOOKAHEAD(2)
+		// use < name > \n
+		<USE> <LWICKET> <ID> <RWICKET>
+		// use " name " \n
+	| <USE> <QUOTE> <ID> <QUOTE>
 }
 
-void Definition() : {}
+void Declaration () : {}
 {
-	<STRUCT> <ID> <LBRACE> ( Type() <ID> )* <RBRACE> <SEMICOLON>
-	|	Type() <ID> <LPAREN> [ Type() <ID> (<COMMA> Type() <ID>)* ] <RPAREN> <LBRACE> ( Statement() )* <RBRACE>
-	//| "typedef" Type() <##aid> // C0--
+	LOOKAHEAD(3)
+		// struct name ;
+		<STRUCT> <ID> <SEMICOLON>
+		// int name ( int name1, int name2 ) ;
+	|	Type () <ID> <LPAREN> [ Type () <ID> ( <COMMA> Type () <ID> )* ] <RPAREN> <SEMICOLON>
 }
 
-void Statement() : {}
+void Definition () : {}
 {
-	Simple() <SEMICOLON>
-	|	<IF> <LPAREN> Expression() <RPAREN> Statement() [ <ELSE> Statement() ]
-	|	<WHILE> <LPAREN> Expression() <RPAREN> Statement()
-	|	<FOR> <LPAREN> [ Simple() ] <SEMICOLON> Expression() <SEMICOLON> [ Simple() ] <RPAREN> Statement()
-	|	<RETURN> [ Expression() ]
-	|	<LBRACE> ( Statement() )* <RBRACE>
-	|	<ASSERT> <LPAREN> Expression() <RPAREN> <SEMICOLON>
-	|	<ERROR> <LPAREN> Expression() <RPAREN> <SEMICOLON>
+	// struct name { int name1 ; int name2 } ;
+	LOOKAHEAD(3) <STRUCT> <ID> <LBRACE> ( Type () <ID> <SEMICOLON> )* <RBRACE> <SEMICOLON>
+	// int name ( int name1 , int name2 ) { STATEMENT* }
+	|	Type () <ID> <LPAREN> [ Type () <ID> ( <COMMA> Type () <ID> )* ] <RPAREN> <LBRACE> ( Statement () )* <RBRACE>
 }
 
-void Simple() : {}
+void Statement () : {}
 {
-	MemberAccess() <ASNOP> Expression()
-	|	MemberAccess() <PLUSPLUS>
-	|	MemberAccess() <MINUSMINUS>
-	|	Expression()
-	|	Type() <ID> [ <EQUALS> Expression() ]
+	// ;
+		<SEMICOLON>
+	// name ++ ;  													// { STATEMENT* }
+	|	( LOOKAHEAD(2) Simple () <SEMICOLON> |	<LBRACE> ( Statement () )* <RBRACE> )
+	// if ( EXPRESSION ) STATEMENT else STATEMENT
+	|	<IF> <LPAREN> Expression () <RPAREN> Statement () [ LOOKAHEAD(2) <ELSE> Statement () ]
+	// while ( EXPRESSION ) STATEMENT
+	|	<WHILE> <LPAREN> Expression () <RPAREN> Statement ()
+	// for ( SIMPLE ; EXPRESSION ; SIMPLE ) STATEMENT
+	|	<FOR> <LPAREN> [ Simple () ] <SEMICOLON> Expression () <SEMICOLON> [ Simple () ] <RPAREN> Statement ()
+	// return EXPRESSION ;
+	|	<RETURN> [ Expression () ] <SEMICOLON>
+	// assert ( EXPRESSION ) ;
+	|	<ASSERT> <LPAREN> Expression () <RPAREN> <SEMICOLON>
+	// error ( EXPRESSION ) ;
+	|	<ERROR> <LPAREN> Expression () <RPAREN> <SEMICOLON>
 }
 
-void MemberAccess() : {}
+void Simple () : {}
 {
-	<ID>
-	|	MemberAccess() <DOT> <ID>
-	|	MemberAccess() <ASSIGN> <ID>
-	|	<STAR> MemberAccess()
-	|	MemberAccess() [ Expression() ]
-	|	<LPAREN> MemberAccess() <RPAREN>
+	LOOKAHEAD(4)
+	MemberAccess () <ASNOP> Expression ()
+	|	LOOKAHEAD(MemberAccess () <PLUSPLUS>) MemberAccess () <PLUSPLUS>
+	| LOOKAHEAD(MemberAccess () <MINUSMINUS>)	MemberAccess () <MINUSMINUS>
+	|	Expression ()
+	|	Type () <ID> [ <EQUALS> Expression () ]
 }
 
-void Type() : {} 
+void MemberAccess () : {}
 {
-	<INT>
+		<ID>
+	|	<STAR> MemberAccess ()
+	|	<LPAREN> MemberAccess () <RPAREN>
+	// |	MemberAccess() <DOT> <ID>
+	// |	MemberAccess() <ASSIGN> <ID>
+	// |	MemberAccess() [ Expression() ]
+}
+
+
+void Type() : {}
+{
+		<INT>
 	|	<BOOLEAN>
 	|	<STRING>
 	|	<CHAR>
 	|	<VOID>
-	|	(<INT> | <BOOLEAN> | <STRING> | <CHAR> | <VOID> | <STRUCT> <ID> | 
-		(<INT> | <BOOLEAN> | <STRING> | <CHAR> | <VOID> | <STRUCT> <ID>) <LBRACKET> <RBRACKET>) <STAR>
-
-	|	(<INT> | <BOOLEAN> | <STRING> | <CHAR> | <VOID> | <STRUCT> <ID> ) <STAR>
-		(<INT> | <BOOLEAN> | <STRING> | <CHAR> | <VOID> | <STRUCT> <ID>) <LBRACKET> <RBRACKET>
-
 	|	<STRUCT> <ID>
-	// |	<##aid>
+	// |	Type () <STAR>
+	// |	Type () <LBRACKET> <RBRACKET>
 }
 
 void Expression() : {}
 {
-	<LBRACE> Expression() <RBRACE>
+		<LBRACE> Expression () <RBRACE>
 	|	<NUM>
-	// |	<##strlit>
-	// |	<##chrlit>
 	|	<TRUE>
 	|	<FALSE>
 	|	<NULL>
-	|	<ID>
-	|	Expression() <BINOP> Expression()
-	| <UNOP> Expression() 
-	| Expression() <QUESTION> Expression() <COLON> Expression()
-	| <ID> <LPAREN> [ Expression() ( <COMMA> Expression() )* ] <RPAREN>
-	| Expression() <DOT> <ID>
-	| Expression() <ASSIGN> <ID>
-	| Expression() <LBRACKET> Expression() <RBRACKET>
-	| <ALLOC> <LPAREN> Type() <RPAREN>
-	| <ALLOC_ARR> <LPAREN> Type() <SEMICOLON> Expression() <RPAREN>
+	|	LOOKAHEAD(2) <ID>
+	// name ( EXPRESSION , EXPRESSION )
+	| <ID> <LPAREN> [ Expression () ( <COMMA> Expression () )* ] <RPAREN>
+	// - EXPRESSION
+	| <UNOP> Expression ()
+	// alloc ( int )
+	| <ALLOC> <LPAREN> Type () <RPAREN>
+	// alloc_arr ( int , EXPRESSION )
+	| <ALLOC_ARR> <LPAREN> Type () <COMMA> Expression () <RPAREN>
 
+	// |	<##strlit>
+	// |	<##chrlit>
+	// |	Expression() <BINOP> Expression()
+	// | Expression() <QUESTION> Expression() <COLON> Expression()
+	// | Expression() <DOT> <ID>
+	// | Expression() <ASSIGN> <ID>
+	// | Expression() <LBRACKET> Expression() <RBRACKET>
 }
-
-///////////////////////////////////////////
-/*
-	void Method() : {} 
-	{
-		MethodType() <ID> "(" Params() ")" "{" ExecutionContext() "}"
-	}
-
-	void MethodType() : {}
-	{
-		<VOID> | <INT> | <BOOLEAN> | <STRING> | <CHAR>
-	}
-
-	void VariableType() : {}
-	{
-		(<INT> | <BOOLEAN> | <STRING> | <CHAR>) ["[" "]"]
-	}
-
-	void Params() : {}
-	{
-		[ParamsType() <ID> ("," ParamsType() <ID>)*]
-	}
-
-	void ParamsType() : {}
-	{
-		(<INT> | <CHAR> | <STRING> | <BOOLEAN>) ("[" "]")*
-	}
-
-	void ExecutionContext() : {}
-	{
-		(<ID>)*
-	}
-*/

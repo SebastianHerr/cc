@@ -1,3 +1,10 @@
-int test(int a, string s) {
-    lol
+#use "test"
+void lol(int test);
+void lol(int test);
+void loasdf(/*
+
+asdfasdf*/int x) {
+    int x = 4;
 }
+void lol(int test);
+void lol(int test);
