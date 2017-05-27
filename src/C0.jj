@@ -22,13 +22,12 @@ SKIP : { " " | "\t" | "\n" | "\r" | "\r\n" | "/*" : IN_COMMENT }
 
 // Keywords
 TOKEN : {
-	< INT:        	"int" >
+		< INT:        "int" >
 	| < BOOLEAN:    "bool" >
 	| < STRING:     "string" >
 	| < CHAR:       "char" >
 	| < VOID:       "void" >
 	| < STRUCT:     "struct" >
-	| < TYPEDEF:    "typedef" >
 	| < IF:         "if" >
 	| < ELSE:       "else" >
 	| < WHILE:      "while" >
@@ -48,7 +47,7 @@ TOKEN : {
 
 // Separators
 TOKEN : {
-	< LPAREN: "(" >
+		< LPAREN: "(" >
 	| < RPAREN: ")" >
 	| < LBRACE: "{" >
 	| < RBRACE: "}" >
@@ -65,10 +64,8 @@ TOKEN : {
 // Operators
 TOKEN : {
 	< STAR: "*" >
-  | < PLUSPLUS: "++">
-  | < MINUSMINUS: "--">
   | < EQUALS: "=">
-  | < ASSIGN: "->">
+  | < POINTERACCESS: "->">
   | < QUESTION: "?">
 	| < DOT: "." >
 }
@@ -79,10 +76,10 @@ TOKEN : {
 	|	< #LETTER: ["$","A"-"Z","a"-"z","_"] >
 	|	< #ALPHANUM: ["$","A"-"Z","a"-"z","0"-"9","_"] >
 	|	< NUM: <DECNUM> | <HEXNUM> >
-	|	< DECNUM: "0" | ["1"-"9"](["1"-"9"])* >
+	|	< DECNUM: "0" | ["1"-"9"] (["1"-"9"])* >
 	|	< HEXNUM: "0" ("x" | "X") (["0"-"9","a"-"f","A"-"F"])+ >
 	|	< UNOP: "!" | "~" | "-" | "*" >
-	|	< BINOP: "." | "->" | "*" | "/" | "%" | "+" | "-" | "<<" | ">>" | "<" | "<=" | ">=" | ">" | "==" | "!=" | "&" | "^" | "|" | "&&" | "||" | "?" | ":" >
+	|	< BINOP:  "*" | "/" | "%" | "+" | "-" | "<<" | ">>" | "<" | "<=" | ">=" | ">" | "==" | "!=" | "&" | "^" | "|" | "&&" | "||" >
 	|	< ASNOP: "=" | "+=" | "-=" | "*=" | "/=" | "%=" | "<<=" | ">>=" | "&=" | "^=" | "|=" >
 	|	< POSTOP: "--" | "++" >
 }
@@ -90,110 +87,112 @@ TOKEN : {
 void Program () : {}
 {
 	( Import () )*
-	( LOOKAHEAD(7) Declaration () | Definition () )*
+	( LOOKAHEAD( Declaration() ) Declaration () )*
+	( LOOKAHEAD( Definition() ) Definition () )*
 }
 
+/**
+ * [ ] <EOL> missing, because skipped...
+ */
 void Import () : {}
 {
-	LOOKAHEAD(2)
-		// use < name > \n
-		<USE> <LWICKET> <ID> <RWICKET>
-		// use " name " \n
+		LOOKAHEAD(2) <USE> <LWICKET> <ID> <RWICKET>
 	| <USE> <QUOTE> <ID> <QUOTE>
 }
 
 void Declaration () : {}
 {
-	LOOKAHEAD(3)
-		// struct name ;
-		<STRUCT> <ID> <SEMICOLON>
-		// int name ( int name1, int name2 ) ;
+		LOOKAHEAD(3) <STRUCT> <ID> <SEMICOLON>
 	|	Type () <ID> <LPAREN> [ Type () <ID> ( <COMMA> Type () <ID> )* ] <RPAREN> <SEMICOLON>
 }
 
 void Definition () : {}
 {
-	// struct name { int name1 ; int name2 } ;
-	LOOKAHEAD(3) <STRUCT> <ID> <LBRACE> ( Type () <ID> <SEMICOLON> )* <RBRACE> <SEMICOLON>
-	// int name ( int name1 , int name2 ) { STATEMENT* }
+		LOOKAHEAD(3) <STRUCT> <ID> <LBRACE> ( Type () <ID> <SEMICOLON> )* <RBRACE> <SEMICOLON>
 	|	Type () <ID> <LPAREN> [ Type () <ID> ( <COMMA> Type () <ID> )* ] <RPAREN> <LBRACE> ( Statement () )* <RBRACE>
 }
 
 void Statement () : {}
 {
-	// ;
-		<SEMICOLON>
-	// name ++ ;  													// { STATEMENT* }
-	|	( LOOKAHEAD(2) Simple () <SEMICOLON> |	<LBRACE> ( Statement () )* <RBRACE> )
-	// if ( EXPRESSION ) STATEMENT else STATEMENT
-	|	<IF> <LPAREN> Expression () <RPAREN> Statement () [ LOOKAHEAD(2) <ELSE> Statement () ]
-	// while ( EXPRESSION ) STATEMENT
+		<IF> <LPAREN> Expression () <RPAREN> Statement () [ LOOKAHEAD(2) <ELSE> Statement () ]
 	|	<WHILE> <LPAREN> Expression () <RPAREN> Statement ()
-	// for ( SIMPLE ; EXPRESSION ; SIMPLE ) STATEMENT
 	|	<FOR> <LPAREN> [ Simple () ] <SEMICOLON> Expression () <SEMICOLON> [ Simple () ] <RPAREN> Statement ()
-	// return EXPRESSION ;
 	|	<RETURN> [ Expression () ] <SEMICOLON>
-	// assert ( EXPRESSION ) ;
 	|	<ASSERT> <LPAREN> Expression () <RPAREN> <SEMICOLON>
-	// error ( EXPRESSION ) ;
 	|	<ERROR> <LPAREN> Expression () <RPAREN> <SEMICOLON>
+	| LOOKAHEAD(3) <LBRACE> ( Statement () )* <RBRACE>
+
+	|	LOOKAHEAD(3) Simple () <SEMICOLON>
 }
 
 void Simple () : {}
 {
-	LOOKAHEAD(4)
-	MemberAccess () <ASNOP> Expression ()
-	|	LOOKAHEAD(MemberAccess () <PLUSPLUS>) MemberAccess () <PLUSPLUS>
-	| LOOKAHEAD(MemberAccess () <MINUSMINUS>)	MemberAccess () <MINUSMINUS>
-	|	Expression ()
-	|	Type () <ID> [ <EQUALS> Expression () ]
+		Type () <ID> [ <EQUALS> Expression () ]
+	|	LOOKAHEAD(3) MemberAccess () <ASNOP> Expression ()
+	|	LOOKAHEAD(3) MemberAccess () <POSTOP>
+	|	LOOKAHEAD(3) Expression ()
 }
 
 void MemberAccess () : {}
 {
-		<ID>
-	|	<STAR> MemberAccess ()
-	|	<LPAREN> MemberAccess () <RPAREN>
-	// |	MemberAccess() <DOT> <ID>
-	// |	MemberAccess() <ASSIGN> <ID>
-	// |	MemberAccess() [ Expression() ]
+	(	
+			<ID>
+		|	<STAR> <ID>
+		|	<LPAREN> MemberAccess () <RPAREN>
+	)
+	[
+			<DOT> <ID>
+		|	<POINTERACCESS> <ID>
+	]
 }
 
-
-void Type() : {}
+void Type () : {}
 {
-		<INT>
-	|	<BOOLEAN>
-	|	<STRING>
-	|	<CHAR>
-	|	<VOID>
-	|	<STRUCT> <ID>
-	// |	Type () <STAR>
-	// |	Type () <LBRACKET> <RBRACKET>
+	(	
+			<INT> 
+		| <BOOLEAN> 
+		| <STRING> 
+		| <CHAR> 
+		| <VOID> 
+		| <STRUCT> <ID> 
+	) 
+	[
+		<STAR>
+		| <LBRACKET> <RBRACKET>
+	]
 }
 
-void Expression() : {}
-{
-		<LBRACE> Expression () <RBRACE>
-	|	<NUM>
-	|	<TRUE>
-	|	<FALSE>
-	|	<NULL>
-	|	LOOKAHEAD(2) <ID>
-	// name ( EXPRESSION , EXPRESSION )
-	| <ID> <LPAREN> [ Expression () ( <COMMA> Expression () )* ] <RPAREN>
-	// - EXPRESSION
-	| <UNOP> Expression ()
-	// alloc ( int )
-	| <ALLOC> <LPAREN> Type () <RPAREN>
-	// alloc_arr ( int , EXPRESSION )
-	| <ALLOC_ARR> <LPAREN> Type () <COMMA> Expression () <RPAREN>
+void Expression () : {}
+{	
+	(
+			<LPAREN> Expression () <RPAREN>
+		|	<NUM>
+		|	<TRUE>
+		|	<FALSE>
+		|	<NULL>
+		|	LOOKAHEAD(2) <ID>
+		| <ID> <LPAREN> [ Expression () ( <COMMA> Expression () )* ] <RPAREN>
+		|	<LBRACE> Expression () <RBRACE>
+		| <UNOP> Expression ()
+		| <ALLOC> <LPAREN> Type () <RPAREN>
+		| <ALLOC_ARR> <LPAREN> Type () <COMMA> Expression () <RPAREN>
+	)
+	[
+		LOOKAHEAD(2) LeftRecursionExpression () 
+	]
+}
 
-	// |	<##strlit>
-	// |	<##chrlit>
-	// |	Expression() <BINOP> Expression()
-	// | Expression() <QUESTION> Expression() <COLON> Expression()
-	// | Expression() <DOT> <ID>
-	// | Expression() <ASSIGN> <ID>
-	// | Expression() <LBRACKET> Expression() <RBRACKET>
+void LeftRecursionExpression () : {}
+{
+	(
+			<QUESTION> Expression () <COLON> Expression ()
+		| <BINOP> Expression ()
+		| <POSTOP>
+		| <DOT> <ID>
+		| <POINTERACCESS> <ID>
+		| <LBRACE> Expression () <RBRACKET>
+	)
+	[
+		LOOKAHEAD(2) Expression ()
+	]
 }
