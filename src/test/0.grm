@@ -1,10 +1,30 @@
-#use "test"
-void lol(int test);
-void lol(int test);
-void loasdf(/*
+(hallo.test.testhallo.test)->lol;
 
-asdfasdf*/int x) {
-    int x = 4;
+
+
+
+
+/*int lolfunction(int x, int y) {
+    if(x) {
+        y;
+    } else {
+        z;
+        {
+            z;
+        }
+        int z = 3;
+        (z);
+        z++;
+        (z);
+        y = 4;
+    }
+
+    {
+        {
+            asdf;
+        }
+    }
 }
-void lol(int test);
-void lol(int test);
+
+*/
+
