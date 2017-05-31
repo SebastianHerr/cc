@@ -2,12 +2,23 @@ PARSER_BEGIN(C0)
 
 public class C0 {
 	public static void main(String args[]) {
-		try {
-      C0 parser = new C0(new java.io.FileInputStream(new java.io.File(args[0])));
-			parser.Init();
-		} catch (Exception ex) {
-			System.out.println(ex.getMessage());
-		}
+    C0 parser;
+    if (args.length == 1) {
+      try {
+        System.out.println("C0 Parser -- reading from file\n");
+        parser = new C0(new java.io.FileInputStream(new java.io.File(args[0])));
+        parser.Init();
+      } catch (Exception ex) {
+        System.out.println(ex.getMessage());
+      }
+    }
+    else if (args.length == 0) {
+      System.out.println("C0 Parser -- standard input\n");
+      parser = new C0(System.in);
+    }
+    else {
+      System.out.println("Usage: java C0 <inputfile>\n");
+    }
 	}
 }
 
@@ -52,8 +63,8 @@ TOKEN :
     |   < NUM: <DECNUM> | <HEXNUM> >
     |   < DECNUM: "0" | ["1"-"9"](["1"-"9"])* >
     |   < HEXNUM: "0" ("x" | "X") (["0"-"9","a"-"f","A"-"F"])+ >
-    |   < SEP: "(" | ")" | "[" | "]" | "{" | "}" | "," | ";" >
-    |   < UNOP: "!" | "~" | "-" | "*" >
+//    |   < SEP: "(" | ")" | "[" | "]" | "{" | "}" | "," | ";" >
+//    |   < UNOP: "!" | "~" | "-" | "*" >
     |   < BINOP: "." | "->" | "*" | "/" | "%" | "+" | "-" | "<<" | ">>" | "<" | "<=" | ">=" | ">" | "==" | "!=" | "&" | "^" | "|" | "&&" | "||" | "?" | ":" >
     |   < EQOP: "<" | "<=" | ">=" | ">" | "==" | "!=" | "&&" | "||" >
     |   < CONCATOP: "&&" | "||" >
@@ -106,10 +117,10 @@ void Conditional() :
 void EvaluationExpression() :
 {}
 {
-      OperandType() [ <EQOP> OperandType() [ <CONCATOP> ( OperandType() <EQOP> OperandType() )* ] ]
+      Operand() [ <EQOP> Operand() [ <CONCATOP> ( Operand() <EQOP> Operand() )* ] ]
 }
 
-void OperandType() :
+void Operand() :
 {}
 {
       ["!"]<ID>
