@@ -1,95 +1,212 @@
+options
+{
+	LOOKAHEAD=1001;
+	FORCE_LA_CHECK=false;
+}
+
 PARSER_BEGIN(C0)
 public class C0 {
 	public static void main(String args[]) throws ParseException {
-        new C0(System.in).Init();
+		new C0(System.in).Program();
 	}
 }
 PARSER_END(C0)
 
 // Whitespace separates tokens, but is otherwise ignored. Other control (non-printing) characters in the input constitute an error.
-SKIP : { " " }
+SKIP : { " " | "\t" }
 
 // Keywords
-TOKEN :
-{
-      < INT:        "int" >
-    | < BOOLEAN:    "bool" >
-    | < STRING:     "string" >
-    | < CHAR:       "char" >
-    | < VOID:       "void" >
-    | < STRUCT:     "struct" >
-    | < TYPEDEF:    "typedef" >
-    | < IF:         "if" >
-    | < ELSE:       "else" >
-    | < WHILE:      "while" >
-    | < FOR:        "for" >
-    | < CONTINUE:   "continue" >
-    | < BREAK:      "break" >
-    | < RETURN:     "return" >
-    | < ASSERT:     "assert" >
-    | < TRUE:       "true" >
-    | < FALSE:      "false" >
-    | < NULL:       "NULL" >
-    | < ALLOC:      "alloc" >
-    | < ALLOC_ARR:  "alloc_array" >
+TOKEN : {
+	< INT:        	"int" >
+	| < BOOLEAN:    "bool" >
+	| < STRING:     "string" >
+	| < CHAR:       "char" >
+	| < VOID:       "void" >
+	| < STRUCT:     "struct" >
+	| < TYPEDEF:    "typedef" >
+	| < IF:         "if" >
+	| < ELSE:       "else" >
+	| < WHILE:      "while" >
+	| < FOR:        "for" >
+	| < CONTINUE:   "continue" >
+	| < BREAK:      "break" >
+	| < RETURN:     "return" >
+	| < ASSERT:     "assert" >
+	| < TRUE:       "true" >
+	| < FALSE:      "false" >
+	| < NULL:       "NULL" >
+	| < ALLOC:      "alloc" >
+  | < ALLOC_ARR:  "alloc_array" >
+  | < USE:  			"#use" >
+  | < ERROR:  		"error" >
+}
+
+// Separators
+TOKEN : {
+	< LPAREN: "(" >
+	| < RPAREN: ")" >
+	| < LBRACE: "{" >
+	| < RBRACE: "}" >
+	| < LBRACKET: "[" >
+  | < RBRACKET: "]" >
+  | < LWICKET: "<" >
+  | < RWICKET: ">" >
+  | < QUOTE: "\"" >
+  | < COLON: ":" >
+  | < SEMICOLON: ";" >
+	| < COMMA: "," >
+	| < DOT: "." >
+	| < EOL: "\n" | "\r" | "\r\n" >
+}
+
+// Operators
+TOKEN : {
+	< STAR: "*" >
+  | < PLUSPLUS: "++">
+  | < MINUSMINUS: "--">
+  | < EQUALS: "=">
+  | < ASSIGN: "->">
+  | < QUESTION: "?">
 }
 
 // Lexical Tokens
-TOKEN :
-{
-        < ID: <LETTER> ( <ALPHANUM> )* >
-    |   < #LETTER: ["$","A"-"Z","a"-"z","_"] >
-    |   < #ALPHANUM: ["$","A"-"Z","a"-"z","0"-"9","_"] >
-    |   < NUM: <DECNUM> | <HEXNUM> >
-    |   < DECNUM: "0" | ["1"-"9"](["1"-"9"])* >
-    |   < HEXNUM: "0" ("x" | "X") (["0"-"9","a"-"f","A"-"F"])+ >
-    // |   < STRLIT: "\"" (<SCHAR>)* "\"" >
-    // |   < CHRLIT: "'" <CCHAR> "'" >
-    // |   < LIBLIT: "<" (<LCHAR>)* ">" >
-    // |   < SCHAR: <NCHAR> | <ESC> >
-    // |   < CCHAR: <NCHAR> | <ESC> | "\"" | "\0" >
-    // |   < NCHAR: (~["\""])+ >
-    // |   < LCHAR: (~[">"])+ >
-    // |   < ESC: "\n" | "\t" | "\\v" | "\b" | "\r" | "\f" | "\\a" | "\\" | "\'" | "\"" >
-    // |   < SEP: "(" | ")" | "[" | "]" | "{" | "}" | "," | ";" >
-    |   < UNOP: "!" | "~" | "-" | "*" >
-    |   < BINOP: "." | "->" | "*" | "/" | "%" | "+" | "-" | "<<" | ">>" | "<" | "<=" | ">=" | ">" | "==" | "!=" | "&" | "^" | "|" | "&&" | "||" | "?" | ":" >
-    |   < ASNOP: "=" | "+=" | "-=" | "*=" | "/=" | "%=" | "<<=" | ">>=" | "&=" | "^=" | "|=" >
-    |   < POSTOP: "--" | "++" >
+TOKEN : {
+	< ID: <LETTER> ( <ALPHANUM> )* >
+	|	< #LETTER: ["$","A"-"Z","a"-"z","_"] >
+	|	< #ALPHANUM: ["$","A"-"Z","a"-"z","0"-"9","_"] >
+	|	< NUM: <DECNUM> | <HEXNUM> >
+	|	< DECNUM: "0" | ["1"-"9"](["1"-"9"])* >
+	|	< HEXNUM: "0" ("x" | "X") (["0"-"9","a"-"f","A"-"F"])+ >
+	// | < STRLIT: "\"" (<SCHAR>)* "\"" >
+	// |   < CHRLIT: "'" <CCHAR> "'" >
+	// |   < LIBLIT: "<" (<LCHAR>)* ">" >
+  // |   < SCHAR: <NCHAR> | <ESC> >
+	// |   < CCHAR: <NCHAR> | <ESC> | "\"" | "\0" >
+	// |   < NCHAR: (~["\""])+ >
+	// |   < LCHAR: (~[">"])+ >
+	// |   < ESC: "\n" | "\t" | "\\v" | "\b" | "\r" | "\f" | "\\a" | "\\" | "\'" | "\"" >
+	// |   < SEP: "(" | ")" | "[" | "]" | "{" | "}" | "," | ";" >
+	 |	< UNOP: "!" | "~" | "-" | "*" >
+	 |	< BINOP: "." | "->" | "*" | "/" | "%" | "+" | "-" | "<<" | ">>" | "<" | "<=" | ">=" | ">" | "==" | "!=" | "&" | "^" | "|" | "&&" | "||" | "?" | ":" >
+	 |	< ASNOP: "=" | "+=" | "-=" | "*=" | "/=" | "%=" | "<<=" | ">>=" | "&=" | "^=" | "|=" >
+	// |	< POSTOP: "--" | "++" >
 }
 
-void Init() : 
-{}
+void Program() : {}
 {
-    Method() <EOF>
+	( Declaration() | Definition() )* <EOF>
 }
 
-void Method() : {} 
+void Declaration() : {}
 {
-    MethodType() <ID> "(" Params() ")" "{" ExecutionContext() "}"
+	<STRUCT> <ID> <SEMICOLON>
+	|	Type() <ID> <LPAREN> [ Type() <ID> ( <COMMA> Type() <ID> )* ] <RPAREN> <SEMICOLON>
+	| <USE> <LWICKET> <ID> <RWICKET> <EOL>
+	| <USE> <QUOTE> <ID> <QUOTE> <EOL>
 }
 
-void MethodType() : {}
+void Definition() : {}
 {
-    <VOID> | <INT> | <BOOLEAN> | <STRING> | <CHAR>
+	<STRUCT> <ID> <LBRACE> ( Type() <ID> )* <RBRACE> <SEMICOLON>
+	|	Type() <ID> <LPAREN> [ Type() <ID> (<COMMA> Type() <ID>)* ] <RPAREN> <LBRACE> ( Statement() )* <RBRACE>
+	//| "typedef" Type() <##aid> // C0--
 }
 
-void VariableType() : {}
+void Statement() : {}
 {
-    (<INT> | <BOOLEAN> | <STRING> | <CHAR>) ["[" "]"]
+	Simple() <SEMICOLON>
+	|	<IF> <LPAREN> Expression() <RPAREN> Statement() [ <ELSE> Statement() ]
+	|	<WHILE> <LPAREN> Expression() <RPAREN> Statement()
+	|	<FOR> <LPAREN> [ Simple() ] <SEMICOLON> Expression() <SEMICOLON> [ Simple() ] <RPAREN> Statement()
+	|	<RETURN> [ Expression() ]
+	|	<LBRACE> ( Statement() )* <RBRACE>
+	|	<ASSERT> <LPAREN> Expression() <RPAREN> <SEMICOLON>
+	|	<ERROR> <LPAREN> Expression() <RPAREN> <SEMICOLON>
 }
 
-void Params() : {}
+void Simple() : {}
 {
-    [ParamsType() <ID> ("," ParamsType() <ID>)*]
+	MemberAccess() <ASNOP> Expression()
+	|	MemberAccess() <PLUSPLUS>
+	|	MemberAccess() <MINUSMINUS>
+	|	Expression()
+	|	Type() <ID> [ <EQUALS> Expression() ]
 }
 
-void ParamsType() : {}
+void MemberAccess() : {}
 {
-    (<INT> | <CHAR> | <STRING> | <BOOLEAN>) ("[" "]")*
+	<ID>
+	|	MemberAccess() <DOT> <ID>
+	|	MemberAccess() <ASSIGN> <ID>
+	|	<STAR> MemberAccess()
+	|	MemberAccess() [ Expression() ]
+	|	<LPAREN> MemberAccess() <RPAREN>
 }
 
-void ExecutionContext() : {}
+void Type() : {} 
 {
-    (<ID>)*
+	<INT>
+	|	<BOOLEAN>
+	|	<STRING>
+	|	<CHAR>
+	|	<VOID>
+	|	Type() <STAR>
+	|	Type() <LBRACKET> <RBRACKET>
+	|	<STRUCT> <ID>
+	// |	<##aid>
 }
+
+void Expression() : {}
+{
+	<LBRACE> Expression() <RBRACE>
+	|	<NUM>
+	// |	<##strlit>
+	// |	<##chrlit>
+	|	<TRUE>
+	|	<FALSE>
+	|	<NULL>
+	|	<ID>
+	|	Expression() <BINOP> Expression()
+	| <UNOP> Expression() 
+	| Expression() <QUESTION> Expression() <COLON> Expression()
+	| <ID> <LPAREN> [ Expression() ( <COMMA> Expression() )* ] <RPAREN>
+	| Expression() <DOT> <ID>
+	| Expression() <ASSIGN> <ID>
+	| Expression() <LBRACKET> Expression() <RBRACKET>
+	| <ALLOC> <LPAREN> Type() <RPAREN>
+	| <ALLOC_ARR> <LPAREN> Type() <SEMICOLON> Expression() <RPAREN>
+
+}
+
+///////////////////////////////////////////
+/*
+	void Method() : {} 
+	{
+		MethodType() <ID> "(" Params() ")" "{" ExecutionContext() "}"
+	}
+
+	void MethodType() : {}
+	{
+		<VOID> | <INT> | <BOOLEAN> | <STRING> | <CHAR>
+	}
+
+	void VariableType() : {}
+	{
+		(<INT> | <BOOLEAN> | <STRING> | <CHAR>) ["[" "]"]
+	}
+
+	void Params() : {}
+	{
+		[ParamsType() <ID> ("," ParamsType() <ID>)*]
+	}
+
+	void ParamsType() : {}
+	{
+		(<INT> | <CHAR> | <STRING> | <BOOLEAN>) ("[" "]")*
+	}
+
+	void ExecutionContext() : {}
+	{
+		(<ID>)*
+	}
+*/
