@@ -22,75 +22,118 @@ SKIP : { " " | "\t" | "\n" | "\r" | "\r\n" | "/*" : IN_COMMENT }
 
 // Keywords
 TOKEN : {
-		< INT:        "int" >
-	| < BOOLEAN:    "bool" >
-	| < STRING:     "string" >
-	| < CHAR:       "char" >
-	| < VOID:       "void" >
-	| < STRUCT:     "struct" >
-	| < IF:         "if" >
-	| < ELSE:       "else" >
-	| < WHILE:      "while" >
-	| < FOR:        "for" >
-	| < CONTINUE:   "continue" >
-	| < BREAK:      "break" >
-	| < RETURN:     "return" >
-	| < ASSERT:     "assert" >
-	| < TRUE:       "true" >
-	| < FALSE:      "false" >
-	| < NULL:       "NULL" >
-	| < ALLOC:      "alloc" >
-  | < ALLOC_ARR:  "alloc_array" >
-  | < USE:  			"#use" >
-  | < ERROR:			"error" >
+	< INT:        "int" >
+	| 
+	< BOOLEAN:    "bool" >
+	| 
+	< STRING:     "string" >
+	| 
+	< CHAR:       "char" >
+	| 
+	< VOID:       "void" >
+	| 
+	< STRUCT:     "struct" >
+	| 
+	< IF:         "if" >
+	| 
+	< ELSE:       "else" >
+	| 
+	< WHILE:      "while" >
+	| 
+	< FOR:        "for" >
+	| 
+	< CONTINUE:   "continue" >
+	| 
+	< BREAK:      "break" >
+	| 
+	< RETURN:     "return" >
+	| 
+	< ASSERT:     "assert" >
+	| 
+	< TRUE:       "true" >
+	| 
+	< FALSE:      "false" >
+	| 
+	< NULL:       "NULL" >
+	| 
+	< ALLOC:      "alloc" >
+  | 
+	< ALLOC_ARR:  "alloc_array" >
+  | 
+	< USE:  			"#use" >
+  | 
+	< ERROR:			"error" >
 }
 
 // Separators
-TOKEN : {
-		< LPAREN: "(" >
-	| < RPAREN: ")" >
-	| < LBRACE: "{" >
-	| < RBRACE: "}" >
-	| < LBRACKET: "[" >
-  | < RBRACKET: "]" >
-  | < LWICKET: "<" >
-  | < RWICKET: ">" >
-  | < QUOTE: "\"" >
-  | < COLON: ":" >
-  | < SEMICOLON: ";" >
-	| < COMMA: "," >
+TOKEN : {	
+	< LPAREN: "(" >
+	| 
+	< RPAREN: ")" >
+	| 
+	< LBRACE: "{" >
+	| 
+	< RBRACE: "}" >
+	| 
+	< LBRACKET: "[" >
+  | 
+	< RBRACKET: "]" >
+  | 
+	< LWICKET: "<" >
+  | 
+	< RWICKET: ">" >
+  | 
+	< QUOTE: "\"" >
+  | 
+	< COLON: ":" >
+  | 
+	< SEMICOLON: ";" >
+	| 
+	< COMMA: "," >
 }
 
 // Operators
 TOKEN : {
 	< STAR: "*" >
-  | < EQUALS: "=">
-  | < POINTERACCESS: "->">
-  | < QUESTION: "?">
-	| < DOT: "." >
+  | 
+	< EQUALS: "=">
+  | 
+	< POINTERACCESS: "->">
+  | 
+	< QUESTION: "?">
+	| 
+	< DOT: "." > {System.out.println(image);}
 }
 
 // Lexical Tokens
 TOKEN : {
-	< ID: <LETTER> ( <ALPHANUM> )* >
-	|	< #LETTER: ["$","A"-"Z","a"-"z","_"] >
-	|	< #ALPHANUM: ["$","A"-"Z","a"-"z","0"-"9","_"] >
-	|	< NUM: <DECNUM> | <HEXNUM> >
-	|	< DECNUM: "0" | ["1"-"9"] (["1"-"9"])* >
-	|	< HEXNUM: "0" ("x" | "X") (["0"-"9","a"-"f","A"-"F"])+ >
-	|	< UNOP: "!" | "~" | "-" | "*" >
-	|	< BINOP:  "*" | "/" | "%" | "+" | "-" | "<<" | ">>" | "<" | "<=" | ">=" | ">" | "==" | "!=" | "&" | "^" | "|" | "&&" | "||" >
-	|	< ASNOP: "=" | "+=" | "-=" | "*=" | "/=" | "%=" | "<<=" | ">>=" | "&=" | "^=" | "|=" >
-	|	< POSTOP: "--" | "++" >
+	< ID: <LETTER> ( <ALPHANUM> )* > { System.out.println(image);}
+	|	
+	< #LETTER: ["$","A"-"Z","a"-"z","_"] >
+	|	
+	< #ALPHANUM: ["$","A"-"Z","a"-"z","0"-"9","_"] >
+	|
+	< NUM: <DECNUM> | <HEXNUM> >
+	|	
+	< DECNUM: "0" | ["1"-"9"] (["1"-"9"])* >
+	|
+	< HEXNUM: "0" ("x" | "X") (["0"-"9","a"-"f","A"-"F"])+ >
+	|
+	< UNOP: "!" | "~" | "-" | "*" >
+	|
+	< BINOP:  "*" | "/" | "%" | "+" | "-" | "<<" | ">>" | "<" | "<=" | ">=" | ">" | "==" | "!=" | "&" | "^" | "|" | "&&" | "||" >
+	|	
+	< ASNOP: "=" | "+=" | "-=" | "*=" | "/=" | "%=" | "<<=" | ">>=" | "&=" | "^=" | "|=" >
+	|	
+	< POSTOP: "--" | "++" >
 }
 
 void Program () : {}
 {
-	Statement ()
+	Type ()
 	// ( Import () )*
 	// ( LOOKAHEAD(Declaration()) Declaration () )*
 	// ( LOOKAHEAD(Definition()) Definition () )*
-	// Definition ()
 }
 
 /**
@@ -125,28 +168,28 @@ void Statement () : {}
 	LOOKAHEAD(Simple () <SEMICOLON>) Simple () <SEMICOLON>
 	|
 	<IF> <LPAREN> Expression () <RPAREN> Statement () [ LOOKAHEAD(2) <ELSE> Statement () ]
-	|	
+	|
 	<WHILE> <LPAREN> Expression () <RPAREN> Statement ()
-	|	
+	|
 	<FOR> <LPAREN> [ Simple () ] <SEMICOLON> Expression () <SEMICOLON> [ Simple () ] <RPAREN> Statement ()
-	|	
+	|
 	<RETURN> [ Expression () ] <SEMICOLON>
-	|	
+	|
 	<ASSERT> <LPAREN> Expression () <RPAREN> <SEMICOLON>
-	|	
+	|
 	<ERROR> <LPAREN> Expression () <RPAREN> <SEMICOLON>
-	| 
+	|
 	<LBRACE> ( Statement () )* <RBRACE>
 }
 
 void Simple () : {}
 {
 	LOOKAHEAD(Expression()) Expression ()
-  |	
+  |
 	LOOKAHEAD(3) MemberAccess () <ASNOP> Expression ()
-	|	
+	|
 	LOOKAHEAD(3) MemberAccess () <POSTOP>
-	|	
+	|
 	Type () <ID> [ <EQUALS> Expression () ]
 }
 
@@ -156,30 +199,27 @@ void MemberAccess () : {}
 	(
 		<ID>
 		|	
-		<STAR> <ID>
+		<STAR> MemberAccess ()
 		|	
 		<LPAREN> MemberAccess () <RPAREN>
 	)
-	(
-		<DOT> <ID>
-		|	
-		<POINTERACCESS> <ID>
-	)*
+	[ LOOKAHEAD(2) LeftRecursionMemberAccess () ]
+}
+
+void LeftRecursionMemberAccess () : {}
+{
+	<DOT> <ID> [ LOOKAHEAD(3) MemberAccess () ]
+	|	
+	<POINTERACCESS> <ID> [ LOOKAHEAD(3) MemberAccess () ]
+	|
+	Expression () [ LOOKAHEAD(3) MemberAccess () ]
 }
 
 // done
 void Type () : {}
 {
 	(	
-		<INT> 
-		| 
-		<BOOLEAN> 
-		| 
-		<STRING> 
-		| 
-		<CHAR> 
-		| 
-		<VOID> 
+		<INT> |	<BOOLEAN> | <STRING> | <CHAR> | <VOID> 
 		| 
 		<STRUCT> <ID>
 		// | <ID> // used for typedef C0--
@@ -194,45 +234,49 @@ void Type () : {}
 void Expression () : {}
 {	
 	(
-			<LPAREN> Expression () <RPAREN>
-		|	<LBRACE> Expression () <RBRACE>
-		| <UNOP> Expression ()
-		|	<NUM>
-		|	<TRUE>
-		|	<FALSE>
-		|	<NULL>
-		|	LOOKAHEAD(2) <ID>
-		| <ID> <LPAREN> [ Expression () ( <COMMA> Expression () )* ] <RPAREN>
-		| <ALLOC> <LPAREN> Type () <RPAREN>
-		| <ALLOC_ARR> <LPAREN> Type () <COMMA> Expression () <RPAREN>
+		LiteralBasedExpression ()
 	)
 	(
-		LOOKAHEAD(2) LeftRecursionExpression () 
+		LOOKAHEAD(2) LeftRecursionExpression ()
 	)*
+}
+
+void LiteralBasedExpression () : {}
+{
+	<NUM>	| <TRUE> | <FALSE> | <NULL>
+	|
+	LOOKAHEAD(2) <ID>
+	|
+	<ID> <LPAREN> [ Expression () ( <COMMA> Expression () )* ] <RPAREN>
+	|
+	<LPAREN> Expression () <RPAREN>
+	|
+	<LBRACE> Expression () <RBRACE>
+	|
+	<UNOP> Expression ()
+	|
+	<ALLOC> <LPAREN> Type () <RPAREN>
+	|
+	<ALLOC_ARR> <LPAREN> Type () <COMMA> Expression () <RPAREN>
 }
 
 void LeftRecursionExpression () : {}
 {
 	(
-			<LPAREN> Expression () <RPAREN>
-		|	<LBRACE> Expression () <RBRACE>
-		| <UNOP> Expression ()
-		|	<NUM>
-		|	<TRUE>
-		|	<FALSE>
-		|	<NULL>
-		|	LOOKAHEAD(2) <ID>
-		| <ID> <LPAREN> [ Expression () ( <COMMA> Expression () )* ] <RPAREN>
-		| <ALLOC> <LPAREN> Type () <RPAREN>
-		| <ALLOC_ARR> <LPAREN> Type () <COMMA> Expression () <RPAREN>
+		LiteralBasedExpression ()
 	)
 	|
 	(
-			<QUESTION> Expression () <COLON> Expression ()
-		| <BINOP> Expression ()
-		| <POSTOP>
-		| <DOT> <ID>
-		| <POINTERACCESS> <ID>
-		| <LBRACKET> Expression () <RBRACKET>
+		<QUESTION> Expression () <COLON> Expression ()
+		| 
+		<BINOP> Expression ()
+		| 
+		<POSTOP>
+		| 
+		<DOT> <ID>
+		| 
+		<POINTERACCESS> <ID>
+		| 
+		<LBRACKET> Expression () <RBRACKET>
 	)
 }
