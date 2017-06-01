@@ -2,7 +2,7 @@
 
 PARSER='C0'
 
-if [ ! -f "bin/" ]
+if [ ! -d "bin/" ]
 then
   mkdir bin
 fi
@@ -12,7 +12,7 @@ javac -d bin *.java
 
 echo -e "\n\e[1mBuilding completed. \e[0m \n"
 
-for testfile in test/*.grm
+for testfile in test/**/*.grm
 do
   echo -e "\e[1m$testfile:\e[0m"
   java -cp bin $PARSER $testfile

@@ -25,11 +25,11 @@
             | <tp> <vid> [= <exp>]
 
 <lv>        ::= <vid> 
+            | * <lv> 
+            | ( <lv> )
+            | <lv> [ <exp> ] 
             | <lv> . <fid> 
             | <lv> -> <fid> 
-            | * <lv> 
-            | <lv> [ <exp> ] 
-            | ( <lv> )
 
 <tp>        ::= int 
             | bool 
@@ -49,12 +49,12 @@
             | false 
             | NULL 
             | <vid> 
-            | <exp> <binop> <exp> 
-            | <unop> <exp> 
-            | <exp> ? <exp> : <exp> 
             | <vid> ( [<exp> (, <exp>)*] ) 
+            | <unop> <exp> 
+            | alloc ( <tp> ) 
+            | alloc_array ( <tp> , <exp> )
+            | <exp> <binop> <exp> 
+            | <exp> ? <exp> : <exp> 
             | <exp> . <fid> 
             | <exp> -> <fid> 
             | <exp> [ <exp> ] 
-            | alloc ( <tp> ) 
-            | alloc_array ( <tp> , <exp> )
