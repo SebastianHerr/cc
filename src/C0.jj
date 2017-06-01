@@ -1,5 +1,6 @@
 PARSER_BEGIN(C0)
 public class C0 {
+	static boolean x = true;
 	public static void main(String args[]) {
 		C0 parser;
 		try {
@@ -216,19 +217,37 @@ void LeftRecursionMemberAccess () : {}
 }
 
 // done
-void Type () : {}
+// void Type () : {}
+// {
+// 	(	
+// 		<INT> |	<BOOLEAN> | <STRING> | <CHAR> | <VOID> 
+// 		| 
+// 		<STRUCT> <ID>
+// 		// | <ID> // used for typedef C0--
+// 	)
+// 	(
+// 		<STAR>
+// 		| 
+// 		<LBRACKET> <RBRACKET>
+// 	)*
+// }
+void Type() : {}
 {
-	(	
-		<INT> |	<BOOLEAN> | <STRING> | <CHAR> | <VOID> 
-		| 
-		<STRUCT> <ID>
-		// | <ID> // used for typedef C0--
-	)
-	(
-		<STAR>
-		| 
-		<LBRACKET> <RBRACKET>
-	)*
+	<INT> TypeDash()
+	| <BOOLEAN> TypeDash()
+	| <STRING> TypeDash()
+	| <CHAR> TypeDash()
+	| <VOID> TypeDash()
+	| <STRUCT> <ID> TypeDash()
+	{
+		if(!x) System.out.println("fail");
+	}
+}
+
+void TypeDash() : {}
+{
+	<STAR> TypeDash()
+	|	<LBRACKET> <RBRACKET> TypeDash()
 }
 
 void Expression () : {}
