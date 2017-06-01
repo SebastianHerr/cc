@@ -233,21 +233,24 @@ void LeftRecursionMemberAccess () : {}
 // }
 void Type() : {}
 {
-	<INT> TypeDash()
-	| <BOOLEAN> TypeDash()
-	| <STRING> TypeDash()
-	| <CHAR> TypeDash()
-	| <VOID> TypeDash()
-	| <STRUCT> <ID> TypeDash()
-	{
-		if(!x) System.out.println("fail");
-	}
+	<INT> [ TypeDash() ]
+	|
+	<BOOLEAN> [ TypeDash() ]
+	|
+	<STRING> [ TypeDash() ]
+	|
+	<CHAR> [ TypeDash() ]
+	|
+	<VOID> [ TypeDash() ]
+	|
+	<STRUCT> <ID> [ TypeDash() ]
 }
 
 void TypeDash() : {}
 {
-	<STAR> TypeDash()
-	|	<LBRACKET> <RBRACKET> TypeDash()
+	<STAR> [ TypeDash() ]
+	|
+	<LBRACKET> <RBRACKET> [ TypeDash() ]
 }
 
 void Expression () : {}
