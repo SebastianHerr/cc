@@ -1,3 +1,14 @@
+/**
+ * C0-- Parser
+ * HS-Fulda - Compiler Constructions
+ *
+ * @author    Konstantin Ruppel
+ * @autor     Juergen Goebel
+ * @autor     Sebastian Herr
+ * 
+ * @date      2017/06/01
+ */
+
 options
 {
   DEBUG_PARSER = true;
@@ -24,14 +35,29 @@ public class C0 {
 }
 PARSER_END(C0)
 
-SKIP : { " " | "\t" | "\n" | "\r" | "\r\n" | "/*" : IN_COMMENT }
-<IN_COMMENT> MORE : {	<~[]> | "*/" : DEFAULT }
+SKIP : 
+{ 
+  " " | "\t" | "\f" | "\n" | "\r" | "\r\n"
+  |
+  "/*" : IN_ML_COMMENT
+}
+
+<IN_ML_COMMENT> SKIP :
+{
+  <~[]>
+  |
+  "*/" : DEFAULT
+}
+
+SPECIAL_TOKEN : 
+{
+  < "//" (~["\n","\r"])* ("\n" | "\r" | "\r\n") >
+}
 
 // Keywords
 TOKEN : {
 	< INT:        	"int" >
 	| < BOOLEAN:    "bool" >
-	| < STRING:     "string" >
 	| < CHAR:       "char" >
 	| < VOID:       "void" >
 	| < STRUCT:     "struct" >
@@ -47,36 +73,6 @@ TOKEN : {
   | < ALLOC_ARR:  "alloc_array" >
 }
 
-// Separators
-TOKEN : {
-	< LPAREN: "(" >
-	| < RPAREN: ")" >
-	| < LBRACE: "{" >
-	| < RBRACE: "}" >
-	| < LBRACKET: "[" >
-  | < RBRACKET: "]" >
-  | < LWICKET: "<" >
-  | < RWICKET: ">" >
-  | < COLON: ":" >
-  | < SEMICOLON: ";" >
-	| < COMMA: "," >
-	| < DOT: "." >
-	| < EOL: "\n" | "\r" | "\r\n" | "\f" >
-}
-
-// Operators
-TOKEN : {
-	< STAR: "*" >
-  | < PLUSPLUS: "++">
-  | < MINUSMINUS: "--">
-  | < EQUALS: "=">
-  | < ASSIGN: "->">
-  | < QUESTION: "?">
-  | < ASNOP: "=" | "+=" | "-=" | "*=" | "/=" | "%=" | "<<=" | ">>=" | "&=" | "^=" | "|=" >  
-  | < UNOP: "!" | "~" | "-" | "*" >
-}
-
-// Lexical Tokens
 TOKEN : {
 	< ID: <LETTER> ( <ALPHANUM> )* >
 	|	< #LETTER: ["$","A"-"Z","a"-"z","_"] >
@@ -84,182 +80,225 @@ TOKEN : {
 	|	< NUM: <DECNUM> | <HEXNUM> >
 	|	< DECNUM: "0" | ["1"-"9"](["1"-"9"])* >
 	|	< HEXNUM: "0" ("x" | "X") (["0"-"9","a"-"f","A"-"F"])+ >
-	// | < STRLIT: "\"" (<SCHAR>)* "\"" >
-	// |   < CHRLIT: "'" <CCHAR> "'" >
-	// |   < LIBLIT: "<" (<LCHAR>)* ">" >
-  // |   < SCHAR: <NCHAR> | <ESC> >
-	// |   < CCHAR: <NCHAR> | <ESC> | "\"" | "\0" >
-	// |   < NCHAR: (~["\""])+ >
-	// |   < LCHAR: (~[">"])+ >
-	// |   < ESC: "\n" | "\t" | "\\v" | "\b" | "\r" | "\f" | "\\a" | "\\" | "\'" | "\"" >
-	// |   < SEP: "(" | ")" | "[" | "]" | "{" | "}" | "," | ";" >
-	 |	< BINOP: "." | "->" | "*" | "/" | "%" | "+" | "-" | "<<" | ">>" | "<" | "<=" | ">=" | ">" | "==" | "!=" | "&" | "^" | "|" | "&&" | "||" | "?" | ":" >
-	|	< POSTOP: "--" | "++" >
 }
 
-void Program() : {}
+void Program () : {}
 {
-	Type ()
-	// ( Import () )*
-	// ( LOOKAHEAD(Declaration()) Declaration () )*
-	// ( LOOKAHEAD(Definition()) Definition () )*
+	( 
+    Declaration_Definition()
+  )* 
+  <EOF>
 }
 
-void Sid() : {}
+void Sid () : {}
 {
   <ID>  // struct name
 }
 
-void Vid() : {}
+void Vid () : {}
 {
   <ID>  // variable and function name
 }
 
-void Fid() : {}
+void Fid () : {}
 {
   <ID>  // field name
 }
 
-void Declaration_Definition() : {}
+/*
+<gdecl>     ::= struct <sid> ; 
+            | <tp> <vid> ( [<tp> <vid> (, <tp> <vid>)*] ) ; 
+<gdefn>     ::= struct <sid> { (<tp> <fid> ;)* } ; 
+            | <tp> <vid> ( [<tp> <vid> (, <tp> <vid>)*] ) { <stmt>* }
+*/
+void Declaration_Definition () : {}
 {
-  LOOKAHEAD (3) // otherwise possible conflict with a definition of a function with return type struct
-	<STRUCT> Sid() [ <LBRACE> ( Type() Vid() <SEMICOLON> )* <RBRACE> ] <SEMICOLON>
+  LOOKAHEAD (3)
+	<STRUCT> Sid() [ "{" ( Type() Vid() ";" )* "}" ] ";"
 	|
-  Type() Vid() <LPAREN> [ Type() Vid() ( <COMMA> Type() Vid() )* ] <RPAREN> ( <LBRACE> ( Statement() )* <RBRACE> | <SEMICOLON> )
+  Type() Vid() "(" [ Type() Vid() ( "," Type() Vid() )* ] ")" ( "{" ( Statement() )* "}" | ";" )
 }
 
-// [ ] reduce LOOKAHEAD for Simple()
+/*
+<stmt>      ::= <simple> ;
+            | if ( <exp> ) <stmt> [else <stmt>]
+            | while ( <exp> ) <stmt>
+            | for ( [<simple>] ; <exp> ; [<simple>] ) <stmt>
+            | return [<exp>] ;
+            | { <stmt>* }
+*/
 void Statement () : {}
 {
-	LOOKAHEAD(Simple () <SEMICOLON>) Simple () <SEMICOLON>
+  Simple() ";"
+  |
+	<IF> "(" Expression() ")" Statement() [ LOOKAHEAD(2) <ELSE> Statement() ]
 	|
-	<IF> <LPAREN> Expression () <RPAREN> Statement () [ LOOKAHEAD(2) <ELSE> Statement () ]
+	<WHILE> "(" Expression() ")" Statement()
 	|
-	<WHILE> <LPAREN> Expression () <RPAREN> Statement ()
+	<FOR> "(" [ Simple() ] ";" Expression() ";" [ Simple() ] ")" Statement()
 	|
-	<FOR> <LPAREN> [ Simple () ] <SEMICOLON> Expression () <SEMICOLON> [ Simple () ] <RPAREN> Statement ()
+	<RETURN> [ Expression() ] ";"
 	|
-	<RETURN> [ Expression () ] <SEMICOLON>
-	|
-	<LBRACE> ( Statement () )* <RBRACE>
+	"{" ( Statement() )* "}"
 }
 
+/*
+<simple>    ::= <lv> <asnop> <exp>
+            | <lv> ++ 
+            | <lv> --
+            | <exp> 
+            | <tp> <vid> [= <exp>]
+*/
 void Simple () : {}
 {
-	LOOKAHEAD(Expression ()) Expression ()
-  |
-	LOOKAHEAD(3) MemberAccess () <ASNOP> Expression ()
+	LOOKAHEAD(3) AssignOperation()
 	|
-	LOOKAHEAD(3) MemberAccess () <POSTOP>
+	LOOKAHEAD(2) MemberAccess() ( "++" | "--" ) 
 	|
-	Type () <ID> [ <EQUALS> Expression () ]
+	Expression()
+	|
+	Type() Vid() [ "=" Expression() ]
 }
 
-// done
+/*
+Part of Simple()
+*/
+void AssignOperation () : {}
+{
+	( MemberAccess() )
+	( "=" | "+=" | "-=" | "*=" | "/=" | "%=" | "<<=" | ">>=" | "&=" | "^=" | "|=" )
+	( Expression() )
+}
+
+/*
+<lv>        ::= <vid> 
+            | * <lv> 
+            | ( <lv> )
+            | <lv> [ <exp> ] 
+            | <lv> . <fid> 
+            | <lv> -> <fid> 
+*/
 void MemberAccess () : {}
 {
 	(
-		<ID>
+		Vid()
 		|	
-		<STAR> MemberAccess ()
+		"*" MemberAccess()
 		|	
-		<LPAREN> MemberAccess () <RPAREN>
+		"(" MemberAccess() ")"
 	)
-	[ LOOKAHEAD(2) LeftRecursionMemberAccess () ]
+  [ LOOKAHEAD(2)
+    (
+      "." Fid()
+      |
+      "->" Fid()
+      |
+      "[" Expression() "]"
+    )
+    [
+      MemberAccess()
+    ]
+  ]
 }
 
-void LeftRecursionMemberAccess () : {}
+/*
+<tp>        ::= int
+            | bool
+            | string
+            | char
+            | void
+            | <tp> *
+            | <tp> [ ]
+            | struct <sid>
+*/
+void Type () : {}
 {
-	<DOT> <ID> [ LOOKAHEAD(3) MemberAccess () ]
-	|	
-	"->" <ID> [ LOOKAHEAD(3) MemberAccess () ]
-	|
-	Expression () [ LOOKAHEAD(3) MemberAccess () ]
-}
-
-// done
-// void Type () : {}
-// {
-// 	(	
-// 		<INT> |	<BOOLEAN> | <STRING> | <CHAR> | <VOID> 
-// 		| 
-// 		<STRUCT> <ID>
-// 		// | <ID> // used for typedef C0--
-// 	)
-// 	(
-// 		<STAR>
-// 		| 
-// 		<LBRACKET> <RBRACKET>
-// 	)*
-// }
-void Type() : {}
-{
-	<INT> [ TypeDash() ]
-	|
-	<BOOLEAN> [ TypeDash() ]
-	|
-	<STRING> [ TypeDash() ]
-	|
-	<CHAR> [ TypeDash() ]
-	|
-	<VOID> [ TypeDash() ]
-	|
-	<STRUCT> <ID> [ TypeDash() ]
-}
-
-void TypeDash() : {}
-{
-	<STAR> [ TypeDash() ]
-	|
-	<LBRACKET> <RBRACKET> [ TypeDash() ]
-}
-
-void Expression () : {}
-{	
 	(
-		LiteralBasedExpression ()
+		<INT> | <BOOLEAN> | <CHAR> | <VOID>
+		|
+		<STRUCT> Sid()
 	)
-	(
-		LOOKAHEAD(2) LeftRecursionExpression ()
+	( 
+		"*" | "[" "]"
 	)*
 }
 
-void LiteralBasedExpression () : {}
-{
-	<NUM>	| <TRUE> | <FALSE> | <NULL>
-	|
-	LOOKAHEAD(2) <ID>
-	|
-	<ID> <LPAREN> [ Expression () ( <COMMA> Expression () )* ] <RPAREN>
-	|
-	<LPAREN> Expression () <RPAREN>
-	|
-	<LBRACE> Expression () <RBRACE>
-	|
-	<UNOP> Expression ()
-	|
-	<ALLOC> <LPAREN> Type () <RPAREN>
-	|
-	<ALLOC_ARR> <LPAREN> Type () <COMMA> Expression () <RPAREN>
+/*
+<exp>       ::= ( <exp> ) 
+            | <num> 
+            | true 
+            | false 
+            | NULL 
+            | <vid> 
+            | <vid> ( [<exp> (, <exp>)*] ) 
+            | <unop> <exp> 
+            | alloc ( <tp> ) 
+            | alloc_array ( <tp> , <exp> )
+            | <exp> <binop> <exp> 
+            | <exp> ? <exp> : <exp> 
+            | <exp> . <fid> 
+            | <exp> -> <fid> 
+            | <exp> [ <exp> ]
+*/
+void Expression () : {}
+{	
+  (
+    <ALLOC> "(" Type() ")"
+    |
+    <ALLOC_ARR> "(" Type() "," Expression() ")"
+    |
+    <NUM>	| <TRUE> | <FALSE> | <NULL>
+    |
+    "(" Expression() ")"
+    |
+    LOOKAHEAD(2) Vid() "(" [ Expression() ("," Expression() )* ] ")"
+    |
+    Vid()
+    |
+    UnOp() Expression()
+  )
+  [ LOOKAHEAD(2)
+    (
+      BinOp() Expression()
+      |
+      "?" Expression() ":" Expression()
+      |
+      "." Fid()
+      |
+      "->" Fid()
+      |
+      "[" Expression() "]"
+    )
+    [ LOOKAHEAD(2)
+      Expression()
+    ]
+  ]
 }
 
-void LeftRecursionExpression () : {}
+void  BinOp () : {}
 {
-	(
-		LiteralBasedExpression ()
-	)
-	|
-	(
-		<QUESTION> Expression () <COLON> Expression ()
-		| 
-		<BINOP> Expression ()
-		| 
-		<POSTOP>
-		| 
-		<DOT> <ID>
-		| 
-		"->" <ID>
-		| 
-		<LBRACKET> Expression () <RBRACKET>
-	)
+  ( "||" )
+  |
+  ( "&&" )
+  |
+  ( "|" )
+  |
+  ( "^" )
+  |
+  ( "&" )
+  |
+  ( "==" | "!=" )
+  |
+  ( "<" | "<=" | ">=" | ">" )
+  |
+  ( "<<" | ">>" )
+  |
+  ( "+" | "-" )
+  |
+  ( "*" | "/" | "%" )
+}
+
+void UnOp () : {}
+{
+  "*" | "-" | "~" | "!"
 }

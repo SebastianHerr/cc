@@ -10,7 +10,7 @@
             | typedef <tp> <aid> ;
 
 <stmt>      ::= <simple> ; 
-            | if ( <exp> ) <stmt> [ else <stmt> ] 
+            | if ( <exp> ) <stmt> [else <stmt>] 
             | while ( <exp> ) <stmt> 
             | for ( [<simple>] ; <exp> ; [<simple>] ) <stmt> 
             | return [<exp>] ; 
