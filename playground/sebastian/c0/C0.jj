@@ -1,14 +1,24 @@
 options{
  /* KEEP_LINE_COLUMN       = true; // Accessed by: System.out.prvoidln(t.beginLine +" " + t.beginColumn +" " + t.endLine +" " + t.endColumn); */
-	DEBUG_PARSER  = true;
-	DEBUG_TOKEN_MANAGER = true;
+	DEBUG_PARSER  = false;
+	DEBUG_TOKEN_MANAGER = false;
  }
 
 PARSER_BEGIN(C0)
 public class C0 {
    public static void main(String[] args) throws Exception {
-        new C0(System.in).Tp();
-        System.out.println("finished");
+		C0 parser;
+		try {
+			if (args.length > 0) {
+				parser = new C0 (new java.io.FileInputStream(new java.io.File(args[0])));
+			} else {
+				parser = new C0 (System.in);
+			}
+			parser.Parse();
+			System.out.println ("[  OK  ]");
+		} catch (Exception ex) {
+			System.out.println ("[ FAIL ]\n\n" + ex.getMessage());
+		}
     }
 }
 PARSER_END(C0)
@@ -42,21 +52,21 @@ TOKEN : {
 |  <#DIGIT: ["0"-"9"]>
 }
 
-SKIP : { " " | "\t" | "\n" | "\r" | "\r\n" | "/*" : IN_COMMENT }
+SKIP : { " " | "\t" | "\n" | "\r" | "\r\n" | <"//" (~["\n","\r"])* ("\n" | "\r" | "\r\n")> | "/*" : IN_COMMENT }
 <IN_COMMENT> MORE : {	<~[]> | "*/" : DEFAULT }
 
 
 void Parse(): {}
 {
-	(DeclarationsAndDefiniontions())* "##"
+	(DeclarationsAndDefiniontions())*
 }
 
 void DeclarationsAndDefiniontions(): {}
 {
 	LOOKAHEAD(3) //Otherwise possible conflict with a defintion of a function with return type struct
-	<STRUCT> Sid() [<ROUNDEDBRACKT_O> Tp() Vid() <ROUNDEDBRACKT_C> ] ";"
+	<STRUCT> Sid() [<ROUNDEDBRACKT_O> (Tp() Vid() ";")* <ROUNDEDBRACKT_C> ] ";"
 |
-	Tp() Vid() "(" Tp() Vid() ( "," Tp() Vid())* ")" (<ROUNDEDBRACKT_O> (Stmt())* <ROUNDEDBRACKT_C> | ";")
+	Tp() Vid() "(" [Tp() Vid() ( "," Tp() Vid())* ]")" (<ROUNDEDBRACKT_O> (Stmt())* <ROUNDEDBRACKT_C> | ";")
 }
 
 void Tp(): {}
