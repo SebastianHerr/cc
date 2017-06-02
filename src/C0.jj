@@ -187,7 +187,8 @@ void MemberAccess () : {}
 		|	
 		"(" MemberAccess() ")"
 	)
-  [ LOOKAHEAD(2)
+  [ 
+    LOOKAHEAD(2)
     (
       "." Fid()
       |
@@ -251,13 +252,15 @@ void Expression () : {}
     |
     "(" Expression() ")"
     |
-    LOOKAHEAD(2) Vid() "(" [ Expression() ("," Expression() )* ] ")"
+    LOOKAHEAD(2) 
+    Vid() "(" [ Expression() ("," Expression() )* ] ")"
     |
     Vid()
     |
     UnOp() Expression()
   )
-  [ LOOKAHEAD(2)
+  [ 
+    LOOKAHEAD(2)
     (
       BinOp() Expression()
       |
@@ -269,7 +272,8 @@ void Expression () : {}
       |
       "[" Expression() "]"
     )
-    [ LOOKAHEAD(2)
+    [ 
+      LOOKAHEAD(2)
       Expression()
     ]
   ]
