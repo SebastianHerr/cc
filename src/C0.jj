@@ -1,3 +1,14 @@
+/**
+ * C0-- Parser
+ * HS-Fulda - Compiler Constructions
+ *
+ * @author    Konstantin Ruppel
+ * @autor     Juergen Goebel
+ * @autor     Sebastian Herr
+ * 
+ * @date      2017/06/01
+ */
+
 options
 {
   DEBUG_PARSER = true;
@@ -24,7 +35,7 @@ public class C0 {
 }
 PARSER_END(C0)
 
-SKIP : { " " | "\t" | "\n" | "\r" | "\r\n" | "/*" : IN_COMMENT }
+SKIP : { " " | "\t" | "\f" | "\n" | "\r" | "\r\n" | "/*" : IN_COMMENT }
 <IN_COMMENT> MORE : {	<~[]> | "*/" : DEFAULT }
 
 // Keywords
@@ -54,16 +65,14 @@ TOKEN : {
 	|	< NUM: <DECNUM> | <HEXNUM> >
 	|	< DECNUM: "0" | ["1"-"9"](["1"-"9"])* >
 	|	< HEXNUM: "0" ("x" | "X") (["0"-"9","a"-"f","A"-"F"])+ >
-	| < EOL: "\n" | "\r" | "\r\n" | "\f" >
-	| < UNOP: "!" | "~" >
 }
 
 void Program () : {}
 {
-	Statement()
-	// ( Import () )*
-	// ( LOOKAHEAD(Declaration()) Declaration () )*
-	// ( LOOKAHEAD(Definition()) Definition () )*
+	( 
+    Declaration_Definition() 
+  )* 
+  <EOF>
 }
 
 void Sid () : {}
@@ -81,7 +90,17 @@ void Fid () : {}
   <ID>  // field name
 }
 
-void Declaration_Definition() : {}
+/*
+<gdecl>     ::= struct <sid> ; 
+            | <tp> <vid> ( [<tp> <vid> (, <tp> <vid>)*] ) ; 
+            | #use <liblit> \n                              ##-> not part of C0--
+            | #use <strlit> \n                              ##-> not part of C0--
+
+<gdefn>     ::= struct <sid> { (<tp> <fid> ;)* } ; 
+            | <tp> <vid> ( [<tp> <vid> (, <tp> <vid>)*] ) { <stmt>* }
+            | typedef <tp> <aid> ;
+*/
+void Declaration_Definition () : {}
 {
   LOOKAHEAD (3) // otherwise posssible conflict with a definition of a function with return type struct
 	<STRUCT> Sid() [ "{" ( Type() Vid() ";" )* "}" ] ";"
@@ -89,8 +108,20 @@ void Declaration_Definition() : {}
   Type() Vid() "(" [ Type() Vid() ( "," Type() Vid() )* ] ")" ( "{" ( Statement() )* "}" | ";" )
 }
 
+/*
+<stmt>      ::= <simple> ;
+            | if ( <exp> ) <stmt> [else <stmt>]
+            | while ( <exp> ) <stmt>
+            | for ( [<simple>] ; <exp> ; [<simple>] ) <stmt>
+            | return [<exp>] ;
+            | { <stmt>* }
+        C0--| assert ( <exp> ) ;
+        C0--| error ( <exp> ) ;
+*/
 void Statement () : {}
 {
+  Simple() ";"
+  |
 	<IF> "(" Expression() ")" Statement() [ LOOKAHEAD(2) <ELSE> Statement() ]
 	|
 	<WHILE> "(" Expression() ")" Statement()
@@ -100,57 +131,77 @@ void Statement () : {}
 	<RETURN> [ Expression() ] ";"
 	|
 	"{" ( Statement() )* "}"
-	|
-	Simple()
 }
 
+/*
+<simple>    ::= <lv> <asnop> <exp>
+            | <lv> ++ 
+            | <lv> --
+            | <exp> 
+            | <tp> <vid> [= <exp>]
+*/
 void Simple () : {}
 {
+	LOOKAHEAD(3) AssignOperation()
+	|
+	LOOKAHEAD(2) MemberAccess() ( "++" | "--" ) 
+	|
 	Expression()
-  |
-	// LOOKAHEAD(3) MemberAccess () <ASNOP> Expression ()
-	// |
-	// LOOKAHEAD(3) MemberAccess () <POSTOP>
-	// |
+	|
 	Type() Vid() [ "=" Expression() ]
 }
 
-// void MemberAccess () : {}
-// {
-// 	(
-// 		<ID>
-// 		|	
-// 		<STAR> MemberAccess ()
-// 		|	
-// 		<LPAREN> MemberAccess () <RPAREN>
-// 	)
-// 	[ LOOKAHEAD(2) LeftRecursionMemberAccess () ]
-// }
+/*
+Part of Simple()
+*/
+void AssignOperation () : {}
+{
+	( MemberAccess() )
+	( "=" | "+=" | "-=" | "*=" | "/=" | "%=" | "<<=" | ">>=" | "&=" | "^=" | "|=" )
+	( Expression() )
+}
 
-// void LeftRecursionMemberAccess () : {}
-// {
-// 	<DOT> <ID> [ LOOKAHEAD(3) MemberAccess () ]
-// 	|	
-// 	<POINTERACCESS> <ID> [ LOOKAHEAD(3) MemberAccess () ]
-// 	|
-// 	Expression () [ LOOKAHEAD(3) MemberAccess () ]
-// }
+/*
+<lv>        ::= <vid> 
+            | * <lv> 
+            | ( <lv> )
+            | <lv> [ <exp> ] 
+            | <lv> . <fid> 
+            | <lv> -> <fid> 
+*/
+void MemberAccess () : {}
+{
+	(
+		Vid()
+		|	
+		"*" MemberAccess()
+		|	
+		"(" MemberAccess() ")"
+	)
+  [ LOOKAHEAD(2)
+    (
+      "." Fid()
+      |
+      "->" Fid()
+      |
+      "[" Expression() "]"
+    )
+    [
+      MemberAccess()
+    ]
+  ]
+}
 
-// done
-// void Type () : {}
-// {
-// 	(	
-// 		<INT> |	<BOOLEAN> | <STRING> | <CHAR> | <VOID> 
-// 		| 
-// 		<STRUCT> <ID>
-// 		// | <ID> // used for typedef C0--
-// 	)
-// 	(
-// 		<STAR>
-// 		| 
-// 		<LBRACKET> <RBRACKET>
-// 	)*
-// }
+/*
+<tp>        ::= int
+            | bool
+            | string
+            | char
+            | void
+            | <tp> *
+            | <tp> [ ]
+            | struct <sid>
+*/
 void Type () : {}
 {
 	(
@@ -163,52 +214,82 @@ void Type () : {}
 	)*
 }
 
+/*
+<exp>       ::= ( <exp> ) 
+            | <num> 
+            | true 
+            | false 
+            | NULL 
+            | <vid> 
+            | <vid> ( [<exp> (, <exp>)*] ) 
+            | <unop> <exp> 
+            | alloc ( <tp> ) 
+            | alloc_array ( <tp> , <exp> )
+            | <exp> <binop> <exp> 
+            | <exp> ? <exp> : <exp> 
+            | <exp> . <fid> 
+            | <exp> -> <fid> 
+            | <exp> [ <exp> ]
+*/
 void Expression () : {}
 {	
-	(
-		LiteralBasedExpression ()
-	)
-	[
-		LOOKAHEAD(2) LeftRecursionExpression ()
-	]
+  (
+    <ALLOC> "(" Type() ")"
+    |
+    <ALLOC_ARR> "(" Type() "," Expression() ")"
+    |
+    <NUM>	| <TRUE> | <FALSE> | <NULL>
+    |
+    "(" Expression() ")"
+    |
+    LOOKAHEAD(2) Vid() "(" [ Expression() ("," Expression() )* ] ")"
+    |
+    Vid()
+    |
+    UnOp() Expression()
+  )
+  [ LOOKAHEAD(2)
+    (
+      BinOp() Expression()
+      |
+      "?" Expression() ":" Expression()
+      |
+      "." Fid()
+      |
+      "->" Fid()
+      |
+      "[" Expression() "]"
+    )
+    [ LOOKAHEAD(2)
+      Expression()
+    ]
+  ]
 }
 
-void LiteralBasedExpression () : {}
-{
-	<ALLOC> "(" Type() ")"
-	|
-	<ALLOC_ARR> "(" Type() "," Expression() ")"
-	|
-	<NUM>	| <TRUE> | <FALSE> | <NULL>
-	|
-	"(" Expression() ")"
-	|
-	LOOKAHEAD(2) Vid() "(" [ Expression() ( "," Expression() )* ] ")"
-	|
-	Vid()
-	|
-	<UNOP> Expression()
-}
-
-void LeftRecursionExpression () : {}
-{
-	(
-		BinOp() Expression()
-		| 
-		"?" Expression() ":" Expression()
-		| 
-		"." Fid()
-		| 
-		"->" Fid()
-		| 
-		"[" Expression() "]"
-	)
-	[ LOOKAHEAD(2) Expression()
-	]
-}
-
-// [ ] all the others
 void  BinOp () : {}
 {
-	"+" | "-"
+  ( "||" )
+  |
+  ( "&&" )
+  |
+  ( "|" )
+  |
+  ( "^" )
+  |
+  ( "&" )
+  |
+  ( "==" | "!=" )
+  |
+  ( "<" | "<=" | ">=" | ">" )
+  |
+  ( "<<" | ">>" )
+  |
+  ( "+" | "-" )
+  |
+  ( "*" | "/" | "%" )
+}
+
+void UnOp () : {}
+{
+  "*" | "-" | "~" | "!"
 }
