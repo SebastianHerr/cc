@@ -35,8 +35,24 @@ public class C0 {
 }
 PARSER_END(C0)
 
-SKIP : { " " | "\t" | "\f" | "\n" | "\r" | "\r\n" | "/*" : IN_COMMENT }
-<IN_COMMENT> MORE : {	<~[]> | "*/" : DEFAULT }
+SKIP : 
+{ 
+  " " | "\t" | "\f" | "\n" | "\r" | "\r\n"
+  |
+  "/*" : IN_ML_COMMENT
+}
+
+<IN_ML_COMMENT> SKIP :
+{
+  <~[]>
+  |
+  "*/" : DEFAULT
+}
+
+SPECIAL_TOKEN : 
+{
+  < "//" (~["\n","\r"])* ("\n" | "\r" | "\r\n") >
+}
 
 // Keywords
 TOKEN : {
@@ -57,7 +73,6 @@ TOKEN : {
   | < ALLOC_ARR:  "alloc_array" >
 }
 
-// Lexical Tokens
 TOKEN : {
 	< ID: <LETTER> ( <ALPHANUM> )* >
 	|	< #LETTER: ["$","A"-"Z","a"-"z","_"] >
@@ -70,7 +85,7 @@ TOKEN : {
 void Program () : {}
 {
 	( 
-    Declaration_Definition() 
+    Declaration_Definition()
   )* 
   <EOF>
 }
@@ -93,16 +108,12 @@ void Fid () : {}
 /*
 <gdecl>     ::= struct <sid> ; 
             | <tp> <vid> ( [<tp> <vid> (, <tp> <vid>)*] ) ; 
-            | #use <liblit> \n                              ##-> not part of C0--
-            | #use <strlit> \n                              ##-> not part of C0--
-
 <gdefn>     ::= struct <sid> { (<tp> <fid> ;)* } ; 
             | <tp> <vid> ( [<tp> <vid> (, <tp> <vid>)*] ) { <stmt>* }
-            | typedef <tp> <aid> ;
 */
 void Declaration_Definition () : {}
 {
-  LOOKAHEAD (3) // otherwise posssible conflict with a definition of a function with return type struct
+  LOOKAHEAD (3)
 	<STRUCT> Sid() [ "{" ( Type() Vid() ";" )* "}" ] ";"
 	|
   Type() Vid() "(" [ Type() Vid() ( "," Type() Vid() )* ] ")" ( "{" ( Statement() )* "}" | ";" )
@@ -115,8 +126,6 @@ void Declaration_Definition () : {}
             | for ( [<simple>] ; <exp> ; [<simple>] ) <stmt>
             | return [<exp>] ;
             | { <stmt>* }
-        C0--| assert ( <exp> ) ;
-        C0--| error ( <exp> ) ;
 */
 void Statement () : {}
 {
