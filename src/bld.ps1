@@ -1,28 +1,24 @@
-param(
-    [string]$path=$PWD,             # execution context
-    [string]$name="*.jj",
-    [string]$bin="$path/bin",
-    [string]$test="$path/test",
-    [string]$testfilter="*",
-    [switch]$r, 
-    [switch]$c, 
-    [switch]$rc, 
-    [switch]$cr
+param (
+    [string]$parser="C0",           # Parser Name
+    [string]$path=$PWD,             # Execution Context
+    [string]$bin="$path/bin",       # Bin Directory
+    [string]$test="$path/test",     # Test Files Directory
+    [string]$filter="*",            # Test Files Filter
+    [switch]$r,                     # Run All Tests
+    [switch]$c                      # Compile All Grammars
 )
 if (!(Test-Path ($bin))) {
     New-Item -ItemType Directory -Force -Path $bin
 }
 
-Get-ChildItem $path -Filter $name | Foreach-Object {
-    if($c -or $rc -or $cr ) {
-        javacc $_.FullName
-        javac -d $bin "*.java"
-    }
+if($c) {
+    javacc "-OUTPUT_DIRECTORY:$bin" "$parser.jj"
+    javac -d $bin "$bin/*.java"
 }
 
-Get-ChildItem $test -Filter $testfilter -Recurse -File | Foreach-Object {
-    if($r -or $rc -or $cr ) {
-        Write-Output ("------------------- $_")
-        java -cp $bin C0 $_.FullName
+Get-ChildItem $test -Filter $filter -Recurse -File | Foreach-Object {
+    if($r) {
+        Write-Output ("-------------------- $_")
+        java -cp $bin $parser $_.FullName
     }
 }
