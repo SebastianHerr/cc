@@ -6,14 +6,8 @@
  * @autor     Juergen Goebel
  * @autor     Sebastian Herr
  * 
- * @date      2017/06/01
+ * @date      2017/06/03
  */
-
-options
-{
-  DEBUG_PARSER = true;
-  // DEBUG_TOKEN_MANAGER = true;
-}
 
 PARSER_BEGIN(C0)
 public class C0 {
@@ -29,7 +23,7 @@ public class C0 {
 			parser.Program();
 			System.out.println ("[  OK  ]");
 		} catch (Exception ex) {
-			System.out.println ("[ FAIL ]\n\n" + ex.getMessage());
+			System.out.println ("[ FAIL ]" + ((args.length > 1) ? ex.getMessage() + "\n\n" : ""));
 		}
 	}
 }
@@ -40,6 +34,8 @@ SKIP :
   " " | "\t" | "\f" | "\n" | "\r" | "\r\n"
   |
   "/*" : IN_ML_COMMENT
+  |
+  < "//" (~["\n","\r"])* ("\n" | "\r" | "\r\n") >
 }
 
 <IN_ML_COMMENT> SKIP :
@@ -47,11 +43,6 @@ SKIP :
   <~[]>
   |
   "*/" : DEFAULT
-}
-
-SPECIAL_TOKEN : 
-{
-  < "//" (~["\n","\r"])* ("\n" | "\r" | "\r\n") >
 }
 
 // Keywords
@@ -105,12 +96,6 @@ void Fid () : {}
   <ID>  // field name
 }
 
-/*
-<gdecl>     ::= struct <sid> ; 
-            | <tp> <vid> ( [<tp> <vid> (, <tp> <vid>)*] ) ; 
-<gdefn>     ::= struct <sid> { (<tp> <fid> ;)* } ; 
-            | <tp> <vid> ( [<tp> <vid> (, <tp> <vid>)*] ) { <stmt>* }
-*/
 void Declaration_Definition () : {}
 {
   LOOKAHEAD (3)
@@ -119,17 +104,8 @@ void Declaration_Definition () : {}
   Type() Vid() "(" [ Type() Vid() ( "," Type() Vid() )* ] ")" ( "{" ( Statement() )* "}" | ";" )
 }
 
-/*
-<stmt>      ::= <simple> ;
-            | if ( <exp> ) <stmt> [else <stmt>]
-            | while ( <exp> ) <stmt>
-            | for ( [<simple>] ; <exp> ; [<simple>] ) <stmt>
-            | return [<exp>] ;
-            | { <stmt>* }
-*/
 void Statement () : {}
 {
-  // Simple() ";"
   Expression() ";"
   |
 	<IF> "(" Expression() ")" Statement() [ LOOKAHEAD(2) <ELSE> Statement() ]
@@ -143,28 +119,6 @@ void Statement () : {}
 	"{" ( Statement() )* "}"
 }
 
-/*
-<simple>    ::= <lv> <asnop> <exp>
-            | <lv> ++ 
-            | <lv> --
-            | <exp> 
-            | <tp> <vid> [= <exp>]
-*/
-// void Simple () : {}
-// {
-// 	Expression() // <lv> <asnop> <exp>
-// 	|
-// 	Type() Vid() [ "=" Expression() ] // declaration
-// }
-
-/*
-<lv>        ::= <vid> 
-            | * <lv> 
-            | ( <lv> )
-            | <lv> [ <exp> ] 
-            | <lv> . <fid> 
-            | <lv> -> <fid> 
-*/
 void MemberAccess () : {}
 {
   (
@@ -179,16 +133,6 @@ void MemberAccess () : {}
   ]
 }
 
-/*
-<tp>        ::= int
-            | bool
-            | string
-            | char
-            | void
-            | <tp> *
-            | <tp> [ ]
-            | struct <sid>
-*/
 void Type () : {}
 {
 	(
@@ -201,42 +145,27 @@ void Type () : {}
 	)*
 }
 
-/*
-<exp>       ::= ( <exp> ) 
-            | <num> 
-            | true 
-            | false 
-            | NULL 
-            | <vid> 
-            | <vid> ( [<exp> (, <exp>)*] ) 
-            | <unop> <exp> 
-            | alloc ( <tp> ) 
-            | alloc_array ( <tp> , <exp> )
-            | <exp> <binop> <exp> 
-            | <exp> ? <exp> : <exp> 
-            | <exp> . <fid> 
-            | <exp> -> <fid> 
-            | <exp> [ <exp> ]
-*/
+void FunctionCallArgs () : {}
+{
+  [ Expression() ("," Expression() )* ]
+}
+
 void Expression () : {}
 {	
   <ALLOC> "(" Type() ")"
   |
   <ALLOC_ARR> "(" Type() "," Expression() ")"
   |
-  LOOKAHEAD(2) 
-  Vid() "(" [ Expression() ("," Expression() )* ] ")" // function call
-  |
   OpRang_Assign()
   |
-  Type() Vid() [ LOOKAHEAD(2) "=" Expression() ] // [ ] remove lookahead
+  Type() Vid() [ LOOKAHEAD(2) "=" OpRang_Conditional() ]
 }
 
 void OpRang_Assign () : {}
 {
   OpRang_Conditional()
   [ 
-    LOOKAHEAD(2) // [ ] remove lookahead
+    LOOKAHEAD(2)
     (
       "=" | "+=" | "-=" | "*=" | "/=" | "%=" | "<<=" | ">>=" | "&=" | "^=" | "|=" 
     ) 
@@ -305,11 +234,11 @@ void OpRang_Unary () : {}
     "*" | "-" | "~" | "!"
   ]
   (
-    Vid() [ "--" | "++" ]
+    Vid() [ "(" FunctionCallArgs() ")" | "--" | "++" ]
     |
     <NUM>	| <TRUE> | <FALSE> | <NULL>
     |
-    "(" Expression() ")"
+    "(" OpRang_Conditional() ")"
   )
   [
     MemberAccess()

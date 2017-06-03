@@ -1,31 +1,21 @@
-# Compilerbau - Sommersemester 2017
-* [Dokumentation](/doc) (doc/)
-* [Spielplatz](/playground) (playground/)
-* [Quellcode](/src) (src/)
+# Compilerbau - SS 2017
+* [Documentation](/doc) (doc/)
+* [Playground](/playground) (playground/)
+* [Source code](/src) (src/)
 
-## Übersicht
+## Overview
 ```
 ./
-|- doc/................................... Projektdokumentation
-|  |- examples/........................... C0 Beispiele
-|  |- slides/............................. Vorlesungsfolien
-|  |  |- examples/........................ Beispiele aus der Vorlesung
-|  |  |  '- lookahead/.................... Beispiel für Lookahead
-|  |  '- parseInterpreterAST/2............
-|  |- C0-reference.pdf.................... C0-Spezifikation
-|  '- specifications.md................... Gefilterte C0 Spezifikationen
-|- playground/............................ Experimentelle Umgebung
-|  |- jeurgen/............................
-|  '- konstantin/.........................
-|     |- calc/............................ 
-|     |  |- grammars/..................... Testgrammatiken
-|     |  |- Calc.jj....................... Einfacher Taschenrechner Parser
-|     |  '- test.bat...................... Buildscript für Calc (Windows)
-|     |- Klammern/........................ Einfacher Klammern Parser
-|     '- Uebung2/......................... Beispielgrammatik
-|- src/................................... Projekt Quellcode
-|  |- grammars/........................... Testgrammatiken
-|  |- C0.jj............................... C0 Parser
-|  '- test.bat............................ Buildscript für C0 (Windows)
-'- README.md.............................. Allgemeine Hinweise
+|- playground/ ............................ Experimental environment
+|- src/ ................................... Project source code
+|  |- test/ ............................... Test programs
+|  |  |- parsing/ ......................... Test programs for parsing
+|  |  '- type/ ............................ Test programs for type checking
+|  |- C0.jj ............................... C0 parser
+|  |- build.sh ............................ Build script for C0 (Unix)
+|  '- bld.ps1 ............................. Build script for C0 (Windows)
+'- README.md .............................. General hints
 ```
+
+## How To
+...

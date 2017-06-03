@@ -1,0 +1,7 @@
+void test() {
+    int i = fn(234);
+}
+
+void test23() {
+    
+}
