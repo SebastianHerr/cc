@@ -9,11 +9,11 @@
  * @date      2017/06/01
  */
 
-options
-{
-  DEBUG_PARSER = true;
-  DEBUG_TOKEN_MANAGER = true;
-}
+// options
+// {
+//   DEBUG_PARSER = true;
+//   DEBUG_TOKEN_MANAGER = true;
+// }
 
 PARSER_BEGIN(C0)
 public class C0 {
@@ -151,23 +151,9 @@ void Statement () : {}
 */
 void Simple () : {}
 {
-	LOOKAHEAD(3) AssignOperation()
+	Expression() // <lv> <asnop> <exp>
 	|
-	LOOKAHEAD(2) MemberAccess() ( "++" | "--" ) 
-	|
-	Expression()
-	|
-	Type() Vid() [ "=" Expression() ]
-}
-
-/*
-Part of Simple()
-*/
-void AssignOperation () : {}
-{
-	( MemberAccess() )
-	( "=" | "+=" | "-=" | "*=" | "/=" | "%=" | "<<=" | ">>=" | "&=" | "^=" | "|=" )
-	( Expression() )
+	Type() Vid() [ "=" Expression() ] // declaration
 }
 
 /*
@@ -180,25 +166,15 @@ void AssignOperation () : {}
 */
 void MemberAccess () : {}
 {
-	(
-		Vid()
-		|	
-		"*" MemberAccess()
-		|	
-		"(" MemberAccess() ")"
-	)
-  [ 
-    LOOKAHEAD(2)
-    (
-      "." Fid()
-      |
-      "->" Fid()
-      |
-      "[" Expression() "]"
-    )
-    [
-      MemberAccess()
-    ]
+  (
+    "." Fid()
+    |
+    "->" Fid()
+    |
+    "[" Expression() "]"
+  )
+  [
+    ( MemberAccess() ) | ( "--" | "++" )
   ]
 }
 
@@ -243,66 +219,101 @@ void Type () : {}
 */
 void Expression () : {}
 {	
+  <ALLOC> "(" Type() ")"
+  |
+  <ALLOC_ARR> "(" Type() "," Expression() ")"
+  |
+  LOOKAHEAD(2) 
+  Vid() "(" [ Expression() ("," Expression() )* ] ")" // function call
+  |
+  OpRang14()
+}
+
+void OpRang14 () : {}
+{
+  OpRang13()
+  [ 
+    LOOKAHEAD(2)
+    ( 
+      "=" | "+=" | "-=" | "*=" | "/=" | "%=" | "<<=" | ">>=" | "&=" | "^=" | "|=" 
+    ) 
+    OpRang14()
+  ]
+}
+
+void OpRang13 () : {}
+{
+  OpRang12() ( LOOKAHEAD(2) ( "?" Expression() ":" Expression() ) )*
+}
+
+void OpRang12 () : {}
+{
+  OpRang11() ( ( "||" ) OpRang11() )*
+}
+
+void OpRang11 () : {}
+{
+  OpRang10() ( ( "&&" ) OpRang10() )*
+}
+
+void OpRang10 () : {}
+{
+  OpRang9() ( LOOKAHEAD(2) ( "&&" ) OpRang9() )*
+}
+
+void OpRang9 () : {}
+{
+  OpRang8() ( ( "|" ) OpRang8() )*
+}
+
+void OpRang8 () : {}
+{
+  OpRang7() ( ( "^" ) OpRang7() )*
+}
+
+void OpRang7 () : {}
+{
+  OpRang6() ( ( "&" ) OpRang6() )*
+}
+
+void OpRang6 () : {}
+{
+  OpRang5() ( ( "==" | "!=" ) OpRang5() )*
+}
+
+void OpRang5 () : {}
+{
+  OpRang4() ( ( "<" | ">" | ">=" | "<=" ) OpRang4() )*
+}
+
+void OpRang4 () : {}
+{
+  OpRang3() ( ("<<" | ">>" ) OpRang3() )*
+}
+
+void OpRang3 () : {}
+{
+  OpRang2() ( ("+" | "-" ) OpRang2() )*
+}
+
+void OpRang2 () : {}
+{
+  OpRang1() ( ("*" | "/" | "%" ) OpRang1() )*
+}
+
+void OpRang1 () : {}
+{
+  [
+    "*" | "-" | "~" | "!"
+  ]
   (
-    <ALLOC> "(" Type() ")"
-    |
-    <ALLOC_ARR> "(" Type() "," Expression() ")"
+    Vid()
     |
     <NUM>	| <TRUE> | <FALSE> | <NULL>
     |
     "(" Expression() ")"
-    |
-    LOOKAHEAD(2) 
-    Vid() "(" [ Expression() ("," Expression() )* ] ")"
-    |
-    Vid()
-    |
-    UnOp() Expression()
   )
-  [ 
-    LOOKAHEAD(2)
-    (
-      BinOp() Expression()
-      |
-      "?" Expression() ":" Expression()
-      |
-      "." Fid()
-      |
-      "->" Fid()
-      |
-      "[" Expression() "]"
-    )
-    [ 
-      LOOKAHEAD(2)
-      Expression()
-    ]
+  [
+    MemberAccess()
   ]
-}
-
-void  BinOp () : {}
-{
-  ( "||" )
-  |
-  ( "&&" )
-  |
-  ( "|" )
-  |
-  ( "^" )
-  |
-  ( "&" )
-  |
-  ( "==" | "!=" )
-  |
-  ( "<" | "<=" | ">=" | ">" )
-  |
-  ( "<<" | ">>" )
-  |
-  ( "+" | "-" )
-  |
-  ( "*" | "/" | "%" )
-}
-
-void UnOp () : {}
-{
-  "*" | "-" | "~" | "!"
 }
