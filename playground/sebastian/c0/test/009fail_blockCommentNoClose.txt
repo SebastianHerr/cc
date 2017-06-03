@@ -1,0 +1,4 @@
+void function_name()
+{	/* some text which should not be parsed
+	int i = 2;
+}
