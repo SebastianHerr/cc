@@ -9,11 +9,11 @@
  * @date      2017/06/01
  */
 
-// options
-// {
-//   DEBUG_PARSER = true;
-//   DEBUG_TOKEN_MANAGER = true;
-// }
+options
+{
+  DEBUG_PARSER = true;
+  // DEBUG_TOKEN_MANAGER = true;
+}
 
 PARSER_BEGIN(C0)
 public class C0 {
@@ -129,13 +129,14 @@ void Declaration_Definition () : {}
 */
 void Statement () : {}
 {
-  Simple() ";"
+  // Simple() ";"
+  Expression() ";"
   |
 	<IF> "(" Expression() ")" Statement() [ LOOKAHEAD(2) <ELSE> Statement() ]
 	|
 	<WHILE> "(" Expression() ")" Statement()
 	|
-	<FOR> "(" [ Simple() ] ";" Expression() ";" [ Simple() ] ")" Statement()
+	<FOR> "(" [ Expression() ] ";" Expression() ";" [ Expression() ] ")" Statement()
 	|
 	<RETURN> [ Expression() ] ";"
 	|
@@ -149,12 +150,12 @@ void Statement () : {}
             | <exp> 
             | <tp> <vid> [= <exp>]
 */
-void Simple () : {}
-{
-	Expression() // <lv> <asnop> <exp>
-	|
-	Type() Vid() [ "=" Expression() ] // declaration
-}
+// void Simple () : {}
+// {
+// 	Expression() // <lv> <asnop> <exp>
+// 	|
+// 	Type() Vid() [ "=" Expression() ] // declaration
+// }
 
 /*
 <lv>        ::= <vid> 
@@ -174,7 +175,7 @@ void MemberAccess () : {}
     "[" Expression() "]"
   )
   [
-    ( MemberAccess() ) | ( "--" | "++" )
+    MemberAccess()
   ]
 }
 
@@ -226,88 +227,85 @@ void Expression () : {}
   LOOKAHEAD(2) 
   Vid() "(" [ Expression() ("," Expression() )* ] ")" // function call
   |
-  OpRang14()
+  OpRang_Assign()
+  |
+  Type() Vid() [ LOOKAHEAD(2) "=" Expression() ] // [ ] remove lookahead
 }
 
-void OpRang14 () : {}
+void OpRang_Assign () : {}
 {
-  OpRang13()
+  OpRang_Conditional()
   [ 
-    LOOKAHEAD(2)
-    ( 
+    LOOKAHEAD(2) // [ ] remove lookahead
+    (
       "=" | "+=" | "-=" | "*=" | "/=" | "%=" | "<<=" | ">>=" | "&=" | "^=" | "|=" 
     ) 
-    OpRang14()
+    OpRang_Conditional()
   ]
 }
 
-void OpRang13 () : {}
+void OpRang_Conditional () : {}
 {
-  OpRang12() ( LOOKAHEAD(2) ( "?" Expression() ":" Expression() ) )*
+  OpRang_LogicalOr() [ LOOKAHEAD(2) ( "?" Expression() ":" Expression() ) ]
 }
 
-void OpRang12 () : {}
+void OpRang_LogicalOr () : {}
 {
-  OpRang11() ( ( "||" ) OpRang11() )*
+  OpRang_LogicalAnd() [ ( "||" ) OpRang_LogicalOr() ]
 }
 
-void OpRang11 () : {}
+void OpRang_LogicalAnd () : {}
 {
-  OpRang10() ( ( "&&" ) OpRang10() )*
+  OpRang_BitOr() [ ( "&&" ) OpRang_LogicalAnd() ]
 }
 
-void OpRang10 () : {}
+void OpRang_BitOr () : {}
 {
-  OpRang9() ( LOOKAHEAD(2) ( "&&" ) OpRang9() )*
+  OpRang_BitXor() [ ( "|" ) OpRang_BitOr() ]
 }
 
-void OpRang9 () : {}
+void OpRang_BitXor () : {}
 {
-  OpRang8() ( ( "|" ) OpRang8() )*
+  OpRang_BitAnd() [ ( "^" ) OpRang_BitXor() ]
 }
 
-void OpRang8 () : {}
+void OpRang_BitAnd () : {}
 {
-  OpRang7() ( ( "^" ) OpRang7() )*
+  OpRang_Equality() [ ( "&" ) OpRang_BitAnd() ]
 }
 
-void OpRang7 () : {}
+void OpRang_Equality () : {}
 {
-  OpRang6() ( ( "&" ) OpRang6() )*
+  OpRang_Compare() [ ( "==" | "!=" ) OpRang_Equality() ]
 }
 
-void OpRang6 () : {}
+void OpRang_Compare () : {}
 {
-  OpRang5() ( ( "==" | "!=" ) OpRang5() )*
+  OpRang_BitShift() [ ( "<" | ">" | ">=" | "<=" ) OpRang_Compare() ]
 }
 
-void OpRang5 () : {}
+void OpRang_BitShift () : {}
 {
-  OpRang4() ( ( "<" | ">" | ">=" | "<=" ) OpRang4() )*
+  OpRang_Sum() [ ("<<" | ">>" ) OpRang_BitShift() ]
 }
 
-void OpRang4 () : {}
+void OpRang_Sum () : {}
 {
-  OpRang3() ( ("<<" | ">>" ) OpRang3() )*
+  OpRang_Factor() [ ("+" | "-" ) OpRang_Sum() ]
 }
 
-void OpRang3 () : {}
+void OpRang_Factor () : {}
 {
-  OpRang2() ( ("+" | "-" ) OpRang2() )*
+  OpRang_Unary() [ ("*" | "/" | "%" ) OpRang_Factor() ]
 }
 
-void OpRang2 () : {}
-{
-  OpRang1() ( ("*" | "/" | "%" ) OpRang1() )*
-}
-
-void OpRang1 () : {}
+void OpRang_Unary () : {}
 {
   [
     "*" | "-" | "~" | "!"
   ]
   (
-    Vid()
+    Vid() [ "--" | "++" ]
     |
     <NUM>	| <TRUE> | <FALSE> | <NULL>
     |
