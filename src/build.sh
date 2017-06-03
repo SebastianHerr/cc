@@ -2,12 +2,16 @@
 
 PARSER='C0'
 
+rm bin/*.class
+rm bin/*.java
+
 if [ ! -d "bin/" ]
 then
   mkdir bin
 fi
 
-javacc $PARSER.jj
+javacc -OUTPUT_DIRECTORY=bin/ $PARSER.jj
+javac -d bin bin/*.java
 javac -d bin *.java
 
 echo -e "\n\e[1mBuilding completed. \e[0m \n"
