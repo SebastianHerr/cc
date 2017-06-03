@@ -1,0 +1,10 @@
+void function_name(int i)
+{	
+	i = 2 + 2 + 2 + 2 + 2;
+}
+
+void function_name2()
+{	
+	int i = 0;
+	function_name(i);
+}

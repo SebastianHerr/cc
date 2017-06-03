@@ -1,0 +1,9 @@
+void function_name()
+{	
+	int i = 2 + 2 + 2 + 2 + 2;
+}
+
+void function_name2()
+{	
+	function_name();
+}
