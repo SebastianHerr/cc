@@ -14,6 +14,7 @@ if (!(Test-Path ($bin))) {
 if($c) {
     javacc "-OUTPUT_DIRECTORY:$bin" "$parser.jj"
     javac -d $bin "$bin/*.java"
+    javac -d $bin "*.java"
 }
 
 Get-ChildItem $test -Filter $filter -Recurse -File | Foreach-Object {

@@ -1,6 +1,6 @@
 .vscode
-*.java
 *.class
 *.log
+bin/
 /doc/examples
 javacc-examples 
