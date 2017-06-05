@@ -73,30 +73,30 @@ TOKEN : {
 	|	< HEXNUM: "0" ("x" | "X") (["0"-"9","a"-"f","A"-"F"])+ >
 }
 
-void Program () : {}
+Node Program () : {}
 {
-	( 
+  ( 
     Declaration_Definition()
   )* 
   <EOF>
 }
 
-void Sid () : {}
+Node Sid () : {}
 {
   <ID>  // struct name
 }
 
-void Vid () : {}
+Node Vid () : {}
 {
   <ID>  // variable and function name
 }
 
-void Fid () : {}
+Node Fid () : {}
 {
   <ID>  // field name
 }
 
-void Declaration_Definition () : {}
+Node Declaration_Definition () : {}
 {
   LOOKAHEAD (3)
 	<STRUCT> Sid() [ "{" ( Type() Vid() ";" )* "}" ] ";"
@@ -104,7 +104,7 @@ void Declaration_Definition () : {}
   Type() Vid() "(" [ Type() Vid() ( "," Type() Vid() )* ] ")" ( "{" ( Statement() )* "}" | ";" )
 }
 
-void Statement () : {}
+Node Statement () : {}
 {
   Expression() ";"
   |
@@ -119,128 +119,202 @@ void Statement () : {}
 	"{" ( Statement() )* "}"
 }
 
-void MemberAccess () : {}
+Node MemberAccess () : {Node result; Node newNode; Node memberaccess;}
 {
   (
-    "." Fid()
+    "." newNode=Fid() {result= new NodeMemberAccessDot(newNode);}
     |
-    "->" Fid()
+    "->" newNode=Fid()
     |
-    "[" Expression() "]"
+    "[" newNode=Expression() "]"
   )
   [
-    MemberAccess()
+    memberaccess=MemberAccess() {memberaccess.setAccessingNode(result); result = memberaccess;} 
   ]
+  {return result;}
 }
 
-void Type () : {}
+Node Type () : {Node result; Node newNode;}
 {
 	(
-		<INT> | <BOOLEAN> | <CHAR> | <VOID>
+		<INT> {result= new NodeTypeInt();} | <BOOLEAN> {result= new NodeTypeBool();}| <VOID>{result= new NodeTypeVoid();}
 		|
-		<STRUCT> Sid()
+		<STRUCT> newNode=Sid() {result = new NodeTypeStruct(newNode);}
 	)
 	( 
-		"*" | "[" "]"
+		"*" {result = new NodeTypePointer(result);}| "[" "]"{result = new NodeTypeArray(result);}
 	)*
+  {return result;}
 }
 
-void FunctionCallArgs () : {}
+Node FunctionCallArgs () : {Node result; Node newNode;}
 {
-  [ Expression() ("," Expression() )* ]
+  {result = new NodeFunctionCallArgs();}
+  [ newNode=Expression() {result.addArg(newNode);}("," newNode=Expression() {result.addArg(newNode);})* ]
 }
 
-void Expression () : {}
+Node Expression () : {Node result; Node array_alloc_size; Node type; Node name; Node newNode;}
 {	
-  <ALLOC> "(" Type() ")"
+  <ALLOC> "(" result=Type() ")" {return new NodeExpressionAlloc(result);}
   |
-  <ALLOC_ARR> "(" Type() "," Expression() ")"
+  <ALLOC_ARR> "(" result=Type() "," array_alloc_size=Expression() ")" 
+    {return new NodeExpressionAllocArray(result,array_alloc_size);}
   |
-  OpRang_Assign()
+  result=OpRang_Assign() {return result;}
   |
-  Type() Vid() [ LOOKAHEAD(2) "=" OpRang_Conditional() ]
+  type=Type() name=Vid() {result = new NodeExpressionVariableDefinition(type,name);}
+    [ LOOKAHEAD(2) {result= new NodeExpressionAssign(result); result.setOp("=");} 
+      "=" newNode=OpRang_Conditional() {result.setSecondary(newNode);}]
+    {return result;}
 }
 
-void OpRang_Assign () : {}
+Node OpRang_Assign () : {Node result;}
 {
-  OpRang_Conditional()
+  result=OpRang_Conditional()
   [ 
     LOOKAHEAD(2)
+    {result= new NodeExpressionAssign(result);}
     (
-      "=" | "+=" | "-=" | "*=" | "/=" | "%=" | "<<=" | ">>=" | "&=" | "^=" | "|=" 
+      "=" {result.setOp("=");}| 
+      "+=" {result.setOp("+=");}| 
+      "-=" {result.setOp("-=");}| 
+      "*=" {result.setOp("*=");}| 
+      "/=" {result.setOp("/=");}| 
+      "%=" {result.setOp("%=");}| 
+      "<<=" {result.setOp("<<=");}| 
+      ">>=" {result.setOp(">>");}| 
+      "&=" {result.setOp("&=");}| 
+      "^=" {result.setOp("^=");}| 
+      "|=" {result.setOp("|=");}
     ) 
-    OpRang_Conditional()
+    newNode=OpRang_Conditional() {result.setSecondary(newNode);}
   ]
+  {return result;}
 }
 
-void OpRang_Conditional () : {}
+Node OpRang_Conditional () : {Node result; Node newNode;}
 {
-  OpRang_LogicalOr() [ LOOKAHEAD(2) ( "?" Expression() ":" Expression() ) ]
+  result=OpRang_LogicalOr() [ LOOKAHEAD(2) {result = new NodeExpressionConditional(result);} 
+        ( "?" newNode=Expression() {result.setSecondary(newNode);} ":" newNode=Expression() {result.setTernary(newNode);} ) ]
+  {return result;}
 }
 
-void OpRang_LogicalOr () : {}
+Node OpRang_LogicalOr () : {Node result;}
 {
-  OpRang_LogicalAnd() [ ( "||" ) OpRang_LogicalOr() ]
+  result=OpRang_LogicalAnd() [ {newNode = new NodeExpressionLogicalOr(result);} 
+        ( "||" ) newNode=OpRang_LogicalOr()  {result.setSecondary(newNode);}]
+  {return result;}
 }
 
-void OpRang_LogicalAnd () : {}
+Node OpRang_LogicalAnd () : {Node result;}
 {
-  OpRang_BitOr() [ ( "&&" ) OpRang_LogicalAnd() ]
+  result=OpRang_BitOr() [ {newNode = new NodeExpressionLogicalAnd(result);} 
+        ( "&&" ) newNode=OpRang_LogicalAnd()  {result.setSecondary(newNode);}]
+  {return result;}
 }
 
-void OpRang_BitOr () : {}
+Node OpRang_BitOr () : {Node result;}
 {
-  OpRang_BitXor() [ ( "|" ) OpRang_BitOr() ]
+  result=OpRang_BitXor() [ {newNode = new NodeExpressionBitOr(result);} 
+        ( "|" ) newNode=OpRang_BitOr()  {result.setSecondary(newNode);}]
+  {return result;}
 }
 
-void OpRang_BitXor () : {}
+Node OpRang_BitXor () : {Node result;}
 {
-  OpRang_BitAnd() [ ( "^" ) OpRang_BitXor() ]
+  result=OpRang_BitAnd() [ {newNode = new NodeExpressionBitXor(result);} 
+        ( "^" ) newNode=OpRang_BitXor()  {result.setSecondary(newNode);}]
+  {return result;}
 }
 
-void OpRang_BitAnd () : {}
+Node OpRang_BitAnd () : {Node result;}
 {
-  OpRang_Equality() [ ( "&" ) OpRang_BitAnd() ]
+  result=OpRang_Equality() [ {newNode = new NodeExpressionBitAnd(result);} 
+        ( "&" ) newNode=OpRang_BitAnd() {result.setSecondary(newNode);} ]
+  {return result;}
 }
 
-void OpRang_Equality () : {}
+Node OpRang_Equality () : {Node result;}
 {
-  OpRang_Compare() [ ( "==" | "!=" ) OpRang_Equality() ]
+  result=OpRang_Compare() [ {newNode = new NodeExpressionEquality(result);} 
+        ( "==" {result.setOp("<");}| 
+          "!=" {result.setOp("<");}) newNode=OpRang_Equality() {result.setSecondary(newNode);}]
+ {return result;}
 }
 
-void OpRang_Compare () : {}
+Node OpRang_Compare () : {Node result;}
 {
-  OpRang_BitShift() [ ( "<" | ">" | ">=" | "<=" ) OpRang_Compare() ]
+  result=OpRang_BitShift() [ {newNode = new NodeExpressionCompare(result);} 
+        ( "<" {result.setOp("<");}| 
+          ">" {result.setOp(">");}| 
+          ">=" {result.setOp(">=");}| 
+          "<=" {result.setOp("<=");}) newNode=OpRang_Compare() {result.setSecondary(newNode);}]
+  {return result;}
 }
 
-void OpRang_BitShift () : {}
+Node OpRang_BitShift () : {Node result;}
 {
-  OpRang_Sum() [ ("<<" | ">>" ) OpRang_BitShift() ]
+  result=OpRang_Sum() [ {newNode = new NodeExpressionBitShift(result);} 
+        ("<<" {result.setOp("<<");}| 
+         ">>" {result.setOp(">>");}) newNode=OpRang_BitShift() {result.setSecondary(newNode);}]
+  {return result;}
 }
 
-void OpRang_Sum () : {}
+Node OpRang_Sum () : {Node result;}
 {
-  OpRang_Factor() [ ("+" | "-" ) OpRang_Sum() ]
+  result=OpRang_Factor() [ {result = new NodeExpressionSum(result);} 
+        ("+" {result.setOp("+");}| 
+         "-" {result.setOp("-");}) newNode=OpRang_Sum() {result.setSecondary(newNode);}]
+  {return result;}
 }
 
-void OpRang_Factor () : {}
+Node OpRang_Factor () : {Node result; Node newNode;}
 {
-  OpRang_Unary() [ ("*" | "/" | "%" ) OpRang_Factor() ]
+  result=OpRang_Unary() [ {result = new NodeExpressionFactor(result);} 
+        ("*" {result.setOp("*");} |
+         "/" {result.setOp("/");} | 
+         "%" {result.setOp("%");} ) 
+         newNode=OpRang_Factor() {result.setSecondary(newNode);}] 
+  {return result;}
 }
 
-void OpRang_Unary () : {}
+Node OpRang_Unary () : {Node unaryOp; Node result; Node memberaccess; Node functionArgs;}
 {
+  //gather information for this node...
   [
-    "*" | "-" | "~" | "!"
+    "*" {unaryOp=new NodeExpressionUnaryDereference();} | 
+    "-" {unaryOp=new NodeExpressionUnaryMinus();} | 
+    "~" {unaryOp=new NodeExpressionUnaryBitwiseNegation();} |
+    "!" {unaryOp=new NodeExpressionUnaryNegation();}
   ]
   (
-    Vid() [ "(" FunctionCallArgs() ")" | "--" | "++" ]
+    result=Vid() [ "(" functionArgs=FunctionCallArgs() ")" {result = new NodeExpressionFunctionCall(result, functionArgs);} | 
+                   "--" { result = new NodeExpressionDecrement(result);}| 
+                   "++" { result = new NodeExpressionIncrement(result);}]
     |
-    <NUM>	| <TRUE> | <FALSE> | <NULL>
+      <NUM>  {result= new NodeExpressionConstNum();}	
+    | 
+      <TRUE> {result= new NodeExpressionConstTrue();} 
+    | 
+      <FALSE>{result= new NodeExpressionConstFalse();} 
+    | 
+      <NULL> {result= new NodeExpressionConstNull();}
     |
-    "(" OpRang_Conditional() ")"
+    "(" result=OpRang_Conditional() ")"
   )
   [
-    MemberAccess()
+    /*
+     * If there is a constant or function before that, then the type checker will complain here,
+     * unless the returned item is a stack or something :)
+     */
+    memberaccess=MemberAccess()
   ]
+  //...and assemble it
+  {
+    if(memberaccess != null)
+    { memberaccess.setAccessingNode(result); result=memberaccess; }
+    if(unaryOp != null)
+    { unaryOp.setInternNode(result); result=unaryOp; }
+    return result;
+  }
 }
