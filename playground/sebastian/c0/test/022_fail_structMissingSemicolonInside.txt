@@ -1,3 +1,0 @@
-struct nameOfStruct;
-struct nameOfStruct2{
-int i; bool b	};

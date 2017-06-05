@@ -73,174 +73,459 @@ TOKEN : {
 	|	< HEXNUM: "0" ("x" | "X") (["0"-"9","a"-"f","A"-"F"])+ >
 }
 
-void Program () : {}
+void Program () : { Node me = new Node("Program"); Node decl; }
 {
 	( 
-    Declaration_Definition()
+    decl = Declaration_Definition() {me.addChild(decl);}
   )* 
-  <EOF>
+  <EOF> {me.addChild("<EOF>");}
+  
+  {
+    me.printTree("");
+  }
 }
 
-void Sid () : {}
+Node Sid () : { Node me = new Node("Sid"); Token t; }
 {
-  <ID>  // struct name
+  t=<ID> {me.addChild(t.image);}
+  {
+    return me;
+  }
 }
 
-void Vid () : {}
+Node Vid () : { Node me = new Node("Vid"); Token t; }
 {
-  <ID>  // variable and function name
+  t=<ID> {me.addChild(t.image);}
+  {
+    return me;
+  }
 }
 
-void Fid () : {}
+Node Fid () : { Node me = new Node("Fid"); Token t; }
 {
-  <ID>  // field name
+  t=<ID> {me.addChild(t.image);}
+  {
+    return me;
+  }
 }
 
-void Declaration_Definition () : {}
-{
-  LOOKAHEAD (3)
-	<STRUCT> Sid() [ "{" ( Type() Vid() ";" )* "}" ] ";"
-	|
-  Type() Vid() "(" [ Type() Vid() ( "," Type() Vid() )* ] ")" ( "{" ( Statement() )* "}" | ";" )
-}
-
-void Statement () : {}
-{
-  Expression() ";"
-  |
-	<IF> "(" Expression() ")" Statement() [ LOOKAHEAD(2) <ELSE> Statement() ]
-	|
-	<WHILE> "(" Expression() ")" Statement()
-	|
-	<FOR> "(" [ Expression() ] ";" Expression() ";" [ Expression() ] ")" Statement()
-	|
-	<RETURN> [ Expression() ] ";"
-	|
-	"{" ( Statement() )* "}"
-}
-
-void MemberAccess () : {}
+Node Declaration_Definition () : { Node me = new Node("Declaration_Definition"); Node sid, type, vid, stat; }
 {
   (
-    "." Fid()
+    LOOKAHEAD (3)
+    <STRUCT> {me.addChild("struct");}
+    sid = Sid() {me.addChild(sid);}
+    [ 
+      "{" {me.addChild("{");}
+      ( 
+        type = Type() {me.addChild(type);}
+        vid = Vid() {me.addChild(vid);}
+        ";" {me.addChild(";");}
+      )* 
+      "}" {me.addChild("}");}
+    ] 
+    ";" {me.addChild(";");}
     |
-    "->" Fid()
+    type = Type() {me.addChild(type);}
+    vid = Vid() {me.addChild(vid);}
+    "(" {me.addChild("(");}
+    [ 
+      type = Type() {me.addChild(type);}
+      vid = Vid() {me.addChild(vid);}
+      ( 
+        "," {me.addChild(";");}
+        type = Type() {me.addChild(type);}
+        vid = Vid() {me.addChild(vid);}
+      )*
+    ] 
+    ")" {me.addChild(")");}
+    ( 
+      "{" {me.addChild("{");}
+      ( 
+        stat = Statement() {me.addChild(stat);}
+      )* 
+      "}" {me.addChild("}");}
+      |
+      ";" {me.addChild(";");}
+    )
+  )
+  {
+    return me;
+  }
+}
+
+Node Statement () : { Node me = new Node("Statement"); Node exp1, exp2, exp3, stat1, stat2; }
+{
+  (
+    exp1= Expression() {me.addChild(exp1);}
+    ";" {me.addChild(";");}
     |
-    "[" Expression() "]"
+    <IF> {me.addChild("if");}
+    "(" {me.addChild("(");}
+    exp1 = Expression() {me.addChild(exp1);}
+    ")" {me.addChild(")");}
+    stat1 = Statement() {me.addChild(stat1);}
+    [ 
+      LOOKAHEAD(2) 
+      <ELSE> {me.addChild("else");}
+      stat2 = Statement() {me.addChild(stat2);}
+    ]
+    |
+    <WHILE> {me.addChild("while");}
+    "(" {me.addChild(")");}
+    exp1 = Expression() {me.addChild(exp1);}
+    ")" {me.addChild(")");}
+    stat1 = Statement() {me.addChild(stat1);}
+    |
+    <FOR> {me.addChild("for");}
+    "(" {me.addChild("(");}
+    [ 
+      exp1 = Expression() {me.addChild(exp1);}
+    ] 
+    ";" {me.addChild(";");}
+    exp2= Expression() {me.addChild(exp2);}
+    ";" {me.addChild(";");}
+    [ 
+      exp3 = Expression() {me.addChild(exp3);}
+    ] 
+    ")" {me.addChild(")");}
+    stat1 = Statement() {me.addChild(stat1);}
+    |
+    <RETURN> {me.addChild("return");}
+    [ 
+      exp1 = Expression() {me.addChild(exp1);}
+    ] 
+    ";" {me.addChild(";");}
+    |
+    "{" {me.addChild("{");}
+    ( 
+      stat1 = Statement() {me.addChild(stat1);}
+    )* 
+    "}" {me.addChild("}");}
+  )
+  {
+    return me;
+  }
+}
+
+Node MemberAccess () : { Node me = new Node("MemberAccess"); Node fid1, fid2, exp, macc; }
+{
+  (
+    "." {me.addChild(".");}
+    fid1 = Fid() {me.addChild(fid1);}
+    |
+    "->" {me.addChild("->");}
+    fid2 = Fid() {me.addChild(fid2);}
+    |
+    "[" {me.addChild("[");}
+    exp = Expression() {me.addChild(exp);}
+    "]" {me.addChild("]");}
   )
   [
-    MemberAccess()
+    macc = MemberAccess() {me.addChild(macc);}
   ]
+  {
+    return me;
+  }
 }
 
-void Type () : {}
+Node Type () : { Node me = new Node("Type"); Node sid; }
 {
 	(
-		<INT> | <BOOLEAN> | <CHAR> | <VOID>
+		<INT> {me.addChild("int");}
+    | 
+    <BOOLEAN> {me.addChild("boolean");}
+    | 
+    <CHAR> {me.addChild("char");}
+    | 
+    <VOID> {me.addChild("void");}
 		|
-		<STRUCT> Sid()
+		<STRUCT> {me.addChild("struct");}
+    sid = Sid() {me.addChild(sid);}
 	)
-	( 
-		"*" | "[" "]"
+	(
+		"*" {me.addChild("*");}
+    | 
+    "[" "]" {me.addChild("["); me.addChild("]");}
 	)*
+  {
+    return me;
+  }
 }
 
-void FunctionCallArgs () : {}
+Node FunctionCallArgs () : { Node me = new Node("FunctionCallArgs"); Node exp1, exp2; }
 {
-  [ Expression() ("," Expression() )* ]
+  [
+    exp1 = Expression() {me.addChild(exp1);}
+    (
+      "," {me.addChild(";");}
+      exp2 = Expression() {me.addChild(exp2);}
+    )*
+  ]
+  {
+    return me;
+  }
 }
 
-void Expression () : {}
-{	
-  <ALLOC> "(" Type() ")"
-  |
-  <ALLOC_ARR> "(" Type() "," Expression() ")"
-  |
-  OpRang_Assign()
-  |
-  Type() Vid() [ LOOKAHEAD(2) "=" OpRang_Conditional() ]
-}
-
-void OpRang_Assign () : {}
+Node Expression () : { Node me = new Node("Expression"); Node type, exp, ass, vid, cond; }
 {
-  OpRang_Conditional()
+  (
+    <ALLOC> {me.addChild("alloc");}
+    "(" {me.addChild("(");}
+    type = Type() {me.addChild(type);}
+    ")" {me.addChild(")");}
+    |
+    <ALLOC_ARR> {me.addChild("alloc_arr");} 
+    "(" {me.addChild("==");}
+    type = Type() {me.addChild(type);}
+    "," {me.addChild(";");}
+    exp = Expression() {me.addChild(exp);}
+    ")" {me.addChild(")");}
+    |
+    ass = OpRang_Assign() {me.addChild(ass);}
+    |
+    type = Type() {me.addChild(type);}
+    vid = Vid() {me.addChild(vid);}
+    [ 
+      LOOKAHEAD(2)
+      "=" {me.addChild("=");}
+      cond = OpRang_Conditional() {me.addChild(cond);} 
+    ]
+  )
+  {
+    return me;
+  }
+}
+
+Node OpRang_Assign () : { Node me = new Node("OpRang_Assign"); Node cond1, cond2; }
+{
+  cond1 = OpRang_Conditional() {me.addChild(cond1);}
   [ 
     LOOKAHEAD(2)
     (
       "=" | "+=" | "-=" | "*=" | "/=" | "%=" | "<<=" | ">>=" | "&=" | "^=" | "|=" 
-    ) 
-    OpRang_Conditional()
+    ) {me.addChild("!!!!TODO!!!!");}
+    cond2 = OpRang_Conditional() {me.addChild(cond2);}
   ]
+  {
+    return me;
+  }
 }
 
-void OpRang_Conditional () : {}
+Node OpRang_Conditional () : { Node me = new Node("OpRang_Conditional"); Node or, exp1, exp2; }
 {
-  OpRang_LogicalOr() [ LOOKAHEAD(2) ( "?" Expression() ":" Expression() ) ]
+  or = OpRang_LogicalOr() {me.addChild(or);}
+  [ 
+    LOOKAHEAD(2) ( 
+      "?" {me.addChild("?");}
+
+      exp1 = Expression() {me.addChild(exp1);}
+      
+      ":" {me.addChild(":");}
+      
+      exp2 = Expression() {me.addChild(exp2);}
+    )
+  ]
+  {
+    return me;
+  }
 }
 
-void OpRang_LogicalOr () : {}
+Node OpRang_LogicalOr () : { Node me = new Node("OpRang_LogicalOr"); Node and, or; }
 {
-  OpRang_LogicalAnd() [ ( "||" ) OpRang_LogicalOr() ]
+  and = OpRang_LogicalAnd() {me.addChild(and);}
+  [
+    (
+      "||" {me.addChild("||");}
+    ) 
+    or = OpRang_LogicalOr() {me.addChild(or);}
+  ]
+  {
+    return me;
+  }
 }
 
-void OpRang_LogicalAnd () : {}
+Node OpRang_LogicalAnd () : { Node me = new Node("OpRang_LogicalAnd"); Node or, and; }
 {
-  OpRang_BitOr() [ ( "&&" ) OpRang_LogicalAnd() ]
+  or = OpRang_BitOr() {me.addChild(or);}
+  [ 
+    ( 
+      "&&" {me.addChild("&&");}
+    ) 
+    and = OpRang_LogicalAnd() {me.addChild(and);}
+  ]
+  {
+    return me;
+  }
 }
 
-void OpRang_BitOr () : {}
+Node OpRang_BitOr () : { Node me = new Node("OpRang_BitOr"); Node xor, or; }
 {
-  OpRang_BitXor() [ ( "|" ) OpRang_BitOr() ]
+  xor = OpRang_BitXor() {me.addChild(xor);}
+  [ 
+    (
+      "|" {me.addChild("|");}
+    ) 
+    or = OpRang_BitOr() {me.addChild(or);}
+  ]
+  {
+    return me;
+  }
 }
 
-void OpRang_BitXor () : {}
+Node OpRang_BitXor () : { Node me = new Node("OpRang_BitXor"); Node and, xor; }
 {
-  OpRang_BitAnd() [ ( "^" ) OpRang_BitXor() ]
+  and = OpRang_BitAnd() {me.addChild(and);}
+  [ 
+    ( 
+      "^" {me.addChild("^");}
+    ) 
+    xor = OpRang_BitXor() {me.addChild(xor);}
+  ]
+  {
+    return me;
+  }
 }
 
-void OpRang_BitAnd () : {}
+Node OpRang_BitAnd () : { Node me = new Node("OpRang_BitAnd"); Node equ, and; }
 {
-  OpRang_Equality() [ ( "&" ) OpRang_BitAnd() ]
+  equ = OpRang_Equality() {me.addChild(equ);}
+  [ 
+    ( 
+      "&" {me.addChild("&");}
+    ) 
+    and = OpRang_BitAnd() {me.addChild(and);}
+  ]
+  {
+    return me;
+  }
 }
 
-void OpRang_Equality () : {}
+Node OpRang_Equality () : { Node me = new Node("OpRang_Equality"); Node comp, equ; }
 {
-  OpRang_Compare() [ ( "==" | "!=" ) OpRang_Equality() ]
+  comp = OpRang_Compare() {me.addChild(comp);}
+  [ 
+    ( 
+      "==" {me.addChild("==");}
+      | 
+      "!=" {me.addChild("!=");}
+    ) 
+    equ = OpRang_Equality() {me.addChild(equ);}
+  ]
+  {
+    return me;
+  }
 }
 
-void OpRang_Compare () : {}
+Node OpRang_Compare () : { Node me = new Node("OpRang_Compare"); Node shift, comp; }
 {
-  OpRang_BitShift() [ ( "<" | ">" | ">=" | "<=" ) OpRang_Compare() ]
+  shift = OpRang_BitShift() {me.addChild(shift);}
+  [ 
+    ( 
+      "<" {me.addChild("<");}
+      | 
+      ">" {me.addChild(">");}
+      | 
+      ">=" {me.addChild(">=");}
+      | 
+      "<=" {me.addChild("<=");}
+    ) 
+    comp = OpRang_Compare() {me.addChild(comp);}
+  ]
+  {
+    return me;
+  }
 }
 
-void OpRang_BitShift () : {}
+Node OpRang_BitShift () : { Node me = new Node("OpRang_BitShift"); Node sum, shift; }
 {
-  OpRang_Sum() [ ("<<" | ">>" ) OpRang_BitShift() ]
+  sum = OpRang_Sum() {me.addChild(sum);} 
+  [ 
+    (
+      "<<" {me.addChild("<<");} 
+      |
+      ">>" {me.addChild(">>");}
+    ) 
+    shift = OpRang_BitShift() {me.addChild(shift);} 
+  ]
+  {
+    return me;
+  }
 }
 
-void OpRang_Sum () : {}
+Node OpRang_Sum () : { Node me = new Node("OpRang_Sum"); Node fac, sum; }
 {
-  OpRang_Factor() [ ("+" | "-" ) OpRang_Sum() ]
+  fac = OpRang_Factor() {me.addChild(fac);}
+  [ 
+    (
+      "+" {me.addChild("+");}
+      | 
+      "-" {me.addChild("-");}
+    ) 
+    sum = OpRang_Sum() {me.addChild(sum);}
+  ]
+  {
+    return me;
+  }
 }
 
-void OpRang_Factor () : {}
+Node OpRang_Factor () : { Node me = new Node("OpRang_Factor"); Node unary, fac;}
 {
-  OpRang_Unary() [ ("*" | "/" | "%" ) OpRang_Factor() ]
+  unary = OpRang_Unary() {me.addChild(unary);} 
+  [ 
+    (
+      "*" {me.addChild("*");}
+      | 
+      "/" {me.addChild("/");}
+      | 
+      "%" {me.addChild("%");}
+    ) 
+    fac = OpRang_Factor() {me.addChild(fac);}
+  ]
+  {
+    return me;
+  }
 }
 
-void OpRang_Unary () : {}
+Node OpRang_Unary () : { Node me = new Node("OpRang_Unary"); Node fnCallArgs, vid, cond, macc; Token lit; }
 {
   [
-    "*" | "-" | "~" | "!"
+    "*" {me.addChild("*");}
+    | 
+    "-" {me.addChild("-");}
+    | 
+    "~" {me.addChild("~");}
+    | 
+    "!" {me.addChild("!");}
   ]
   (
-    Vid() [ "(" FunctionCallArgs() ")" | "--" | "++" ]
+    vid = Vid() {me.addChild(vid);}
+    [ 
+      "(" {me.addChild("(");}
+      fnCallArgs = FunctionCallArgs() {me.addChild(fnCallArgs);}
+      ")" {me.addChild(")");}
+      | 
+      "--" {me.addChild("--");}
+      | 
+      "++" {me.addChild("++");}
+    ]
     |
-    <NUM>	| <TRUE> | <FALSE> | <NULL>
+    lit = <NUM>{me.addChild(lit.image);}
+    | 
+    lit = <TRUE>{me.addChild(lit.image);} 
+    | 
+    lit = <FALSE>{me.addChild(lit.image);} 
+    | 
+    lit = <NULL>{me.addChild(lit.image);}
     |
-    "(" OpRang_Conditional() ")"
+    "(" {me.addChild("(");}
+    cond = OpRang_Conditional() {me.addChild(cond);}
+    ")" {me.addChild(")");}
   )
   [
-    MemberAccess()
+    macc = MemberAccess() {me.addChild(macc);}
   ]
+  {
+    return me;
+  }
 }
