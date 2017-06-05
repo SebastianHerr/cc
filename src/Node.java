@@ -1,5 +1,5 @@
 /**
- * This class allows you creating Nodes, adding children and prining
+ * This class allows you creating Nodes, adding children and printing
  * them to the console in a hierarchical way.
  *
  * @name Node
@@ -27,7 +27,7 @@ public class Node {
    */
   public Node (String image, Node parent) {
     this.image = image;
-    parent.addChild(this);
+    parent.addChild (this);
   }
 
   /**
@@ -49,7 +49,7 @@ public class Node {
    * @param value String representation of this node.
    */
   public void addChild (String value) {
-    addChild(new Node(value));
+    addChild (new Node(value));
   }
 
   /**
@@ -70,19 +70,32 @@ public class Node {
    * @param indentation Indentation on each layer.
    */
   public void printTree (String indentation) {
-    System.out.println(indentation + this.image);
-
+    System.out.println (indentation + this.image);
     if (this.child != null) {
       this.child.printTree (standardIndentation + indentation);
     }
-
     if (this.sibling != null) {
       this.sibling.printTree (indentation);
     }
   }
 
+  /**
+   * Calls printTree with no indentation for the starting node.
+   */
   public void printTree () {
     printTree("");
+  }
+
+  /**
+   * Gets the root node recursively.
+   * @return Root node.
+   */
+  public Node getRoot () {
+    if (this.parent == null) {
+      return this;
+    } else {
+      return this.parent.getRoot();
+    }
   }
 
   @Override
