@@ -20,7 +20,8 @@ public class C0 {
 			} else {
 				parser = new C0 (System.in);
 			}
-			parser.Program();
+			Node root = parser.Program();
+      root.printTree();
 			System.out.println ("[  OK  ]");
 		} catch (Exception ex) {
 			System.out.println ("[ FAIL ]" + ((args.length > 1) ? ex.getMessage() + "\n\n" : ""));
@@ -73,7 +74,7 @@ TOKEN : {
 	|	< HEXNUM: "0" ("x" | "X") (["0"-"9","a"-"f","A"-"F"])+ >
 }
 
-void Program () : { Node me = new Node("Program"); Node decl; }
+Node Program () : { Node me = new Node("Program"); Node decl; }
 {
 	( 
     decl = Declaration_Definition() {me.addChild(decl);}
@@ -81,7 +82,7 @@ void Program () : { Node me = new Node("Program"); Node decl; }
   <EOF> {me.addChild("<EOF>");}
   
   {
-    me.printTree("");
+    return me;
   }
 }
 
