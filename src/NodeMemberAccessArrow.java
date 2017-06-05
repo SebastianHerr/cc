@@ -1,9 +1,8 @@
-public class NodeMemberAccessArrow{
+public class NodeMemberAccessArrow extends NodeMemberAccess{
 
-Node parent;
-
-public NodeMemberAccessArrow()
+public NodeMemberAccessArrow(Node accessingNode_)
 {
+  super(accessingNode_);
 }
 
 public String getNodeType()
@@ -15,14 +14,8 @@ public boolean checkNodeType()
 {
 return true; //Check okay
 }
-
-public Node getParent()
+public String toString()
 {
-return parent;
-}
-
-public void setParent(Node newParent)
-{
-parent = newParent;
+  return accessedNode + "->" + accessingNode;
 }
 }

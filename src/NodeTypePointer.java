@@ -1,9 +1,10 @@
-public class NodeTypePointer{
+public class NodeTypePointer extends Node{
 
-Node parent;
+Node pointingTo;
 
-public NodeTypePointer()
+public NodeTypePointer(Node pointingTo_)
 {
+  pointingTo = pointingTo_;
 }
 
 public String getNodeType()
@@ -16,13 +17,8 @@ public boolean checkNodeType()
 return true; //Check okay
 }
 
-public Node getParent()
+public String toString()
 {
-return parent;
-}
-
-public void setParent(Node newParent)
-{
-parent = newParent;
+  return pointingTo + "*";
 }
 }

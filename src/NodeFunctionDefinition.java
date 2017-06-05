@@ -1,9 +1,12 @@
-public class NodeFunctionDefinition{
+public class NodeFunctionDefinition extends Node{
 
-Node parent;
+NodeFunctionSignature name;
+Node functionblock;
 
-public NodeFunctionDefinition()
+public NodeFunctionDefinition(NodeFunctionSignature name_, Node functionblock_)
 {
+   name = name_;
+   functionblock = functionblock_;
 }
 
 public String getNodeType()
@@ -16,13 +19,8 @@ public boolean checkNodeType()
 return true; //Check okay
 }
 
-public Node getParent()
+public String toString()
 {
-return parent;
-}
-
-public void setParent(Node newParent)
-{
-parent = newParent;
+  return name + "" + functionblock;
 }
 }

@@ -1,9 +1,18 @@
 public abstract class Node{
+  
+  Node parent;
+  
 	public abstract String getNodeType();
 	
 	public abstract boolean checkNodeType();
 	
-	public abstract Node getParent();
+	public Node getParent()
+  {
+    return parent;
+  }
 	
-	public abstract void setParent(Node newParent);
+	public void setParent(Node parent_)
+  {
+    parent = parent_;
+  }
 }

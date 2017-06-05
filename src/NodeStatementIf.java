@@ -1,9 +1,12 @@
-public class NodeStatementIf{
+public class NodeStatementIf extends Node{
 
-Node parent;
+Node condition;
+Node ifStatement;
+Node elseStatement;
 
-public NodeStatementIf()
+public NodeStatementIf(Node condition_)
 {
+  condition = condition_;
 }
 
 public String getNodeType()
@@ -16,13 +19,18 @@ public boolean checkNodeType()
 return true; //Check okay
 }
 
-public Node getParent()
+public void setIf(Node statement)
 {
-return parent;
+  ifStatement = statement;
 }
 
-public void setParent(Node newParent)
+public void setElse(Node statement)
 {
-parent = newParent;
+  elseStatement = statement;
+}
+
+public String toString()
+{
+  return "if(" + condition + ")" + ifStatement + ((elseStatement==null)?"":"else " + elseStatement + "");
 }
 }

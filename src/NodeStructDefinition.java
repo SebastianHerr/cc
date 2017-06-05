@@ -1,9 +1,14 @@
-public class NodeStructDefinition{
+import java.util.*;
+public class NodeStructDefinition extends Node{
 
-Node parent;
+NodeStructSignature name;
 
-public NodeStructDefinition()
+ArrayList<Node> listOfMembers;
+
+public NodeStructDefinition(NodeStructSignature name_)
 {
+  name = name_;
+  listOfMembers = new ArrayList<Node>();
 }
 
 public String getNodeType()
@@ -16,13 +21,19 @@ public boolean checkNodeType()
 return true; //Check okay
 }
 
-public Node getParent()
+public void addElement(Node type_, Node name_)
 {
-return parent;
+  listOfMembers.add(type_);
+  listOfMembers.add(name_);
 }
 
-public void setParent(Node newParent)
+public String toString()
 {
-parent = newParent;
+  String result = name + "{";
+  for(int i = 0; i < listOfMembers.size(); i += 2) {
+    result+= listOfMembers.get(i) + "" + listOfMembers.get(i+1) + ";";
+  }
+  result += "}";
+  return result;
 }
 }

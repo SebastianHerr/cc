@@ -1,6 +1,4 @@
-public class NodeExpressionUnaryMinus{
-
-Node parent;
+public class NodeExpressionUnaryMinus extends NodeExpressionUnary{
 
 public NodeExpressionUnaryMinus()
 {
@@ -16,13 +14,8 @@ public boolean checkNodeType()
 return true; //Check okay
 }
 
-public Node getParent()
+public String toString()
 {
-return parent;
-}
-
-public void setParent(Node newParent)
-{
-parent = newParent;
+  return "-" + innerNode;
 }
 }

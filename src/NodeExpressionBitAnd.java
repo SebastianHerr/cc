@@ -1,9 +1,9 @@
-public class NodeExpressionBitAnd{
+public class NodeExpressionBitAnd extends NodeExpressionBinary{
 
-Node parent;
-
-public NodeExpressionBitAnd()
+public NodeExpressionBitAnd(Node primary_)
 {
+  super(primary_);
+  setOp("&");
 }
 
 public String getNodeType()
@@ -14,15 +14,5 @@ return "NodeExpressionBitAnd";
 public boolean checkNodeType()
 {
 return true; //Check okay
-}
-
-public Node getParent()
-{
-return parent;
-}
-
-public void setParent(Node newParent)
-{
-parent = newParent;
 }
 }

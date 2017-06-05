@@ -1,9 +1,10 @@
-public class NodeExpressionConstNum{
+public class NodeExpressionConstNum extends Node{
 
-Node parent;
+int value;
 
-public NodeExpressionConstNum()
+public NodeExpressionConstNum(String value_)
 {
+  value = Integer.parseInt(value_);
 }
 
 public String getNodeType()
@@ -16,13 +17,8 @@ public boolean checkNodeType()
 return true; //Check okay
 }
 
-public Node getParent()
+public String toString()
 {
-return parent;
-}
-
-public void setParent(Node newParent)
-{
-parent = newParent;
+  return value + "";
 }
 }

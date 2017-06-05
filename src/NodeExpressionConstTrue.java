@@ -1,6 +1,4 @@
-public class NodeExpressionConstTrue{
-
-Node parent;
+public class NodeExpressionConstTrue extends Node{
 
 public NodeExpressionConstTrue()
 {
@@ -16,13 +14,8 @@ public boolean checkNodeType()
 return true; //Check okay
 }
 
-public Node getParent()
+public String toString()
 {
-return parent;
-}
-
-public void setParent(Node newParent)
-{
-parent = newParent;
+  return "true";
 }
 }

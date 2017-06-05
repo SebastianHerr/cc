@@ -1,9 +1,9 @@
-public class NodeExpressionBitXor{
+public class NodeExpressionBitXor extends NodeExpressionBinary{
 
-Node parent;
-
-public NodeExpressionBitXor()
+public NodeExpressionBitXor(Node primary_)
 {
+  super(primary_);
+  setOp("^");
 }
 
 public String getNodeType()
@@ -14,15 +14,5 @@ return "NodeExpressionBitXor";
 public boolean checkNodeType()
 {
 return true; //Check okay
-}
-
-public Node getParent()
-{
-return parent;
-}
-
-public void setParent(Node newParent)
-{
-parent = newParent;
 }
 }

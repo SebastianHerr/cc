@@ -1,6 +1,4 @@
-public class NodeExpressionUnaryBitwiseNegation{
-
-Node parent;
+public class NodeExpressionUnaryBitwiseNegation extends NodeExpressionUnary{
 
 public NodeExpressionUnaryBitwiseNegation()
 {
@@ -16,13 +14,9 @@ public boolean checkNodeType()
 return true; //Check okay
 }
 
-public Node getParent()
+public String toString()
 {
-return parent;
+  return "~" + innerNode;
 }
 
-public void setParent(Node newParent)
-{
-parent = newParent;
-}
 }

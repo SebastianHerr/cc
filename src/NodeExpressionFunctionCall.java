@@ -1,9 +1,12 @@
-public class NodeExpressionFunctionCall{
+public class NodeExpressionFunctionCall extends Node{
 
-Node parent;
+Node name; 
+NodeFunctionCallArgs args;
 
-public NodeExpressionFunctionCall()
+public NodeExpressionFunctionCall(Node name_, NodeFunctionCallArgs args_)
 {
+  name = name_;
+  args = args_;
 }
 
 public String getNodeType()
@@ -16,13 +19,8 @@ public boolean checkNodeType()
 return true; //Check okay
 }
 
-public Node getParent()
+public String toString()
 {
-return parent;
-}
-
-public void setParent(Node newParent)
-{
-parent = newParent;
+  return name + "(" + args + ")";
 }
 }

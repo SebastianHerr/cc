@@ -1,9 +1,9 @@
-public class NodeExpressionLogicalAnd{
+public class NodeExpressionLogicalAnd extends NodeExpressionBinary{
 
-Node parent;
-
-public NodeExpressionLogicalAnd()
+public NodeExpressionLogicalAnd(Node primary_)
 {
+  super(primary_);
+  setOp("&&");
 }
 
 public String getNodeType()
@@ -14,15 +14,5 @@ return "NodeExpressionLogicalAnd";
 public boolean checkNodeType()
 {
 return true; //Check okay
-}
-
-public Node getParent()
-{
-return parent;
-}
-
-public void setParent(Node newParent)
-{
-parent = newParent;
 }
 }

@@ -1,9 +1,11 @@
-public class NodeStatementWhile{
+public class NodeStatementWhile extends Node{
 
-Node parent;
+Node condition;
+Node loopBody;
 
-public NodeStatementWhile()
+public NodeStatementWhile(Node condition_)
 {
+  condition = condition_;
 }
 
 public String getNodeType()
@@ -16,13 +18,13 @@ public boolean checkNodeType()
 return true; //Check okay
 }
 
-public Node getParent()
+public void setLoopBody(Node loopBody_)
 {
-return parent;
+  loopBody = loopBody_;
 }
 
-public void setParent(Node newParent)
+public String toString()
 {
-parent = newParent;
+  return "while(" + condition +"){" + loopBody + "}";
 }
 }

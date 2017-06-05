@@ -1,15 +1,15 @@
-public class NodeTypeStruct extends Node{
+public class NodeStructSignature extends Node{
 
 Node name;
 
-public NodeTypeStruct(Node name_)
+public NodeStructSignature(Node name_)
 {
   name = name_;
 }
 
 public String getNodeType()
 {
-return "NodeTypeStruct";
+return "NodeStructSignature";
 }
 
 public boolean checkNodeType()

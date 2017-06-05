@@ -1,9 +1,12 @@
-public class NodeExpressionVariableDefinition{
+public class NodeExpressionVariableDefinition extends Node{
 
-Node parent;
+Node type;
+Node name;
 
-public NodeExpressionVariableDefinition()
+public NodeExpressionVariableDefinition(Node type_, Node name_)
 {
+  type = type_;
+  name = name_;
 }
 
 public String getNodeType()
@@ -16,13 +19,9 @@ public boolean checkNodeType()
 return true; //Check okay
 }
 
-public Node getParent()
+public String toString()
 {
-return parent;
+  return type + " " + name;
 }
 
-public void setParent(Node newParent)
-{
-parent = newParent;
-}
 }

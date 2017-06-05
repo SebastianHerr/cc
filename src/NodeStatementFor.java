@@ -1,6 +1,9 @@
-public class NodeStatementFor{
+public class NodeStatementFor extends Node{
 
-Node parent;
+Node init;
+Node condition;
+Node iterator;
+Node loopBody;
 
 public NodeStatementFor()
 {
@@ -16,13 +19,28 @@ public boolean checkNodeType()
 return true; //Check okay
 }
 
-public Node getParent()
+public void setInitializer(Node init_)
 {
-return parent;
+  init = init_;
 }
 
-public void setParent(Node newParent)
+public void setCondition(Node condition_)
 {
-parent = newParent;
+  condition = condition_;
+}
+
+public void setIterator(Node iterator_)
+{
+  iterator = iterator_;
+}
+
+public void setLoopBody(Node loopBody_)
+{
+  loopBody = loopBody_;
+}
+
+public String toString()
+{
+  return "for(" + init + ";" + condition + ";" + iterator + ")" + loopBody;
 }
 }

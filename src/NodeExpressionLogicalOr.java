@@ -1,9 +1,9 @@
-public class NodeExpressionLogicalOr{
+public class NodeExpressionLogicalOr extends NodeExpressionBinary{
 
-Node parent;
-
-public NodeExpressionLogicalOr()
+public NodeExpressionLogicalOr(Node primary_)
 {
+  super(primary_);
+  setOp("||");
 }
 
 public String getNodeType()
@@ -14,15 +14,5 @@ return "NodeExpressionLogicalOr";
 public boolean checkNodeType()
 {
 return true; //Check okay
-}
-
-public Node getParent()
-{
-return parent;
-}
-
-public void setParent(Node newParent)
-{
-parent = newParent;
 }
 }

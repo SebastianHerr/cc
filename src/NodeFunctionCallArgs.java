@@ -1,9 +1,11 @@
+import java.util.*;
 public class NodeFunctionCallArgs{
 
-Node parent;
+ArrayList<Node> arguments;
 
 public NodeFunctionCallArgs()
 {
+  arguments = new ArrayList<Node>();
 }
 
 public String getNodeType()
@@ -16,13 +18,26 @@ public boolean checkNodeType()
 return true; //Check okay
 }
 
-public Node getParent()
+public void addArg(Node argument)
 {
-return parent;
+  arguments.add(argument);
 }
 
-public void setParent(Node newParent)
+public String toString()
 {
-parent = newParent;
+  String result = "";
+  boolean firstLoop = true;
+  for (Node argument : arguments) {
+    if(firstLoop)
+    {
+      firstLoop = !firstLoop;
+    }
+    else
+    {
+      result += ",";
+    }
+    result += argument;
+  }
+  return result;
 }
 }

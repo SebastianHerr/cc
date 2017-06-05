@@ -1,9 +1,8 @@
-public class NodeMemberAccessDot{
+public class NodeMemberAccessDot extends NodeMemberAccess{
 
-Node parent;
-
-public NodeMemberAccessDot()
+public NodeMemberAccessDot(Node accessingNode_)
 {
+  super(accessingNode_);
 }
 
 public String getNodeType()
@@ -16,13 +15,8 @@ public boolean checkNodeType()
 return true; //Check okay
 }
 
-public Node getParent()
+public String toString()
 {
-return parent;
-}
-
-public void setParent(Node newParent)
-{
-parent = newParent;
+  return accessedNode + "." + accessingNode;
 }
 }

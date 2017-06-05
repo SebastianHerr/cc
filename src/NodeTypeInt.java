@@ -1,6 +1,4 @@
-public class NodeTypeInt{
-
-Node parent;
+public class NodeTypeInt extends Node{
 
 public NodeTypeInt()
 {
@@ -16,13 +14,8 @@ public boolean checkNodeType()
 return true; //Check okay
 }
 
-public Node getParent()
+public String toString()
 {
-return parent;
-}
-
-public void setParent(Node newParent)
-{
-parent = newParent;
+  return "int";
 }
 }

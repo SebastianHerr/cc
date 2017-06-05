@@ -1,9 +1,12 @@
-public class NodeExpressionAllocArray{
+public class NodeExpressionAllocArray extends Node{
 
 Node parent;
-
-public NodeExpressionAllocArray()
+Node type;
+Node size;
+public NodeExpressionAllocArray(Node type_, Node size_)
 {
+   type = type_;
+   size = size_;
 }
 
 public String getNodeType()
@@ -24,5 +27,9 @@ return parent;
 public void setParent(Node newParent)
 {
 parent = newParent;
+}
+public String toString()
+{
+  return "alloc_array(" + type + "," + size + ")";
 }
 }

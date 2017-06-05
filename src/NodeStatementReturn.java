@@ -1,6 +1,6 @@
-public class NodeStatementReturn{
+public class NodeStatementReturn extends Node{
 
-Node parent;
+Node returnValue;
 
 public NodeStatementReturn()
 {
@@ -16,13 +16,13 @@ public boolean checkNodeType()
 return true; //Check okay
 }
 
-public Node getParent()
+public void setReturnValue(Node returnValue_)
 {
-return parent;
+  returnValue = returnValue_;
 }
 
-public void setParent(Node newParent)
+public String toString()
 {
-parent = newParent;
+  return "return " + ((returnValue==null)?"":" " + returnValue) + ";";
 }
 }
