@@ -10,6 +10,124 @@
  */
 
 PARSER_BEGIN(C0)
+/**
+ * This class allows you creating Nodes, adding children and printing
+ * them to the console in a hierarchical way.
+ *
+ * @name Node
+ * @author Konstantin Ruppel
+ */
+class Node {
+
+  public static String standardIndentation = ". ";
+  String image = null;
+  Node parent = null;
+  Node child = null;
+  Node sibling = null;
+
+  // Position in source file
+  int beginLine;
+  int beginColumn;
+  int endLine;
+  int endColumn;
+
+  public Node (String image) {
+    this.image = image;
+  }
+
+  public Node (Token token) {
+    this.image = token.image;
+    this.beginLine = token.beginLine;
+    this.beginColumn = token.beginColumn;
+    this.endColumn = token.endColumn;
+    this.endLine = token.endLine;
+  }
+
+  public Node (Token token, Node parent) {
+    this (token);
+    parent.addChild (this);
+  }
+
+  /***************************************************************************/
+
+  /**
+   * Adds a new child. If this is not the first child, it will become a sibling
+   * of the child or the siblings sibling of the child and so on.
+   * @param child Child node.
+   */
+  public void addChild (Node child) {
+    if (this.child == null) {
+      this.child = child;
+      this.child.parent = this;
+    } else {
+      this.child.addSibling (child);
+    }
+  }
+
+  /**
+   * Appends a new child node representing the given value.
+   * @param value String representation of this node.
+   */
+  public void addChild (Token token) {
+    addChild (new Node(token));
+  }
+
+  /**
+   * Adds a new sibling and sets its parent to the current Nodes parent.
+   * @param sibling Sibling node.
+   */
+  public void addSibling (Node sibling) {
+    if (this.sibling == null) {
+      this.sibling = sibling;
+      this.sibling.parent = this.parent;
+    } else {
+      this.sibling.addSibling (sibling);
+    }
+  }
+
+  /***************************************************************************/
+
+  /**
+   * Prints the branch outgoing from this node to the console.
+   * @param indentation Indentation on each layer.
+   */
+  public void printTree (String indentation) {
+    System.out.println (indentation + this.image);
+    if (this.child != null) {
+      this.child.printTree (standardIndentation + indentation);
+    }
+    if (this.sibling != null) {
+      this.sibling.printTree (indentation);
+    }
+  }
+
+  /**
+   * Calls printTree with no indentation for the starting node.
+   */
+  public void printTree () {
+    printTree("");
+  }
+
+  /**
+   * Gets the root node recursively.
+   * @return Root node.
+   */
+  public Node getRoot () {
+    if (this.parent == null) {
+      return this;
+    } else {
+      return this.parent.getRoot();
+    }
+  }
+
+  @Override
+  public String toString () {
+    return this.image;
+  }
+}
+
+
+
 public class C0 {
   static boolean x = true;
   public static void main(String args[]) {
@@ -74,12 +192,12 @@ TOKEN : {
   |	< HEXNUM: "0" ("x" | "X") (["0"-"9","a"-"f","A"-"F"])+ >
 }
 
-Node Program () : { Node me = new Node("Program"); Node decl; }
+Node Program () : { Node me = new Node("Program"); Node decl; Token t = null; }
 {
   ( 
     decl = Declaration_Definition() {me.addChild(decl);}
   )* 
-  <EOF> {me.addChild("<EOF>");}
+  t = <EOF> {me.addChild(t);}
   
   {
     return me;
@@ -88,7 +206,7 @@ Node Program () : { Node me = new Node("Program"); Node decl; }
 
 Node Sid () : { Node me = new Node("Sid"); Token t; }
 {
-  t=<ID> {me.addChild(t.image);}
+  t = <ID> {me.addChild(t);}
   {
     return me;
   }
@@ -96,7 +214,7 @@ Node Sid () : { Node me = new Node("Sid"); Token t; }
 
 Node Vid () : { Node me = new Node("Vid"); Token t; }
 {
-  t=<ID> {me.addChild(t.image);}
+  t = <ID> {me.addChild(t);}
   {
     return me;
   }
@@ -104,50 +222,50 @@ Node Vid () : { Node me = new Node("Vid"); Token t; }
 
 Node Fid () : { Node me = new Node("Fid"); Token t; }
 {
-  t=<ID> {me.addChild(t.image);}
+  t = <ID> {me.addChild(t);}
   {
     return me;
   }
 }
 
-Node Declaration_Definition () : { Node me = new Node("Declaration_Definition"); Node sid, type, vid, stat; }
+Node Declaration_Definition () : { Node me = new Node("Declaration_Definition"); Node sid, type, vid, stat; Token t; }
 {
   (
     LOOKAHEAD (3)
-    <STRUCT> {me.addChild("struct");}
+    t = <STRUCT> {me.addChild(t);}
     sid = Sid() {me.addChild(sid);}
     [ 
-      "{" {me.addChild("{");}
+      t = "{" {me.addChild(t);}
       ( 
         type = Type() {me.addChild(type);}
         vid = Vid() {me.addChild(vid);}
-        ";" {me.addChild(";");}
+        t = ";" {me.addChild(t);}
       )* 
-      "}" {me.addChild("}");}
+      t = "}" {me.addChild(t);}
     ] 
-    ";" {me.addChild(";");}
+    t = ";" {me.addChild(t);}
     |
     type = Type() {me.addChild(type);}
     vid = Vid() {me.addChild(vid);}
-    "(" {me.addChild("(");}
+    t = "(" {me.addChild(t);}
     [ 
       type = Type() {me.addChild(type);}
       vid = Vid() {me.addChild(vid);}
       ( 
-        "," {me.addChild(";");}
+        t = "," {me.addChild(t);}
         type = Type() {me.addChild(type);}
         vid = Vid() {me.addChild(vid);}
       )*
     ] 
-    ")" {me.addChild(")");}
+    t = ")" {me.addChild(t);}
     ( 
-      "{" {me.addChild("{");}
+      t = "{" {me.addChild(t);}
       ( 
         stat = Statement() {me.addChild(stat);}
       )* 
-      "}" {me.addChild("}");}
+      t = "}" {me.addChild(t);}
       |
-      ";" {me.addChild(";");}
+      t = ";" {me.addChild(t);}
     )
   )
   {
@@ -155,72 +273,72 @@ Node Declaration_Definition () : { Node me = new Node("Declaration_Definition");
   }
 }
 
-Node Statement () : { Node me = new Node("Statement"); Node exp1, exp2, exp3, stat1, stat2; }
+Node Statement () : { Node me = new Node("Statement"); Node exp1, exp2, exp3, stat1, stat2; Token t; }
 {
   (
     exp1= Expression() {me.addChild(exp1);}
-    ";" {me.addChild(";");}
+    t = ";" {me.addChild(t);}
     |
-    <IF> {me.addChild("if");}
-    "(" {me.addChild("(");}
+    t = <IF> {me.addChild(t);}
+    t = "(" {me.addChild(t);}
     exp1 = Expression() {me.addChild(exp1);}
-    ")" {me.addChild(")");}
+    t = ")" {me.addChild(t);}
     stat1 = Statement() {me.addChild(stat1);}
     [ 
       LOOKAHEAD(2) 
-      <ELSE> {me.addChild("else");}
+      t = <ELSE> {me.addChild(t);}
       stat2 = Statement() {me.addChild(stat2);}
     ]
     |
-    <WHILE> {me.addChild("while");}
-    "(" {me.addChild(")");}
+    t = <WHILE> {me.addChild(t);}
+    t = "(" {me.addChild(t);}
     exp1 = Expression() {me.addChild(exp1);}
-    ")" {me.addChild(")");}
+    t = ")" {me.addChild(t);}
     stat1 = Statement() {me.addChild(stat1);}
     |
-    <FOR> {me.addChild("for");}
-    "(" {me.addChild("(");}
+    t = <FOR> {me.addChild(t);}
+    t = "(" {me.addChild(t);}
     [ 
       exp1 = Expression() {me.addChild(exp1);}
     ] 
-    ";" {me.addChild(";");}
+    t = ";" {me.addChild(t);}
     exp2= Expression() {me.addChild(exp2);}
-    ";" {me.addChild(";");}
+    t = ";" {me.addChild(t);}
     [ 
       exp3 = Expression() {me.addChild(exp3);}
     ] 
-    ")" {me.addChild(")");}
+    t = ")" {me.addChild(t);}
     stat1 = Statement() {me.addChild(stat1);}
     |
-    <RETURN> {me.addChild("return");}
+    <RETURN> {me.addChild(t);}
     [ 
       exp1 = Expression() {me.addChild(exp1);}
     ] 
-    ";" {me.addChild(";");}
+    t = ";" {me.addChild(t);}
     |
-    "{" {me.addChild("{");}
+    t = "{" {me.addChild(t);}
     ( 
       stat1 = Statement() {me.addChild(stat1);}
     )* 
-    "}" {me.addChild("}");}
+    t = "}" {me.addChild(t);}
   )
   {
     return me;
   }
 }
 
-Node MemberAccess () : { Node me = new Node("MemberAccess"); Node fid1, fid2, exp, macc; }
+Node MemberAccess () : { Node me = new Node("MemberAccess"); Node fid1, fid2, exp, macc; Token t; }
 {
   (
-    "." {me.addChild(".");}
+    t = "." {me.addChild(t);}
     fid1 = Fid() {me.addChild(fid1);}
     |
-    "->" {me.addChild("->");}
+    t = "->" {me.addChild(t);}
     fid2 = Fid() {me.addChild(fid2);}
     |
-    "[" {me.addChild("[");}
+    t = "[" {me.addChild(t);}
     exp = Expression() {me.addChild(exp);}
-    "]" {me.addChild("]");}
+    t = "]" {me.addChild(t);}
   )
   [
     macc = MemberAccess() {me.addChild(macc);}
@@ -230,36 +348,37 @@ Node MemberAccess () : { Node me = new Node("MemberAccess"); Node fid1, fid2, ex
   }
 }
 
-Node Type () : { Node me = new Node("Type"); Node sid; }
+Node Type () : { Node me = new Node("Type"); Node sid; Token t; }
 {
   (
-    <INT> {me.addChild("int");}
+    t = <INT> {me.addChild(t);}
     | 
-    <BOOLEAN> {me.addChild("boolean");}
+    t = <BOOLEAN> {me.addChild(t);}
     | 
-    <CHAR> {me.addChild("char");}
+    t = <CHAR> {me.addChild(t);}
     | 
-    <VOID> {me.addChild("void");}
+    t = <VOID> {me.addChild(t);}
     |
-    <STRUCT> {me.addChild("struct");}
+    t = <STRUCT> {me.addChild(t);}
     sid = Sid() {me.addChild(sid);}
   )
   (
-    "*" {me.addChild("*");}
+    t = "*" {me.addChild(t);}
     | 
-    "[" "]" {me.addChild("["); me.addChild("]");}
+    t = "[" {me.addChild(t);}
+    t = "]" {me.addChild(t);}
   )*
   {
     return me;
   }
 }
 
-Node FunctionCallArgs () : { Node me = new Node("FunctionCallArgs"); Node exp1, exp2; }
+Node FunctionCallArgs () : { Node me = new Node("FunctionCallArgs"); Node exp1, exp2; Token t; }
 {
   [
     exp1 = Expression() {me.addChild(exp1);}
     (
-      "," {me.addChild(";");}
+      t = "," {me.addChild(t);}
       exp2 = Expression() {me.addChild(exp2);}
     )*
   ]
@@ -268,20 +387,20 @@ Node FunctionCallArgs () : { Node me = new Node("FunctionCallArgs"); Node exp1, 
   }
 }
 
-Node Expression () : { Node me = new Node("Expression"); Node type, exp, ass, vid, cond; }
+Node Expression () : { Node me = new Node("Expression"); Node type, exp, ass, vid, cond; Token t; }
 {
   (
-    <ALLOC> {me.addChild("alloc");}
-    "(" {me.addChild("(");}
+    t = <ALLOC> {me.addChild(t);}
+    t = "(" {me.addChild(t);}
     type = Type() {me.addChild(type);}
-    ")" {me.addChild(")");}
+    t = ")" {me.addChild(t);}
     |
-    <ALLOC_ARR> {me.addChild("alloc_arr");} 
-    "(" {me.addChild("==");}
+    t = <ALLOC_ARR> {me.addChild(t);} 
+    t = "(" {me.addChild(t);}
     type = Type() {me.addChild(type);}
-    "," {me.addChild(";");}
+    t = "," {me.addChild(t);}
     exp = Expression() {me.addChild(exp);}
-    ")" {me.addChild(")");}
+    t = ")" {me.addChild(t);}
     |
     ass = OpRang_Assign() {me.addChild(ass);}
     |
@@ -289,7 +408,7 @@ Node Expression () : { Node me = new Node("Expression"); Node type, exp, ass, vi
     vid = Vid() {me.addChild(vid);}
     [ 
       LOOKAHEAD(2)
-      "=" {me.addChild("=");}
+      t = "=" {me.addChild(t);}
       cond = OpRang_Conditional() {me.addChild(cond);} 
     ]
   )
@@ -298,33 +417,33 @@ Node Expression () : { Node me = new Node("Expression"); Node type, exp, ass, vi
   }
 }
 
-Node OpRang_Assign () : { Node me = new Node("OpRang_Assign"); Node cond1, cond2; }
+Node OpRang_Assign () : { Node me = new Node("OpRang_Assign"); Node cond1, cond2; Token t; }
 {
   cond1 = OpRang_Conditional() {me.addChild(cond1);}
   [ 
     LOOKAHEAD(2)
     (
-      "=" {me.addChild("=");}
+      t = "=" {me.addChild(t);}
       | 
-      "+=" {me.addChild("+=");}
+      t = "+=" {me.addChild(t);}
       | 
-      "-=" {me.addChild("-=");}
+      t = "-=" {me.addChild(t);}
       | 
-      "*=" {me.addChild("*=");}
+      t = "*=" {me.addChild(t);}
       | 
-      "/=" {me.addChild("/=");}
+      t = "/=" {me.addChild(t);}
       | 
-      "%=" {me.addChild("%=");}
+      t = "%=" {me.addChild(t);}
       | 
-      "<<=" {me.addChild("<<=");}
+      t = "<<=" {me.addChild(t);}
       | 
-      ">>=" {me.addChild(">>=");}
+      t = ">>=" {me.addChild(t);}
       | 
-      "&=" {me.addChild("&=");}
+      t = "&=" {me.addChild(t);}
       | 
-      "^=" {me.addChild("^=");}
+      t = "^=" {me.addChild(t);}
       | 
-      "|=" {me.addChild("|=");}
+      t = "|=" {me.addChild(t);}
     )
     cond2 = OpRang_Conditional() {me.addChild(cond2);}
   ]
@@ -333,17 +452,15 @@ Node OpRang_Assign () : { Node me = new Node("OpRang_Assign"); Node cond1, cond2
   }
 }
 
-Node OpRang_Conditional () : { Node me = new Node("OpRang_Conditional"); Node or, exp1, exp2; }
+Node OpRang_Conditional () : { Node me = new Node("OpRang_Conditional"); Node or, exp1, exp2; Token t; }
 {
   or = OpRang_LogicalOr() {me.addChild(or);}
   [ 
-    LOOKAHEAD(2) ( 
-      "?" {me.addChild("?");}
-
+    LOOKAHEAD(2) 
+    ( 
+      t = "?" {me.addChild(t);}
       exp1 = Expression() {me.addChild(exp1);}
-      
-      ":" {me.addChild(":");}
-      
+      t = ":" {me.addChild(t);}
       exp2 = Expression() {me.addChild(exp2);}
     )
   ]
@@ -352,12 +469,12 @@ Node OpRang_Conditional () : { Node me = new Node("OpRang_Conditional"); Node or
   }
 }
 
-Node OpRang_LogicalOr () : { Node me = new Node("OpRang_LogicalOr"); Node and, or; }
+Node OpRang_LogicalOr () : { Node me = new Node("OpRang_LogicalOr"); Node and, or; Token t = null; }
 {
   and = OpRang_LogicalAnd() {me.addChild(and);}
   [
     (
-      "||" {me.addChild("||");}
+      t = "||" {me.addChild(t);}
     ) 
     or = OpRang_LogicalOr() {me.addChild(or);}
   ]
@@ -366,12 +483,12 @@ Node OpRang_LogicalOr () : { Node me = new Node("OpRang_LogicalOr"); Node and, o
   }
 }
 
-Node OpRang_LogicalAnd () : { Node me = new Node("OpRang_LogicalAnd"); Node or, and; }
+Node OpRang_LogicalAnd () : { Node me = new Node("OpRang_LogicalAnd"); Node or, and; Token t; }
 {
   or = OpRang_BitOr() {me.addChild(or);}
   [ 
     ( 
-      "&&" {me.addChild("&&");}
+      t = "&&" {me.addChild(t);}
     ) 
     and = OpRang_LogicalAnd() {me.addChild(and);}
   ]
@@ -380,12 +497,12 @@ Node OpRang_LogicalAnd () : { Node me = new Node("OpRang_LogicalAnd"); Node or, 
   }
 }
 
-Node OpRang_BitOr () : { Node me = new Node("OpRang_BitOr"); Node xor, or; }
+Node OpRang_BitOr () : { Node me = new Node("OpRang_BitOr"); Node xor, or; Token t; }
 {
   xor = OpRang_BitXor() {me.addChild(xor);}
   [ 
     (
-      "|" {me.addChild("|");}
+      t = "|" {me.addChild(t);}
     ) 
     or = OpRang_BitOr() {me.addChild(or);}
   ]
@@ -394,12 +511,12 @@ Node OpRang_BitOr () : { Node me = new Node("OpRang_BitOr"); Node xor, or; }
   }
 }
 
-Node OpRang_BitXor () : { Node me = new Node("OpRang_BitXor"); Node and, xor; }
+Node OpRang_BitXor () : { Node me = new Node("OpRang_BitXor"); Node and, xor; Token t; }
 {
   and = OpRang_BitAnd() {me.addChild(and);}
   [ 
     ( 
-      "^" {me.addChild("^");}
+      t = "^" {me.addChild(t);}
     ) 
     xor = OpRang_BitXor() {me.addChild(xor);}
   ]
@@ -408,12 +525,12 @@ Node OpRang_BitXor () : { Node me = new Node("OpRang_BitXor"); Node and, xor; }
   }
 }
 
-Node OpRang_BitAnd () : { Node me = new Node("OpRang_BitAnd"); Node equ, and; }
+Node OpRang_BitAnd () : { Node me = new Node("OpRang_BitAnd"); Node equ, and; Token t; }
 {
   equ = OpRang_Equality() {me.addChild(equ);}
   [ 
     ( 
-      "&" {me.addChild("&");}
+      t = "&" {me.addChild(t);}
     ) 
     and = OpRang_BitAnd() {me.addChild(and);}
   ]
@@ -422,14 +539,14 @@ Node OpRang_BitAnd () : { Node me = new Node("OpRang_BitAnd"); Node equ, and; }
   }
 }
 
-Node OpRang_Equality () : { Node me = new Node("OpRang_Equality"); Node comp, equ; }
+Node OpRang_Equality () : { Node me = new Node("OpRang_Equality"); Node comp, equ; Token t; }
 {
   comp = OpRang_Compare() {me.addChild(comp);}
   [ 
     ( 
-      "==" {me.addChild("==");}
+      t = "==" {me.addChild(t);}
       | 
-      "!=" {me.addChild("!=");}
+      t = "!=" {me.addChild(t);}
     ) 
     equ = OpRang_Equality() {me.addChild(equ);}
   ]
@@ -438,18 +555,18 @@ Node OpRang_Equality () : { Node me = new Node("OpRang_Equality"); Node comp, eq
   }
 }
 
-Node OpRang_Compare () : { Node me = new Node("OpRang_Compare"); Node shift, comp; }
+Node OpRang_Compare () : { Node me = new Node("OpRang_Compare"); Node shift, comp; Token t; }
 {
   shift = OpRang_BitShift() {me.addChild(shift);}
   [ 
     ( 
-      "<" {me.addChild("<");}
+      t = "<" {me.addChild(t);}
       | 
-      ">" {me.addChild(">");}
+      t = ">" {me.addChild(t);}
       | 
-      ">=" {me.addChild(">=");}
+      t = ">=" {me.addChild(t);}
       | 
-      "<=" {me.addChild("<=");}
+      t = "<=" {me.addChild(t);}
     ) 
     comp = OpRang_Compare() {me.addChild(comp);}
   ]
@@ -458,14 +575,14 @@ Node OpRang_Compare () : { Node me = new Node("OpRang_Compare"); Node shift, com
   }
 }
 
-Node OpRang_BitShift () : { Node me = new Node("OpRang_BitShift"); Node sum, shift; }
+Node OpRang_BitShift () : { Node me = new Node("OpRang_BitShift"); Node sum, shift; Token t; }
 {
   sum = OpRang_Sum() {me.addChild(sum);} 
   [ 
     (
-      "<<" {me.addChild("<<");} 
+      t = "<<" {me.addChild(t);} 
       |
-      ">>" {me.addChild(">>");}
+      t = ">>" {me.addChild(t);}
     ) 
     shift = OpRang_BitShift() {me.addChild(shift);} 
   ]
@@ -474,14 +591,14 @@ Node OpRang_BitShift () : { Node me = new Node("OpRang_BitShift"); Node sum, shi
   }
 }
 
-Node OpRang_Sum () : { Node me = new Node("OpRang_Sum"); Node fac, sum; }
+Node OpRang_Sum () : { Node me = new Node("OpRang_Sum"); Node fac, sum; Token t; }
 {
   fac = OpRang_Factor() {me.addChild(fac);}
   [ 
     (
-      "+" {me.addChild("+");}
+      t = "+" {me.addChild(t);}
       | 
-      "-" {me.addChild("-");}
+      t = "-" {me.addChild(t);}
     ) 
     sum = OpRang_Sum() {me.addChild(sum);}
   ]
@@ -490,16 +607,16 @@ Node OpRang_Sum () : { Node me = new Node("OpRang_Sum"); Node fac, sum; }
   }
 }
 
-Node OpRang_Factor () : { Node me = new Node("OpRang_Factor"); Node unary, fac;}
+Node OpRang_Factor () : { Node me = new Node("OpRang_Factor"); Node unary, fac; Token t; }
 {
   unary = OpRang_Unary() {me.addChild(unary);} 
   [ 
     (
-      "*" {me.addChild("*");}
+      t = "*" {me.addChild(t);}
       | 
-      "/" {me.addChild("/");}
+      t = "/" {me.addChild(t);}
       | 
-      "%" {me.addChild("%");}
+      t = "%" {me.addChild(t);}
     ) 
     fac = OpRang_Factor() {me.addChild(fac);}
   ]
@@ -508,40 +625,40 @@ Node OpRang_Factor () : { Node me = new Node("OpRang_Factor"); Node unary, fac;}
   }
 }
 
-Node OpRang_Unary () : { Node me = new Node("OpRang_Unary"); Node fnCallArgs, vid, cond, macc; Token lit; }
+Node OpRang_Unary () : { Node me = new Node("OpRang_Unary"); Node fnCallArgs, vid, cond, macc; Token t; }
 {
   [
-    "*" {me.addChild("*");}
+    t = "*" {me.addChild(t);}
     | 
-    "-" {me.addChild("-");}
+    t = "-" {me.addChild(t);}
     | 
-    "~" {me.addChild("~");}
+    t = "~" {me.addChild(t);}
     | 
-    "!" {me.addChild("!");}
+    t = "!" {me.addChild(t);}
   ]
   (
     vid = Vid() {me.addChild(vid);}
-    [ 
-      "(" {me.addChild("(");}
+    [
+      t = "(" {me.addChild(t);}
       fnCallArgs = FunctionCallArgs() {me.addChild(fnCallArgs);}
-      ")" {me.addChild(")");}
+      t = ")" {me.addChild(t);}
       | 
-      "--" {me.addChild("--");}
+      t = "--" {me.addChild(t);}
       | 
-      "++" {me.addChild("++");}
+      t = "++" {me.addChild(t);}
     ]
     |
-    lit = <NUM>{me.addChild(lit.image);}
+    t = <NUM> {me.addChild(t);}
     | 
-    lit = <TRUE>{me.addChild(lit.image);} 
+    t = <TRUE> {me.addChild(t);} 
     | 
-    lit = <FALSE>{me.addChild(lit.image);} 
+    t = <FALSE> {me.addChild(t);} 
     | 
-    lit = <NULL>{me.addChild(lit.image);}
+    t = <NULL> {me.addChild(t);}
     |
-    "(" {me.addChild("(");}
+    t = "(" {me.addChild(t);}
     cond = OpRang_Conditional() {me.addChild(cond);}
-    ")" {me.addChild(")");}
+    t = ")" {me.addChild(t);}
   )
   [
     macc = MemberAccess() {me.addChild(macc);}

@@ -6,29 +6,37 @@
  * @author Konstantin Ruppel
  */
 public class Node {
+
   public static String standardIndentation = ". ";
   String image = null;
   Node parent = null;
   Node child = null;
   Node sibling = null;
 
-  /**
-   * Creates a new node.
-   * @param image String representation of this node.
-   */
+  // Position in source file
+  int beginLine;
+  int beginColumn;
+  int endLine;
+  int endColumn;
+
   public Node (String image) {
     this.image = image;
   }
 
-  /**
-   * Creates a new node and appends it to a given parent node.
-   * @param image String representation of this node.
-   * @param parent Node at which this node should be appended to.
-   */
-  public Node (String image, Node parent) {
-    this.image = image;
+  public Node (Token token) {
+    this.image = token.image;
+    this.beginLine = token.beginLine;
+    this.beginColumn = token.beginColumn;
+    this.endColumn = token.endColumn;
+    this.endLine = token.endLine;
+  }
+
+  public Node (Token token, Node parent) {
+    this (token);
     parent.addChild (this);
   }
+
+  /***************************************************************************/
 
   /**
    * Adds a new child. If this is not the first child, it will become a sibling
@@ -48,8 +56,8 @@ public class Node {
    * Appends a new child node representing the given value.
    * @param value String representation of this node.
    */
-  public void addChild (String value) {
-    addChild (new Node(value));
+  public void addChild (Token token) {
+    addChild (new Node(token));
   }
 
   /**
@@ -64,6 +72,8 @@ public class Node {
       this.sibling.addSibling (sibling);
     }
   }
+
+  /***************************************************************************/
 
   /**
    * Prints the branch outgoing from this node to the console.
