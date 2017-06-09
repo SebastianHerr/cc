@@ -5,6 +5,7 @@ Node name;
 public NodeTypeStruct(Node name_)
 {
   name = name_;
+  name.setParent(this);
 }
 
 public String getNodeType()

@@ -6,7 +6,9 @@ Node functionblock;
 public NodeFunctionDefinition(NodeFunctionSignature name_, Node functionblock_)
 {
    name = name_;
+   name.setParent(this);
    functionblock = functionblock_;
+   functionblock.setParent(this);
 }
 
 public String getNodeType()

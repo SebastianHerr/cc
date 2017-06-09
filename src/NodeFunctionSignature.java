@@ -1,14 +1,15 @@
 import java.util.*;
 public class NodeFunctionSignature extends Node{
 
-Node parent;
 Node type;
 Node name;
 ArrayList<Node> listOfParamters;
 public NodeFunctionSignature(Node type_, Node name_)
 {
   type = type_;
+  type.setParent(this);
   name = name_;
+  name.setParent(this);
   listOfParamters = new ArrayList<Node>();
 }
 
@@ -22,10 +23,12 @@ public boolean checkNodeType()
 return true; //Check okay
 }
 
-public void addParameter(Node type_, Node name_)
+public void addParameter(Node parameterType, Node parameterName)
 {
-  listOfParamters.add(type_);
-  listOfParamters.add(name_);
+  parameterType.setParent(this);
+  parameterName.setParent(this);
+  listOfParamters.add(parameterType);
+  listOfParamters.add(parameterName);
 }
 
 public String toString()

@@ -5,6 +5,7 @@ NodeFunctionSignature name;
 public NodeFunctionDeclaration(NodeFunctionSignature name_)
 {
    name = name_;
+   name.setParent(this);
 }
 
 public String getNodeType()

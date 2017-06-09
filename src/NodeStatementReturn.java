@@ -19,6 +19,7 @@ return true; //Check okay
 public void setReturnValue(Node returnValue_)
 {
   returnValue = returnValue_;
+  returnValue.setParent(this);
 }
 
 public String toString()

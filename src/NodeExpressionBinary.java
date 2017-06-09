@@ -7,6 +7,7 @@ String op;
 public NodeExpressionBinary(Node primary_)
 {
   primary = primary_;
+  primary.setParent(this);
 }
 
 public String getNodeType()
@@ -27,6 +28,7 @@ public void setOp(String op_)
 public void setSecondary(Node secondary_)
 {
   secondary = secondary_;
+  secondary.setParent(this);
 }
 
 public String toString()

@@ -1,6 +1,12 @@
 public abstract class Node{
   
-  Node parent;
+  Node parent = null;
+  
+  Node root = null;
+  
+  Node enclosingBlock = null;
+  
+  Token token = null;
   
 	public abstract String getNodeType();
 	
@@ -14,5 +20,39 @@ public abstract class Node{
 	public void setParent(Node parent_)
   {
     parent = parent_;
+  }
+  
+  public void setRoot(Node root_)
+  {
+    root = root_;
+  }
+  
+  public Node getRoot()
+  {
+    if (root == null)
+    {
+      root = parent.getRoot();
+    }
+    return root;
+  }
+  
+  public void setEnclosingBlock(Node enclosingBlock_)
+  {
+    enclosingBlock = enclosingBlock_;
+  }
+  
+  public Node getEnclosingBlock()
+  {
+    if(enclosingBlock == null)
+    {
+      enclosingBlock = parent.getEnclosingBlock();
+    }
+    return enclosingBlock;
+  }
+  
+  // Returns the token which defined this Node when this is a leaf, otherwise it returns null
+  public Token getToken()
+  {
+    return token;
   }
 }

@@ -6,7 +6,9 @@ NodeFunctionCallArgs args;
 public NodeExpressionFunctionCall(Node name_, NodeFunctionCallArgs args_)
 {
   name = name_;
+  name.setParent(this);
   args = args_;
+  args.setParent(this);
 }
 
 public String getNodeType()

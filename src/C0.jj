@@ -11,10 +11,9 @@
 
 PARSER_BEGIN(C0)
 public class C0 {
-	static boolean x = true;
 	public static void main(String args[]) {
 		C0 parser;
-    Node ast;
+    NodeRoot ast;
 		try {
 			if (args.length > 0) {
 				parser = new C0 (new java.io.FileInputStream(new java.io.File(args[0])));
@@ -75,7 +74,7 @@ TOKEN : {
 	|	< HEXNUM: "0" ("x" | "X") (["0"-"9","a"-"f","A"-"F"])+ >
 }
 
-Node Program () : {NodeRoot root; Node declarationOrStatement;}
+NodeRoot Program () : {NodeRoot root; Node declarationOrStatement;}
 {
   {root = new NodeRoot();}
   ( 
@@ -87,30 +86,30 @@ Node Program () : {NodeRoot root; Node declarationOrStatement;}
 
 Node Sid () : {Token name;}
 {
-   name=<ID> {return new NodeIdentifier(name.image);}   // struct name
+   name=<ID> {return new NodeIdentifier(name);}   // struct name
 }
 
 Node Vid () : {Token name;}
 {
-   name=<ID> {return new NodeIdentifier(name.image);}   // variable and function name
+   name=<ID> {return new NodeIdentifier(name);}   // variable and function name
 }
 
 Node Fid () : {Token name;}
 {
-  name=<ID> {return new NodeIdentifier(name.image);} // field name
+  name=<ID> {return new NodeIdentifier(name);} // field name
 }
 
 
 
 Node Declaration_Definition () : {Node result = null; Node newNode; Node type; Node name;
-  NodeStructSignature resultStructSig; NodeFunctionSignature resultFunctionSig; boolean wentinside = false;}
+  NodeStructSignature resultStructSig; NodeFunctionSignature resultFunctionSig;}
 {
   (
   LOOKAHEAD (3)
 	<STRUCT> name=Sid() {resultStructSig = new NodeStructSignature(name);}
-    [ "{" {result = new NodeStructDefinition(resultStructSig);wentinside=true;/*This variable is needed to stop java from complaining*/}
+    [ "{" {result = new NodeStructDefinition(resultStructSig);}
       ( type=Type() name=Vid() {((NodeStructDefinition)result).addElement(type, name);}";")* "}" 
-    ] ";" {if(!wentinside) {result = new NodeStructDeclaration(resultStructSig);}}
+    ] ";" {if(result == null) {result = new NodeStructDeclaration(resultStructSig);}}
 	|
   type=Type() name=Vid() {resultFunctionSig = new NodeFunctionSignature(type, name);}
     "(" [ type=Type() name=Vid()  {resultFunctionSig.addParameter(type, name);}
@@ -173,16 +172,16 @@ NodeMemberAccess MemberAccess () : {Node newNode; NodeMemberAccess memberaccess;
   {return memberaccess;}
 }
 
-Node Type () : {Node result; Node newNode;}
+Node Type () : {Node result; Node newNode;Token token;}
 {
 	(
-		<INT> {result= new NodeTypeInt();} 
+		token=<INT> {result= new NodeTypeInt(token);} 
     | 
-    <BOOLEAN> {result= new NodeTypeBool();}
+    token=<BOOLEAN> {result= new NodeTypeBool(token);}
     | 
-    <VOID>{result= new NodeTypeVoid();}
+    token=<VOID>{result= new NodeTypeVoid(token);}
 		|
-		<STRUCT> newNode=Sid() {result = new NodeTypeStruct(newNode);}
+		token=<STRUCT> newNode=Sid() {result = new NodeTypeStruct(newNode);}
 	)
 	( 
 		"*" {result = new NodeTypePointer(result);}| "[" "]"{result = new NodeTypeArray(result);}
@@ -334,7 +333,7 @@ Node OpRang_Factor () : {Node result; Node newNode;NodeExpressionBinary resultBi
 }
 
 Node OpRang_Unary () : {NodeExpressionUnary unaryOp = null; Node result; 
-  NodeMemberAccess memberaccess = null; NodeFunctionCallArgs functionArgs; Token num;}
+  NodeMemberAccess memberaccess = null; NodeFunctionCallArgs functionArgs; Token token;}
 {
   //gather information for this node...
   [
@@ -352,13 +351,13 @@ Node OpRang_Unary () : {NodeExpressionUnary unaryOp = null; Node result;
                    "++" { result = new NodeExpressionIncrement(result);}
                  ]
     |
-      num=<NUM>  {result= new NodeExpressionConstNum(num.image);}	
+      token=<NUM>  {result= new NodeExpressionConstNum(token);}	
     | 
-      <TRUE> {result= new NodeExpressionConstTrue();} 
+      token=<TRUE> {result= new NodeExpressionConstTrue(token);} 
     | 
-      <FALSE>{result= new NodeExpressionConstFalse();} 
+      token=<FALSE>{result= new NodeExpressionConstFalse(token);} 
     | 
-      <NULL> {result= new NodeExpressionConstNull();}
+      token=<NULL> {result= new NodeExpressionConstNull(token);}
     |
     "(" result=OpRang_Conditional() ")"
   )

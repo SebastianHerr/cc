@@ -22,11 +22,13 @@ return true; //Check okay
 public void setIf(Node statement)
 {
   ifStatement = statement;
+  ifStatement.setParent(this);
 }
 
 public void setElse(Node statement)
 {
   elseStatement = statement;
+  elseStatement.setParent(this);
 }
 
 public String toString()

@@ -19,6 +19,7 @@ return true; //Check okay
 public void setInternNode(Node innerNode_)
 {
   innerNode = innerNode_;
+  innerNode.setParent(this);
 }
 
 }

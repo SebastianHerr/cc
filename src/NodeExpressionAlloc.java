@@ -1,11 +1,11 @@
 public class NodeExpressionAlloc extends Node{
 
-Node parent;
 Node type;
 
 public NodeExpressionAlloc(Node type_)
 {
   type = type_;
+  type.setParent(this);
 }
 
 public String getNodeType()

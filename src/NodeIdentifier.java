@@ -1,11 +1,8 @@
 public class NodeIdentifier extends Node{
 
-Node parent;
-String name;
-
-public NodeIdentifier(String name_)
+public NodeIdentifier(Token token_)
 {
-  name = name_;
+  token = token_;
 }
 
 public String getNodeType()
@@ -30,6 +27,6 @@ parent = newParent;
 
 public String toString()
 {
-  return name;
+  return token.image;
 }
 }

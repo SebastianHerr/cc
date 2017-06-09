@@ -1,5 +1,5 @@
 import java.util.*;
-public class NodeFunctionCallArgs{
+public class NodeFunctionCallArgs extends Node{
 
 ArrayList<Node> arguments;
 
@@ -21,6 +21,7 @@ return true; //Check okay
 public void addArg(Node argument)
 {
   arguments.add(argument);
+  argument.setParent(this);
 }
 
 public String toString()

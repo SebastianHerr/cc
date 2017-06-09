@@ -6,7 +6,9 @@ Node name;
 public NodeExpressionVariableDefinition(Node type_, Node name_)
 {
   type = type_;
+  type.setParent(this);
   name = name_;
+  name.setParent(this);
 }
 
 public String getNodeType()

@@ -1,7 +1,8 @@
 public class NodeExpressionConstTrue extends Node{
 
-public NodeExpressionConstTrue()
+public NodeExpressionConstTrue(Token token_)
 {
+  token = token_;
 }
 
 public String getNodeType()

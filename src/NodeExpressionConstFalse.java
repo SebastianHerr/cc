@@ -1,7 +1,8 @@
 public class NodeExpressionConstFalse extends Node{
 
-public NodeExpressionConstFalse()
+public NodeExpressionConstFalse(Token token_)
 {
+  token = token_;
 }
 
 public String getNodeType()

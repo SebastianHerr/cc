@@ -5,6 +5,7 @@ NodeStructSignature name;
 public NodeStructDeclaration(NodeStructSignature name_)
 {
   name = name_;
+  name.setParent(this);
 }
 
 public String getNodeType()

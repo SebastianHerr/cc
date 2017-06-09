@@ -8,6 +8,7 @@ ArrayList<Node> listOfMembers;
 public NodeStructDefinition(NodeStructSignature name_)
 {
   name = name_;
+  name.setParent(this);
   listOfMembers = new ArrayList<Node>();
 }
 
@@ -23,6 +24,8 @@ return true; //Check okay
 
 public void addElement(Node type_, Node name_)
 {
+  type_.setParent(this);
+  name_.setParent(this);
   listOfMembers.add(type_);
   listOfMembers.add(name_);
 }

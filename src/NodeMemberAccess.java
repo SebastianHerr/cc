@@ -6,6 +6,7 @@ Node accessingNode;
 public NodeMemberAccess(Node accessingNode_)
 {
   accessingNode = accessingNode_;
+  accessingNode.setParent(this);
 }
 
 public String getNodeType()

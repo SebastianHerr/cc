@@ -1,11 +1,11 @@
 public class NodeStatementExpression extends Node{
 
-Node parent;
 Node expression;
 
 public NodeStatementExpression(Node expression_)
 {
   expression = expression_;
+  expression.setParent(this);
 }
 
 public String getNodeType()

@@ -1,12 +1,13 @@
 public class NodeExpressionAllocArray extends Node{
 
-Node parent;
 Node type;
 Node size;
 public NodeExpressionAllocArray(Node type_, Node size_)
 {
    type = type_;
+   type.setParent(this);
    size = size_;
+   size.setParent(this);
 }
 
 public String getNodeType()
@@ -19,15 +20,6 @@ public boolean checkNodeType()
 return true; //Check okay
 }
 
-public Node getParent()
-{
-return parent;
-}
-
-public void setParent(Node newParent)
-{
-parent = newParent;
-}
 public String toString()
 {
   return "alloc_array(" + type + "," + size + ")";

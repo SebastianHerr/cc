@@ -6,6 +6,7 @@ Node loopBody;
 public NodeStatementWhile(Node condition_)
 {
   condition = condition_;
+  condition.setParent(this);
 }
 
 public String getNodeType()
@@ -21,6 +22,7 @@ return true; //Check okay
 public void setLoopBody(Node loopBody_)
 {
   loopBody = loopBody_;
+  loopBody.setParent(this);
 }
 
 public String toString()

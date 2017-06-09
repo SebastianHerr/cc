@@ -5,6 +5,7 @@ Node innerNode;
 public NodeExpressionDecrement(Node innerNode_)
 {
   innerNode = innerNode_;
+  innerNode.setParent(this);
 }
 
 public String getNodeType()

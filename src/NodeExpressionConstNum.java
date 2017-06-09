@@ -2,9 +2,10 @@ public class NodeExpressionConstNum extends Node{
 
 int value;
 
-public NodeExpressionConstNum(String value_)
+public NodeExpressionConstNum(Token token_)
 {
-  value = Integer.parseInt(value_);
+  token = token_;
+  value = Integer.parseInt(token.image);
 }
 
 public String getNodeType()

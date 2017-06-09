@@ -21,6 +21,7 @@ return true; //Check okay
 public void addStatement(Node node)
 {
   statements.add(node);
+  node.setParent(this);
 }
 
 public String toString()

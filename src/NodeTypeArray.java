@@ -5,6 +5,7 @@ Node pointingTo;
 public NodeTypeArray(Node pointingTo_)
 {
   pointingTo = pointingTo_;
+  pointingTo.setParent(this);
 }
 
 public String getNodeType()

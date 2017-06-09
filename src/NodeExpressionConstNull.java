@@ -1,7 +1,8 @@
 public class NodeExpressionConstNull extends Node{
 
-public NodeExpressionConstNull()
+public NodeExpressionConstNull(Token token_)
 {
+  token = token_;
 }
 
 public String getNodeType()
