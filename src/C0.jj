@@ -10,136 +10,19 @@
  */
 
 PARSER_BEGIN(C0)
-/**
- * This class allows you creating Nodes, adding children and printing
- * them to the console in a hierarchical way.
- *
- * @name Node
- * @author Konstantin Ruppel
- */
-class Node {
-
-  public static String standardIndentation = ". ";
-  String image = null;
-  Node parent = null;
-  Node child = null;
-  Node sibling = null;
-
-  // Position in source file
-  int beginLine;
-  int beginColumn;
-  int endLine;
-  int endColumn;
-
-  public Node (String image) {
-    this.image = image;
-  }
-
-  public Node (Token token) {
-    this.image = token.image;
-    this.beginLine = token.beginLine;
-    this.beginColumn = token.beginColumn;
-    this.endColumn = token.endColumn;
-    this.endLine = token.endLine;
-  }
-
-  public Node (Token token, Node parent) {
-    this (token);
-    parent.addChild (this);
-  }
-
-  /***************************************************************************/
-
-  /**
-   * Adds a new child. If this is not the first child, it will become a sibling
-   * of the child or the siblings sibling of the child and so on.
-   * @param child Child node.
-   */
-  public void addChild (Node child) {
-    if (this.child == null) {
-      this.child = child;
-      this.child.parent = this;
-    } else {
-      this.child.addSibling (child);
-    }
-  }
-
-  /**
-   * Appends a new child node representing the given value.
-   * @param value String representation of this node.
-   */
-  public void addChild (Token token) {
-    addChild (new Node(token));
-  }
-
-  /**
-   * Adds a new sibling and sets its parent to the current Nodes parent.
-   * @param sibling Sibling node.
-   */
-  public void addSibling (Node sibling) {
-    if (this.sibling == null) {
-      this.sibling = sibling;
-      this.sibling.parent = this.parent;
-    } else {
-      this.sibling.addSibling (sibling);
-    }
-  }
-
-  /***************************************************************************/
-
-  /**
-   * Prints the branch outgoing from this node to the console.
-   * @param indentation Indentation on each layer.
-   */
-  public void printTree (String indentation) {
-    System.out.println (indentation + this.image);
-    if (this.child != null) {
-      this.child.printTree (standardIndentation + indentation);
-    }
-    if (this.sibling != null) {
-      this.sibling.printTree (indentation);
-    }
-  }
-
-  /**
-   * Calls printTree with no indentation for the starting node.
-   */
-  public void printTree () {
-    printTree("");
-  }
-
-  /**
-   * Gets the root node recursively.
-   * @return Root node.
-   */
-  public Node getRoot () {
-    if (this.parent == null) {
-      return this;
-    } else {
-      return this.parent.getRoot();
-    }
-  }
-
-  @Override
-  public String toString () {
-    return this.image;
-  }
-}
-
-
-
 public class C0 {
   static boolean x = true;
   public static void main(String args[]) {
     C0 parser;
+    Node root;
     try {
       if (args.length > 0) {
         parser = new C0 (new java.io.FileInputStream(new java.io.File(args[0])));
       } else {
         parser = new C0 (System.in);
       }
-      Node root = parser.Program();
-      if (args.length > 1) root.printTree();
+      root = parser.Program();
+      root.printTree();
       System.out.println ("[  OK  ]");
     } catch (Exception ex) {
       System.out.println ("[ FAIL ]");
@@ -192,7 +75,7 @@ TOKEN : {
   |	< HEXNUM: "0" ("x" | "X") (["0"-"9","a"-"f","A"-"F"])+ >
 }
 
-Node Program () : { Node me = new Node("Program"); Node decl; Token t = null; }
+Node Program () : { Node me = new Node(C0Type.PROGRAM); Node decl; Token t = null; }
 {
   ( 
     decl = Declaration_Definition() {me.addChild(decl);}
@@ -204,7 +87,7 @@ Node Program () : { Node me = new Node("Program"); Node decl; Token t = null; }
   }
 }
 
-Node Sid () : { Node me = new Node("Sid"); Token t; }
+Node Sid () : { Node me = new Node(C0Type.SID); Token t = null; }
 {
   t = <ID> {me.addChild(t);}
   {
@@ -212,7 +95,7 @@ Node Sid () : { Node me = new Node("Sid"); Token t; }
   }
 }
 
-Node Vid () : { Node me = new Node("Vid"); Token t; }
+Node Vid () : { Node me = new Node(C0Type.VID); Token t = null; }
 {
   t = <ID> {me.addChild(t);}
   {
@@ -220,7 +103,7 @@ Node Vid () : { Node me = new Node("Vid"); Token t; }
   }
 }
 
-Node Fid () : { Node me = new Node("Fid"); Token t; }
+Node Fid () : { Node me = new Node(C0Type.FID); Token t = null; }
 {
   t = <ID> {me.addChild(t);}
   {
@@ -228,7 +111,7 @@ Node Fid () : { Node me = new Node("Fid"); Token t; }
   }
 }
 
-Node Declaration_Definition () : { Node me = new Node("Declaration_Definition"); Node sid, type, vid, stat; Token t; }
+Node Declaration_Definition () : { Node me = new Node(C0Type.DECLARATION_DEFINITION); Node sid, type, vid, stat; Token t = null; }
 {
   (
     LOOKAHEAD (3)
@@ -273,7 +156,7 @@ Node Declaration_Definition () : { Node me = new Node("Declaration_Definition");
   }
 }
 
-Node Statement () : { Node me = new Node("Statement"); Node exp1, exp2, exp3, stat1, stat2; Token t; }
+Node Statement () : { Node me = new Node(C0Type.STATEMENT); Node exp1, exp2, exp3, stat1, stat2; Token t = null; }
 {
   (
     exp1= Expression() {me.addChild(exp1);}
@@ -327,7 +210,7 @@ Node Statement () : { Node me = new Node("Statement"); Node exp1, exp2, exp3, st
   }
 }
 
-Node MemberAccess () : { Node me = new Node("MemberAccess"); Node fid1, fid2, exp, macc; Token t; }
+Node MemberAccess () : { Node me = new Node(C0Type.MEMBERACCESS); Node fid1, fid2, exp, macc; Token t = null; }
 {
   (
     t = "." {me.addChild(t);}
@@ -348,7 +231,7 @@ Node MemberAccess () : { Node me = new Node("MemberAccess"); Node fid1, fid2, ex
   }
 }
 
-Node Type () : { Node me = new Node("Type"); Node sid; Token t; }
+Node Type () : { Node me = new Node(C0Type.TYPE); Node sid; Token t = null; }
 {
   (
     t = <INT> {me.addChild(t);}
@@ -373,7 +256,7 @@ Node Type () : { Node me = new Node("Type"); Node sid; Token t; }
   }
 }
 
-Node FunctionCallArgs () : { Node me = new Node("FunctionCallArgs"); Node exp1, exp2; Token t; }
+Node FunctionCallArgs () : { Node me = new Node(C0Type.FUNCTIONCALLARGS); Node exp1, exp2; Token t = null; }
 {
   [
     exp1 = Expression() {me.addChild(exp1);}
@@ -387,7 +270,7 @@ Node FunctionCallArgs () : { Node me = new Node("FunctionCallArgs"); Node exp1, 
   }
 }
 
-Node Expression () : { Node me = new Node("Expression"); Node type, exp, ass, vid, cond; Token t; }
+Node Expression () : { Node me = new Node(C0Type.EXPRESSION); Node type, exp, ass, vid, cond; Token t = null; }
 {
   (
     t = <ALLOC> {me.addChild(t);}
@@ -417,7 +300,7 @@ Node Expression () : { Node me = new Node("Expression"); Node type, exp, ass, vi
   }
 }
 
-Node OpRang_Assign () : { Node me = new Node("OpRang_Assign"); Node cond1, cond2; Token t; }
+Node OpRang_Assign () : { Node me = new Node(C0Type.ASSIGN); Node cond1, cond2; Token t = null; }
 {
   cond1 = OpRang_Conditional() {me.addChild(cond1);}
   [ 
@@ -452,7 +335,7 @@ Node OpRang_Assign () : { Node me = new Node("OpRang_Assign"); Node cond1, cond2
   }
 }
 
-Node OpRang_Conditional () : { Node me = new Node("OpRang_Conditional"); Node or, exp1, exp2; Token t; }
+Node OpRang_Conditional () : { Node me = new Node(C0Type.CONDITIONAL); Node or, exp1, exp2; Token t = null; }
 {
   or = OpRang_LogicalOr() {me.addChild(or);}
   [ 
@@ -469,7 +352,7 @@ Node OpRang_Conditional () : { Node me = new Node("OpRang_Conditional"); Node or
   }
 }
 
-Node OpRang_LogicalOr () : { Node me = new Node("OpRang_LogicalOr"); Node and, or; Token t = null; }
+Node OpRang_LogicalOr () : { Node me = new Node(C0Type.LOGICALOR); Node and, or; Token t = null; }
 {
   and = OpRang_LogicalAnd() {me.addChild(and);}
   [
@@ -483,7 +366,7 @@ Node OpRang_LogicalOr () : { Node me = new Node("OpRang_LogicalOr"); Node and, o
   }
 }
 
-Node OpRang_LogicalAnd () : { Node me = new Node("OpRang_LogicalAnd"); Node or, and; Token t; }
+Node OpRang_LogicalAnd () : { Node me = new Node(C0Type.LOGICALAND); Node or, and; Token t = null; }
 {
   or = OpRang_BitOr() {me.addChild(or);}
   [ 
@@ -497,7 +380,7 @@ Node OpRang_LogicalAnd () : { Node me = new Node("OpRang_LogicalAnd"); Node or, 
   }
 }
 
-Node OpRang_BitOr () : { Node me = new Node("OpRang_BitOr"); Node xor, or; Token t; }
+Node OpRang_BitOr () : { Node me = new Node(C0Type.BITOR); Node xor, or; Token t = null; }
 {
   xor = OpRang_BitXor() {me.addChild(xor);}
   [ 
@@ -511,7 +394,7 @@ Node OpRang_BitOr () : { Node me = new Node("OpRang_BitOr"); Node xor, or; Token
   }
 }
 
-Node OpRang_BitXor () : { Node me = new Node("OpRang_BitXor"); Node and, xor; Token t; }
+Node OpRang_BitXor () : { Node me = new Node(C0Type.BITXOR); Node and, xor; Token t = null; }
 {
   and = OpRang_BitAnd() {me.addChild(and);}
   [ 
@@ -525,7 +408,7 @@ Node OpRang_BitXor () : { Node me = new Node("OpRang_BitXor"); Node and, xor; To
   }
 }
 
-Node OpRang_BitAnd () : { Node me = new Node("OpRang_BitAnd"); Node equ, and; Token t; }
+Node OpRang_BitAnd () : { Node me = new Node(C0Type.BITAND); Node equ, and; Token t = null; }
 {
   equ = OpRang_Equality() {me.addChild(equ);}
   [ 
@@ -539,7 +422,7 @@ Node OpRang_BitAnd () : { Node me = new Node("OpRang_BitAnd"); Node equ, and; To
   }
 }
 
-Node OpRang_Equality () : { Node me = new Node("OpRang_Equality"); Node comp, equ; Token t; }
+Node OpRang_Equality () : { Node me = new Node(C0Type.EQUALITY); Node comp, equ; Token t = null; }
 {
   comp = OpRang_Compare() {me.addChild(comp);}
   [ 
@@ -555,7 +438,7 @@ Node OpRang_Equality () : { Node me = new Node("OpRang_Equality"); Node comp, eq
   }
 }
 
-Node OpRang_Compare () : { Node me = new Node("OpRang_Compare"); Node shift, comp; Token t; }
+Node OpRang_Compare () : { Node me = new Node(C0Type.COMPARE); Node shift, comp; Token t = null; }
 {
   shift = OpRang_BitShift() {me.addChild(shift);}
   [ 
@@ -575,7 +458,7 @@ Node OpRang_Compare () : { Node me = new Node("OpRang_Compare"); Node shift, com
   }
 }
 
-Node OpRang_BitShift () : { Node me = new Node("OpRang_BitShift"); Node sum, shift; Token t; }
+Node OpRang_BitShift () : { Node me = new Node(C0Type.BITSHIFT); Node sum, shift; Token t = null; }
 {
   sum = OpRang_Sum() {me.addChild(sum);} 
   [ 
@@ -591,7 +474,7 @@ Node OpRang_BitShift () : { Node me = new Node("OpRang_BitShift"); Node sum, shi
   }
 }
 
-Node OpRang_Sum () : { Node me = new Node("OpRang_Sum"); Node fac, sum; Token t; }
+Node OpRang_Sum () : { Node me = new Node(C0Type.SUM); Node fac, sum; Token t = null; }
 {
   fac = OpRang_Factor() {me.addChild(fac);}
   [ 
@@ -607,7 +490,7 @@ Node OpRang_Sum () : { Node me = new Node("OpRang_Sum"); Node fac, sum; Token t;
   }
 }
 
-Node OpRang_Factor () : { Node me = new Node("OpRang_Factor"); Node unary, fac; Token t; }
+Node OpRang_Factor () : { Node me = new Node(C0Type.FACTOR); Node unary, fac; Token t = null; }
 {
   unary = OpRang_Unary() {me.addChild(unary);} 
   [ 
@@ -625,7 +508,7 @@ Node OpRang_Factor () : { Node me = new Node("OpRang_Factor"); Node unary, fac; 
   }
 }
 
-Node OpRang_Unary () : { Node me = new Node("OpRang_Unary"); Node fnCallArgs, vid, cond, macc; Token t; }
+Node OpRang_Unary () : { Node me = new Node(C0Type.UNARY); Node fnCallArgs, vid, cond, macc; Token t = null; }
 {
   [
     t = "*" {me.addChild(t);}

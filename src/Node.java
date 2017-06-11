@@ -6,37 +6,39 @@
  * @author Konstantin Ruppel
  */
 public class Node {
-
   public static String standardIndentation = ". ";
-  String image = null;
-  Node parent = null;
-  Node child = null;
-  Node sibling = null;
 
-  // Position in source file
-  int beginLine;
-  int beginColumn;
-  int endLine;
-  int endColumn;
+  C0Type type       = null;
+  String image      = null;
+  int beginLine     = -1;
+  int beginColumn   = -1;
+  int endLine       = -1;
+  int endColumn     = -1;
 
-  public Node (String image) {
-    this.image = image;
-  }
+  Node parent       = null;
+  Node child        = null;
+  Node sibling      = null;
 
+  /**
+   * Creates a new node.
+   * @param token Token holding its status.
+   */
   public Node (Token token) {
-    this.image = token.image;
+    this.type = C0Type.TERMINAL;
     this.beginLine = token.beginLine;
+    this.endLine = token.endLine;
     this.beginColumn = token.beginColumn;
     this.endColumn = token.endColumn;
-    this.endLine = token.endLine;
+    this.image = token.image;
   }
 
-  public Node (Token token, Node parent) {
-    this (token);
-    parent.addChild (this);
+  /**
+   * Creates a new node and appends it to a given parent node.
+   * @param type C0Type
+   */
+  public Node (C0Type type) {
+    this.type = type;
   }
-
-  /***************************************************************************/
 
   /**
    * Adds a new child. If this is not the first child, it will become a sibling
@@ -54,10 +56,14 @@ public class Node {
 
   /**
    * Appends a new child node representing the given value.
-   * @param value String representation of this node.
+   * @param type C0Type
    */
+  public void addChild (C0Type type) {
+    this.addChild (new Node(type));
+  }
+
   public void addChild (Token token) {
-    addChild (new Node(token));
+    this.addChild (new Node(token));
   }
 
   /**
@@ -73,14 +79,13 @@ public class Node {
     }
   }
 
-  /***************************************************************************/
-
   /**
    * Prints the branch outgoing from this node to the console.
    * @param indentation Indentation on each layer.
    */
   public void printTree (String indentation) {
-    System.out.println (indentation + this.image);
+    if (this.type == C0Type.TERMINAL)
+      System.out.println (indentation + this.image);
     if (this.child != null) {
       this.child.printTree (standardIndentation + indentation);
     }
