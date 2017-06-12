@@ -1,5 +1,0 @@
-void function_name()
-{	
-	int i = 2 + 2 + 2 * 2 * 2;
-	i.field += 2 + 2 + 2 * 2 * 2;
-}

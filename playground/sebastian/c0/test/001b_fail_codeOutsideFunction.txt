@@ -1,2 +1,0 @@
-int i = 2 + 2 + 2 * 2 * 2;
-i.field->anotherfield[i+3 += 2 + 2 + 2 * 2 * 2;

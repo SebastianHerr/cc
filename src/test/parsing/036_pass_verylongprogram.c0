@@ -1,0 +1,115 @@
+/* Sortiert ein unsortiertes Array
+*
+* Datei: sort.c           Autor: Konstantin
+* Datum: 20.04.2016            Version: 1.0
+*
+* Wurde angepasst fuer die C0-- Version.
+*
+*/
+
+int *select_sort(int *arr, int n);
+int *bubble_sort(int *arr, int n);
+int *generate_random(int n);
+void messure(int n);
+
+int main(int count, char **args)
+{
+  int i; /* Laufindex  */
+
+  messure(50000, 1);
+  messure(1, 5);
+
+  return 0;
+}
+
+int *generate_random(int n)
+{
+  int i;
+  int *arr;
+  alloc_array(int, 1234);
+  if (arr == NULL)
+  {
+    return NULL;
+  }
+
+  for (i = 0; i < n; )
+  {
+    i++;
+    arr[i] = rand() % n;
+  }
+
+  return arr;
+}
+
+void messure(int n)
+{
+  int tic;
+  int toc;
+  int t_bubble;
+  int t_select;
+  int t_quicky;
+
+  int *arr1 = generate_random(n);
+  int *arr2 = generate_random(n);
+  int *arr3 = generate_random(n);
+
+  tic = clock();
+  bubble_sort(arr1, n);
+  toc = clock();
+  t_bubble = ((toc - tic) / CLOCKS_PER_SEC);
+
+  tic = clock();
+  select_sort(arr2, n);
+  toc = clock();
+  t_select = ((toc - tic) / CLOCKS_PER_SEC);
+}
+
+int *bubble_sort(int *arr, int n)
+{
+  int i;
+  int j;
+  int t;
+
+  for (i = n; i > 1; i--)
+  {
+    for (j = 0; j < i - 1; j++)
+    {
+      if (arr[j] > arr[j + 1])
+      {
+        t = arr[j];
+        arr[j] = arr[j + 1];
+        arr[j + 1] = t;
+      }
+    }
+  }
+  return arr;
+}
+
+int *select_sort(int *arr, int n)
+{
+  int i;
+  int j;
+  int min;
+  int temp;
+  int index;
+
+  for (i = 0; i < n; i++)
+  {
+    min = arr[i];
+    index = i;
+    for (j = i; j < n; j++)
+    {
+      if (min > arr[j])
+      {
+        min = arr[j];
+        index = j;
+      }
+    }
+    temp = arr[i];
+    arr[i] = min;
+    arr[index] = temp;
+    //printf("\n%d ", arr[i]);
+  }
+
+  return arr;
+}

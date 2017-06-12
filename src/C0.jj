@@ -66,12 +66,12 @@ TOKEN : {
 }
 
 TOKEN : {
-	< ID: <LETTER> ( <ALPHANUM> )* >
-	|	< #LETTER: ["$","A"-"Z","a"-"z","_"] >
-	|	< #ALPHANUM: ["$","A"-"Z","a"-"z","0"-"9","_"] >
-	|	< NUM: <DECNUM> | <HEXNUM> >
-	|	< DECNUM: "0" | ["1"-"9"](["1"-"9"])* >
-	|	< HEXNUM: "0" ("x" | "X") (["0"-"9","a"-"f","A"-"F"])+ >
+  < ID: <LETTER> ( <ALPHANUM> )* >
+  |	< #LETTER: ["$","A"-"Z","a"-"z","_"] >
+  |	< #ALPHANUM: ["$","A"-"Z","a"-"z","0"-"9","_"] >
+  |	< NUM: <DECNUM> | <HEXNUM> >
+  |	< DECNUM: "0" | ["1"-"9"](["0"-"9"])* >
+  |	< HEXNUM: "0" ("x" | "X") (["0"-"9","a"-"f","A"-"F"])+ >
 }
 
 NodeRoot Program () : {NodeRoot root; Node declarationOrStatement;}
@@ -83,6 +83,9 @@ NodeRoot Program () : {NodeRoot root; Node declarationOrStatement;}
   )* 
   <EOF> {return root;}
 }
+
+
+
 
 Node Sid () : {Token name;}
 {
