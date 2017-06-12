@@ -34,7 +34,7 @@ public void setElse(Node statement)
 public String toString(String indendation)
 {
   return "if(" + condition.toString(indendation) + ")\n" + 
-            ifStatement.toString(indendation+standardIndentation) + 
+            ifStatement.toString(indendation) + 
           ((elseStatement==null)?"": indendation +"else\n" + elseStatement.toString(indendation+standardIndentation));
 }
 }

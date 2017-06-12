@@ -139,7 +139,7 @@ Node Statement () : {Node result = null; NodeStatementIf resultIf;
   |
 	<IF> "(" newNode=Expression() {resultIf=new NodeStatementIf(newNode);}")" newNode=Statement() 
     {resultIf.setIf(newNode);}
-    [ LOOKAHEAD(2) <ELSE> newNode=Statement() {resultIf.setElse(newNode); result=resultIf;}]
+    [ LOOKAHEAD(2) <ELSE> newNode=Statement() {resultIf.setElse(newNode);}] {result=resultIf;}
 	|
 	<WHILE> "(" newNode=Expression() {resultWhile=new NodeStatementWhile(newNode);}")" 
     newNode=Statement()
