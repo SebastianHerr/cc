@@ -14,7 +14,7 @@ do	case "$o" in
 
 		javacc -OUTPUT_DIRECTORY=bin/ $PARSER.jj
 		javac -d bin bin/*.java
-		javac -d bin *.java
+		#javac -d bin *.java
 
 		echo -e "\n\e[1mBuilding completed. \e[0m \n"
 	;;
