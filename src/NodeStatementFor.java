@@ -45,6 +45,7 @@ public void setLoopBody(Node loopBody_)
 
 public String toString(String indendation)
 {
-  return "for(" + init.toString(indendation) + ";" + condition.toString(indendation) + ";" + iterator.toString(indendation) + ")\n" + loopBody.toString(indendation);
+  //Init and Iterator are optional
+  return "for(" + (init != null ? init.toString(indendation) : "") + ";" + condition.toString(indendation) + ";" + (iterator != null ? iterator.toString(indendation) : "") + ")\n" + loopBody.toString(indendation);
 }
 }

@@ -147,8 +147,8 @@ Node Statement () : {Node result = null; NodeStatementIf resultIf;
 	|
 	<FOR> {resultFor=new NodeStatementFor();} 
     "(" [ newNode=Expression() {resultFor.setInitializer(newNode);}] 
-    ";" Expression() {resultFor.setCondition(newNode);}
-     ";" [ Expression() {resultFor.setIterator(newNode);}] 
+    ";" newNode=Expression() {resultFor.setCondition(newNode);}
+     ";" [ newNode=Expression() {resultFor.setIterator(newNode);}] 
     ")" newNode=Statement()
      {resultFor.setLoopBody(newNode);result=resultFor;}
 	|
