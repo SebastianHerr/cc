@@ -40,7 +40,7 @@ public String toString(String indendation)
     }
     result+= listOfParamters.get(i) + " " + listOfParamters.get(i+1);
    }
-  result += ")\n";
+  result += ")";
   return result;
 }
 }

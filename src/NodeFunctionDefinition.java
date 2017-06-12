@@ -23,6 +23,6 @@ return true; //Check okay
 
 public String toString(String indendation)
 {
-  return name.toString(indendation) + "" + functionblock.toString(indendation) + "\n";
+  return name.toString(indendation) + "\n" + functionblock.toString(indendation);
 }
 }
