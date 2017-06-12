@@ -35,6 +35,6 @@ public String toString(String indendation)
 {
   return "if(" + condition.toString(indendation) + ")\n" + 
             ifStatement.toString(indendation+standardIndentation) + 
-          ((elseStatement==null)?"":"else\n" + elseStatement.toString(indendation+standardIndentation));
+          ((elseStatement==null)?"": indendation +"else\n" + elseStatement.toString(indendation+standardIndentation));
 }
 }
