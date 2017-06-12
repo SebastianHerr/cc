@@ -22,8 +22,8 @@ public void setReturnValue(Node returnValue_)
   returnValue.setParent(this);
 }
 
-public String toString()
+public String toString(String indendation)
 {
-  return "return " + ((returnValue==null)?"":" " + returnValue) + ";";
+  return "return " + ((returnValue==null)?"":" " + returnValue.toString(indendation)) + ";\n";
 }
 }

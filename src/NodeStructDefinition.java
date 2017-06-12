@@ -30,13 +30,13 @@ public void addElement(Node type_, Node name_)
   listOfMembers.add(name_);
 }
 
-public String toString()
+public String toString(String indendation)
 {
-  String result = name + "{";
+  String result = name.toString(indendation) + "{\n";
   for(int i = 0; i < listOfMembers.size(); i += 2) {
-    result+= listOfMembers.get(i) + "" + listOfMembers.get(i+1) + ";";
+    result+= indendation + listOfMembers.get(i).toString(indendation) + "" + listOfMembers.get(i+1).toString(indendation) + ";\n";
   }
-  result += "}";
+  result += indendation + "}\n";
   return result;
 }
 }

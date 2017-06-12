@@ -25,7 +25,7 @@ public void setParent(Node newParent)
 parent = newParent;
 }
 
-public String toString()
+public String toString(String indendation)
 {
   return token.image;
 }

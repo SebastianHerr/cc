@@ -24,7 +24,7 @@ public void addArg(Node argument)
   argument.setParent(this);
 }
 
-public String toString()
+public String toString(String indendation)
 {
   String result = "";
   boolean firstLoop = true;
@@ -37,7 +37,7 @@ public String toString()
     {
       result += ",";
     }
-    result += argument;
+    result += argument.toString(indendation) ;
   }
   return result;
 }

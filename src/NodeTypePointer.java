@@ -18,8 +18,8 @@ public boolean checkNodeType()
 return true; //Check okay
 }
 
-public String toString()
+public String toString(String indendation)
 {
-  return pointingTo + "*";
+  return pointingTo.toString(indendation) + "*";
 }
 }

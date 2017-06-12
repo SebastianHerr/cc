@@ -21,9 +21,9 @@ public boolean checkNodeType()
 return true; //Check okay
 }
 
-public String toString()
+public String toString(String indendation)
 {
-  return type + " " + name;
+  return type.toString(indendation) + " " + name.toString(indendation);
 }
 
 }

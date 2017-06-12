@@ -24,13 +24,13 @@ public void addStatement(Node node)
   node.setParent(this);
 }
 
-public String toString()
+public String toString(String indentation)
 {
-  String result = "{";
+  String result = indentation + "{\n";
   for (Node statement : statements) {
-    result += statement;
+    result += indentation + standardIndentation + statement.toString(indentation + standardIndentation);
   }
-  result += "}";
+  result += indentation + "}\n";
   return result;
 }
 }

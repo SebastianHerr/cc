@@ -31,8 +31,8 @@ public void setSecondary(Node secondary_)
   secondary.setParent(this);
 }
 
-public String toString()
+public String toString(String indendation)
 {
-  return primary + op + secondary;
+  return primary.toString(indendation) + " " + op + " " + secondary.toString(indendation);
 }
 }

@@ -14,9 +14,9 @@ public boolean checkNodeType()
 return true; //Check okay
 }
 
-public String toString()
+public String toString(String indendation)
 {
-  return "~" + innerNode;
+  return "~" + innerNode.toString(indendation);
 }
 
 }

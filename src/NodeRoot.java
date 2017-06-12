@@ -24,11 +24,11 @@ public void addDeclarationOrStatement(Node node)
   node.setParent(this);
 }
 
-public String toString()
+public String toString(String indendation)
 {
   String result = "";
   for (Node declarationOrStatement : declarationsOrStatements) {
-    result += declarationOrStatement + "\n";
+    result += declarationOrStatement.toString(indendation); //No identation for the members of the root
   }
   return result;
 }

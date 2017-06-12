@@ -43,8 +43,8 @@ public void setLoopBody(Node loopBody_)
   loopBody.setParent(this);
 }
 
-public String toString()
+public String toString(String indendation)
 {
-  return "for(" + init + ";" + condition + ";" + iterator + ")" + loopBody;
+  return "for(" + init.toString(indendation) + ";" + condition.toString(indendation) + ";" + iterator.toString(indendation) + ")\n" + loopBody.toString(indendation);
 }
 }

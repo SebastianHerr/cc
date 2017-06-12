@@ -8,6 +8,8 @@ public abstract class Node{
   
   Token token = null;
   
+  public static String standardIndentation = "  ";
+  
 	public abstract String getNodeType();
 	
 	public abstract boolean checkNodeType();
@@ -48,6 +50,13 @@ public abstract class Node{
       enclosingBlock = parent.getEnclosingBlock();
     }
     return enclosingBlock;
+  }
+  
+  public abstract String toString(String indendation);
+  
+  public String toString()
+  {
+    return toString("");
   }
   
   // Returns the token which defined this Node when this is a leaf, otherwise it returns null

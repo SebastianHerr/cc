@@ -1,4 +1,4 @@
-abstract public class NodeMemberAccess extends Node{
+public abstract class NodeMemberAccess extends Node{
 
 Node accessedNode;
 Node accessingNode;

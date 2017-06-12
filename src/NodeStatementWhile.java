@@ -25,8 +25,9 @@ public void setLoopBody(Node loopBody_)
   loopBody.setParent(this);
 }
 
-public String toString()
+public String toString(String indentation)
 {
-  return "while(" + condition +"){" + loopBody + "}";
+  return indentation + "while(" + condition.toString(indentation) +")\n" 
+    + loopBody.toString(indentation);
 }
 }

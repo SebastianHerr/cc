@@ -31,7 +31,7 @@ public void addParameter(Node parameterType, Node parameterName)
   listOfParamters.add(parameterName);
 }
 
-public String toString()
+public String toString(String indendation)
 {
   String result = type + " " + name + "(";
   for(int i = 0; i < listOfParamters.size(); i += 2) {
@@ -40,7 +40,7 @@ public String toString()
     }
     result+= listOfParamters.get(i) + " " + listOfParamters.get(i+1);
    }
-  result += ")";
+  result += ")\n";
   return result;
 }
 }

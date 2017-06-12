@@ -20,8 +20,8 @@ public boolean checkNodeType()
 return true; //Check okay
 }
 
-public String toString()
+public String toString(String indendation)
 {
-  return "alloc_array(" + type + "," + size + ")";
+  return "alloc_array(" + type.toString(indendation) + "," + size.toString(indendation) + ")";
 }
 }
