@@ -217,26 +217,29 @@ Node Expression () : {Node result; Node array_alloc_size;
     {return result;}
 }
 
-Node OpRang_Assign () : {Node result; NodeExpressionAssign resultAssign;}
+Node OpRang_Assign () : {Node result; NodeExpressionBinary operator = null; NodeExpressionAssign resultAssign;}
 {
   result=OpRang_Conditional()
   [ 
     LOOKAHEAD(2)
     {resultAssign= new NodeExpressionAssign(result);}
     (
-      "="  {resultAssign.setOp("=")  ;}| 
-      "+=" {resultAssign.setOp("+=") ;}| 
-      "-=" {resultAssign.setOp("-=") ;}| 
-      "*=" {resultAssign.setOp("*=") ;}| 
-      "/=" {resultAssign.setOp("/=") ;}| 
-      "%=" {resultAssign.setOp("%=") ;}| 
-      "<<="{resultAssign.setOp("<<=");}| 
-      ">>="{resultAssign.setOp(">>") ;}| 
-      "&=" {resultAssign.setOp("&=") ;}| 
-      "^=" {resultAssign.setOp("^=") ;}| 
-      "|=" {resultAssign.setOp("|=") ;}
+      "="  | 
+      "+=" {operator = new NodeExpressionSum(result);      operator.setOp("+");}|    //Untangle "a += b;" to "a = a + b"
+      "-=" {operator = new NodeExpressionSum(result);      operator.setOp("-");}| 
+      "*=" {operator = new NodeExpressionFactor(result);   operator.setOp("*");}| 
+      "/=" {operator = new NodeExpressionFactor(result);   operator.setOp("/");}| 
+      "%=" {operator = new NodeExpressionFactor(result);   operator.setOp("%");}| 
+      "<<="{operator = new NodeExpressionBitShift(result); operator.setOp("<<");}| 
+      ">>="{operator = new NodeExpressionBitShift(result); operator.setOp(">>");}| 
+      "&=" {operator = new NodeExpressionBitAnd(result);   operator.setOp("&");}| 
+      "^=" {operator = new NodeExpressionBitXor(result);   operator.setOp("^");}| 
+      "|=" {operator = new NodeExpressionBitOr(result);    operator.setOp("|");}
     ) 
-    result=OpRang_Conditional() {resultAssign.setSecondary(result);result=resultAssign;}
+    result=OpRang_Conditional(){resultAssign.setOp("=");
+                                if(operator == null){resultAssign.setSecondary(result);} 
+                                else{operator.setSecondary(result); resultAssign.setSecondary(operator);}
+                                result=resultAssign;}
   ]
   {return result;}
 }
