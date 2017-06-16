@@ -4,8 +4,9 @@ Node condition;
 Node ifStatement;
 Node elseStatement;
 
-public NodeStatementIf(Node condition_)
+public NodeStatementIf(Node condition_, Token token_)
 {
+  token = token_;
   condition = condition_;
 }
 

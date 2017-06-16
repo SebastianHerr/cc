@@ -3,8 +3,9 @@ public class NodeStatementWhile extends Node{
 Node condition;
 Node loopBody;
 
-public NodeStatementWhile(Node condition_)
+public NodeStatementWhile(Node condition_, Token token_)
 {
+  token = token_;
   condition = condition_;
   condition.setParent(this);
 }

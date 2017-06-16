@@ -1,8 +1,8 @@
 public class NodeMemberAccessDot extends NodeMemberAccess{
 
-public NodeMemberAccessDot(Node accessingNode_)
+public NodeMemberAccessDot(Node accessingNode_,Token token_)
 {
-  super(accessingNode_);
+  super(accessingNode_,token_);
 }
 
 public String getNodeType()

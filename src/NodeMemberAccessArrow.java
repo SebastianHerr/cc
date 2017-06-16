@@ -1,8 +1,8 @@
 public class NodeMemberAccessArrow extends NodeMemberAccess{
 
-public NodeMemberAccessArrow(Node accessingNode_)
+public NodeMemberAccessArrow(Node accessingNode_,Token token_)
 {
-  super(accessingNode_);
+  super(accessingNode_,token_);
 }
 
 public String getNodeType()

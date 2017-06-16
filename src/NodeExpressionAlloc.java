@@ -2,9 +2,10 @@ public class NodeExpressionAlloc extends Node{
 
 Node type;
 
-public NodeExpressionAlloc(Node type_)
+public NodeExpressionAlloc(Node type_, Token token_)
 {
   type = type_;
+  token = token_;
   type.setParent(this);
 }
 

@@ -1,7 +1,8 @@
 public class NodeExpressionUnaryDereference extends NodeExpressionUnary{
 
-public NodeExpressionUnaryDereference()
+public NodeExpressionUnaryDereference(Token token_)
 {
+  token = token_;
 }
 
 public String getNodeType()

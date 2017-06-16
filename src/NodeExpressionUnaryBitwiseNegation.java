@@ -1,7 +1,8 @@
 public class NodeExpressionUnaryBitwiseNegation extends NodeExpressionUnary{
 
-public NodeExpressionUnaryBitwiseNegation()
+public NodeExpressionUnaryBitwiseNegation(Token token_)
 {
+  token = token_;
 }
 
 public String getNodeType()

@@ -2,8 +2,9 @@ public class NodeExpressionIncrement extends Node{
 
 Node innerNode;
 
-public NodeExpressionIncrement(Node innerNode_)
+public NodeExpressionIncrement(Node innerNode_, Token token_)
 {
+  token = token_;
   innerNode = innerNode_;
   innerNode.setParent(this);
 }

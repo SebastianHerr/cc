@@ -59,7 +59,11 @@ public abstract class Node{
     return toString("");
   }
   
-  // Returns the token which defined this Node when this is a leaf, otherwise it returns null
+  /*
+    Returns the token which defined this Node when this is a leaf. 
+    If this node is an operator, then it shows to the operator or 
+    the first one if there are several operator symbols are existant.
+   */
   public Token getToken()
   {
     return token;

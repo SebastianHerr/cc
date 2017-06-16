@@ -2,8 +2,9 @@ public class NodeExpressionAllocArray extends Node{
 
 Node type;
 Node size;
-public NodeExpressionAllocArray(Node type_, Node size_)
+public NodeExpressionAllocArray(Node type_, Token token_, Node size_)
 {
+   token = token_;
    type = type_;
    type.setParent(this);
    size = size_;

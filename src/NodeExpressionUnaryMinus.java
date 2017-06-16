@@ -1,7 +1,8 @@
 public class NodeExpressionUnaryMinus extends NodeExpressionUnary{
 
-public NodeExpressionUnaryMinus()
+public NodeExpressionUnaryMinus(Token token_)
 {
+  token = token_;
 }
 
 public String getNodeType()

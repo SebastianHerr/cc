@@ -123,36 +123,35 @@ Node Declaration_Definition () : {Node result = null; Node newNode; Node type; N
   {return result;}
 }
 
-Node Block() : {NodeBlock result; Node newNode;}
+Node Block() : {NodeBlock result; Node newNode; Token token;}
 {
-  {result = new NodeBlock();}
-  "{" ( newNode=Statement() {result.addStatement(newNode);})* "}"
+  token="{" {result = new NodeBlock(token);} ( newNode=Statement() {result.addStatement(newNode);})* "}"
   {return result;}
 }
 
 Node Statement () : {Node result = null; NodeStatementIf resultIf;
   NodeStatementWhile resultWhile; NodeStatementFor resultFor;
-  NodeStatementReturn resultReturn; Node newNode = null;}
+  NodeStatementReturn resultReturn; Node newNode = null; Token token;}
 {
   (
   newNode=Expression() ";" {result=new NodeStatementExpression(newNode);}
   |
-	<IF> "(" newNode=Expression() {resultIf=new NodeStatementIf(newNode);}")" newNode=Statement() 
+	token=<IF> "(" newNode=Expression() {resultIf=new NodeStatementIf(newNode,token);}")" newNode=Statement() 
     {resultIf.setIf(newNode);}
     [ LOOKAHEAD(2) <ELSE> newNode=Statement() {resultIf.setElse(newNode);}] {result=resultIf;}
 	|
-	<WHILE> "(" newNode=Expression() {resultWhile=new NodeStatementWhile(newNode);}")" 
+	token=<WHILE> "(" newNode=Expression() {resultWhile=new NodeStatementWhile(newNode, token);}")" 
     newNode=Statement()
     {resultWhile.setLoopBody(newNode);result=resultWhile;}
 	|
-	<FOR> {resultFor=new NodeStatementFor();} 
+	token=<FOR> {resultFor=new NodeStatementFor(token);} 
     "(" [ newNode=Expression() {resultFor.setInitializer(newNode);}] 
     ";" newNode=Expression() {resultFor.setCondition(newNode);}
      ";" [ newNode=Expression() {resultFor.setIterator(newNode);}] 
     ")" newNode=Statement()
      {resultFor.setLoopBody(newNode);result=resultFor;}
 	|
-	<RETURN> {resultReturn=new NodeStatementReturn();}
+	token=<RETURN> {resultReturn=new NodeStatementReturn(token);}
     [ newNode=Expression() {resultReturn.setReturnValue(newNode);result=resultReturn;} ] ";"
 	|
 	result=Block() //No need to create a seperate statment block node, everything is already in the block
@@ -160,14 +159,14 @@ Node Statement () : {Node result = null; NodeStatementIf resultIf;
   {return result;}
 }
 
-NodeMemberAccess MemberAccess () : {Node newNode; NodeMemberAccess memberaccess;}
+NodeMemberAccess MemberAccess () : {Node newNode; NodeMemberAccess memberaccess;Token token;}
 {
   (
-    "." newNode=Fid() {memberaccess= new NodeMemberAccessDot(newNode);}
+    token="." newNode=Fid() {memberaccess= new NodeMemberAccessDot(newNode, token);}
     |
-    "->" newNode=Fid() {memberaccess= new NodeMemberAccessArrow(newNode);}
+    token="->" newNode=Fid() {memberaccess= new NodeMemberAccessArrow(newNode, token);}
     |
-    "[" newNode=Expression() "]" {memberaccess= new NodeMemberAccessArray(newNode);}
+    token="[" newNode=Expression() "]" {memberaccess= new NodeMemberAccessArray(newNode, token);}
   )
   [
     newNode=MemberAccess() {memberaccess.setAccessingNode(newNode);} 
@@ -201,42 +200,42 @@ NodeFunctionCallArgs FunctionCallArgs () : {NodeFunctionCallArgs result; Node ne
   {return result;}
 }
 
-Node Expression () : {Node result; Node array_alloc_size; 
+Node Expression () : {Node result; Node array_alloc_size; Token token;
   Node type; Node name; Node newNode; NodeExpressionAssign resultAssign;}
 {	
-  <ALLOC> "(" result=Type() ")" {return new NodeExpressionAlloc(result);}
+  token=<ALLOC> "(" result=Type() ")" {return new NodeExpressionAlloc(result,token);}
   |
-  <ALLOC_ARR> "(" result=Type() "," array_alloc_size=Expression() ")" 
-    {return new NodeExpressionAllocArray(result,array_alloc_size);}
+  token=<ALLOC_ARR> "(" result=Type() "," array_alloc_size=Expression() ")" 
+    {return new NodeExpressionAllocArray(result,token,array_alloc_size);}
   |
   result=OpRang_Assign() {return result;}
   |
   type=Type() name=Vid() {result = new NodeExpressionVariableDefinition(type,name);}
-    [ LOOKAHEAD(2) {resultAssign= new NodeExpressionAssign(result); resultAssign.setOp("=");} 
-      "=" newNode=OpRang_Conditional() {resultAssign.setSecondary(newNode);result=resultAssign;}]
+    [ LOOKAHEAD(2) {resultAssign= new NodeExpressionAssign(result);} 
+      token="=" newNode=OpRang_Conditional() {resultAssign.setOp("=",token);resultAssign.setSecondary(newNode);result=resultAssign;}]
     {return result;}
 }
 
-Node OpRang_Assign () : {Node result; NodeExpressionBinary operator = null; NodeExpressionAssign resultAssign;}
+Node OpRang_Assign () : {Node result; NodeExpressionBinary operator = null; NodeExpressionAssign resultAssign; Token opToken;}
 {
   result=OpRang_Conditional()
   [ 
     LOOKAHEAD(2)
     {resultAssign= new NodeExpressionAssign(result);}
     (
-      "="  | 
-      "+=" {operator = new NodeExpressionSum(result);      operator.setOp("+");}|    //Untangle "a += b;" to "a = a + b"
-      "-=" {operator = new NodeExpressionSum(result);      operator.setOp("-");}| 
-      "*=" {operator = new NodeExpressionFactor(result);   operator.setOp("*");}| 
-      "/=" {operator = new NodeExpressionFactor(result);   operator.setOp("/");}| 
-      "%=" {operator = new NodeExpressionFactor(result);   operator.setOp("%");}| 
-      "<<="{operator = new NodeExpressionBitShift(result); operator.setOp("<<");}| 
-      ">>="{operator = new NodeExpressionBitShift(result); operator.setOp(">>");}| 
-      "&=" {operator = new NodeExpressionBitAnd(result);   operator.setOp("&");}| 
-      "^=" {operator = new NodeExpressionBitXor(result);   operator.setOp("^");}| 
-      "|=" {operator = new NodeExpressionBitOr(result);    operator.setOp("|");}
+      opToken="="  | 
+      opToken="+=" {operator = new NodeExpressionSum(result);      operator.setOp("+", opToken);}|    //Untangle "a += b;" to "a = a + b"
+      opToken="-=" {operator = new NodeExpressionSum(result);      operator.setOp("-", opToken);}| 
+      opToken="*=" {operator = new NodeExpressionFactor(result);   operator.setOp("*", opToken);}| 
+      opToken="/=" {operator = new NodeExpressionFactor(result);   operator.setOp("/", opToken);}| 
+      opToken="%=" {operator = new NodeExpressionFactor(result);   operator.setOp("%", opToken);}| 
+      opToken="<<="{operator = new NodeExpressionBitShift(result); operator.setOp("<<", opToken);}| 
+      opToken=">>="{operator = new NodeExpressionBitShift(result); operator.setOp(">>", opToken);}| 
+      opToken="&=" {operator = new NodeExpressionBitAnd(result);   operator.setOp("&", opToken);}| 
+      opToken="^=" {operator = new NodeExpressionBitXor(result);   operator.setOp("^", opToken);}| 
+      opToken="|=" {operator = new NodeExpressionBitOr(result);    operator.setOp("|", opToken);}
     ) 
-    result=OpRang_Conditional(){resultAssign.setOp("=");
+    result=OpRang_Conditional(){resultAssign.setOp("=", opToken);
                                 if(operator == null){resultAssign.setSecondary(result);} 
                                 else{operator.setSecondary(result); resultAssign.setSecondary(operator);}
                                 result=resultAssign;}
@@ -244,96 +243,96 @@ Node OpRang_Assign () : {Node result; NodeExpressionBinary operator = null; Node
   {return result;}
 }
 
-Node OpRang_Conditional () : {Node result; NodeStatementIf resultIf;}
+Node OpRang_Conditional () : {Node result; NodeStatementIf resultIf; Token token;}
 {
   //Using the normal If Node since this here is just a shorthand for the normal if then else construct
   result=OpRang_LogicalOr() 
   [ LOOKAHEAD(2)  
-    ( "?" {resultIf=new NodeStatementIf(result);} result=Expression() {resultIf.setIf(result);}
+    ( token="?" {resultIf=new NodeStatementIf(result, token);} result=Expression() {resultIf.setIf(result);}
       ":" result=Expression() {resultIf.setElse(result); result = resultIf;}) 
   ]
   {return result;}
 }
 
-Node OpRang_LogicalOr () : {Node result; NodeExpressionBinary resultBin;}
+Node OpRang_LogicalOr () : {Node result; NodeExpressionBinary resultBin;Token opToken;}
 {
   result=OpRang_LogicalAnd() [ {resultBin = new NodeExpressionLogicalOr(result);} 
-        ( "||" ) result=OpRang_LogicalOr()  {resultBin.setSecondary(result);result=resultBin;}]
+        ( opToken="||" ) result=OpRang_LogicalOr()  {resultBin.setOp("||",opToken); resultBin.setSecondary(result);result=resultBin;}]
   {return result;}
 }
 
-Node OpRang_LogicalAnd () : {Node result;NodeExpressionBinary resultBin;}
+Node OpRang_LogicalAnd () : {Node result;NodeExpressionBinary resultBin;Token opToken;}
 {
   result=OpRang_BitOr() [ {resultBin = new NodeExpressionLogicalAnd(result);} 
-        ( "&&" ) result=OpRang_LogicalAnd()  {resultBin.setSecondary(result);result=resultBin;}]
+        ( opToken="&&" ) result=OpRang_LogicalAnd()  {resultBin.setOp("&&",opToken);resultBin.setSecondary(result);result=resultBin;}]
   {return result;}
 }
 
-Node OpRang_BitOr () : {Node result;NodeExpressionBinary resultBin;}
+Node OpRang_BitOr () : {Node result;NodeExpressionBinary resultBin;Token opToken;}
 {
   result=OpRang_BitXor() [ {resultBin = new NodeExpressionBitOr(result);} 
-        ( "|" ) result=OpRang_BitOr()  {resultBin.setSecondary(result);result=resultBin;}]
+        ( opToken="|" ) result=OpRang_BitOr()  {resultBin.setOp("|",opToken);resultBin.setSecondary(result);result=resultBin;}]
   {return result;}
 }
 
-Node OpRang_BitXor () : {Node result;NodeExpressionBinary resultBin;}
+Node OpRang_BitXor () : {Node result;NodeExpressionBinary resultBin;Token opToken;}
 {
   result=OpRang_BitAnd() [ {resultBin = new NodeExpressionBitXor(result);} 
-        ( "^" ) result=OpRang_BitXor()  {resultBin.setSecondary(result);result=resultBin;}]
+        ( opToken="^" ) result=OpRang_BitXor()  {resultBin.setOp("^",opToken);resultBin.setSecondary(result);result=resultBin;}]
   {return result;}
 }
 
-Node OpRang_BitAnd () : {Node result;NodeExpressionBinary resultBin;}
+Node OpRang_BitAnd () : {Node result;NodeExpressionBinary resultBin;Token opToken;}
 {
   result=OpRang_Equality() [ {resultBin = new NodeExpressionBitAnd(result);} 
-        ( "&" ) result=OpRang_BitAnd() {resultBin.setSecondary(result);result=resultBin;} ]
+        ( opToken="&" ) result=OpRang_BitAnd() {resultBin.setOp("&",opToken);resultBin.setSecondary(result);result=resultBin;} ]
   {return result;}
 }
 
-Node OpRang_Equality () : {Node result;NodeExpressionBinary resultBin;}
+Node OpRang_Equality () : {Node result;NodeExpressionBinary resultBin;Token opToken;}
 {
   result=OpRang_Compare() [ {resultBin = new NodeExpressionEquality(result);} 
-        ( "==" {resultBin.setOp("==");}| 
-          "!=" {resultBin.setOp("!=");}) 
+        ( opToken="==" {resultBin.setOp("==",opToken);}| 
+          opToken="!=" {resultBin.setOp("!=",opToken);}) 
         result=OpRang_Equality() {resultBin.setSecondary(result);result=resultBin;}]
  {return result;}
 }
 
-Node OpRang_Compare () : {Node result;NodeExpressionBinary resultBin;}
+Node OpRang_Compare () : {Node result;NodeExpressionBinary resultBin;Token opToken;}
 {
   result=OpRang_BitShift() [ {resultBin = new NodeExpressionCompare(result);} 
-        ( "<" {resultBin.setOp("<");}| 
-          ">" {resultBin.setOp(">");}| 
-          ">=" {resultBin.setOp(">=");}| 
-          "<=" {resultBin.setOp("<=");}) 
+        ( opToken="<" {resultBin.setOp("<",opToken);}| 
+          opToken=">" {resultBin.setOp(">",opToken);}| 
+          opToken=">=" {resultBin.setOp(">=",opToken);}| 
+          opToken="<=" {resultBin.setOp("<=",opToken);}) 
         result=OpRang_Compare() {resultBin.setSecondary(result);result=resultBin;}]
   {return result;}
 }
 
-Node OpRang_BitShift () : {Node result;NodeExpressionBinary resultBin;}
+Node OpRang_BitShift () : {Node result;NodeExpressionBinary resultBin;Token opToken;}
 {
   result=OpRang_Sum() [ {resultBin = new NodeExpressionBitShift(result);} 
-        ( "<<" {resultBin.setOp("<<");}| 
-          ">>" {resultBin.setOp(">>");}) 
+        ( opToken="<<" {resultBin.setOp("<<",opToken);}| 
+          opToken=">>" {resultBin.setOp(">>",opToken);}) 
         result=OpRang_BitShift() {resultBin.setSecondary(result);result=resultBin;}]
   {return result;}
 }
 
-Node OpRang_Sum () : {Node result;NodeExpressionBinary resultBin;}
+Node OpRang_Sum () : {Node result;NodeExpressionBinary resultBin;Token opToken;}
 {
   result=OpRang_Factor() [ {resultBin = new NodeExpressionSum(result);} 
-        ( "+" {resultBin.setOp("+");}| 
-          "-" {resultBin.setOp("-");}) 
+        ( opToken="+" {resultBin.setOp("+",opToken);}| 
+          opToken="-" {resultBin.setOp("-",opToken);}) 
         result=OpRang_Sum() {resultBin.setSecondary(result);result=resultBin;}]
   {return result;}
 }
 
-Node OpRang_Factor () : {Node result; Node newNode;NodeExpressionBinary resultBin;}
+Node OpRang_Factor () : {Node result; Node newNode;NodeExpressionBinary resultBin;Token opToken;}
 {
   result=OpRang_Unary() [ {resultBin = new NodeExpressionFactor(result);} 
-        ("*" {resultBin.setOp("*");} |
-         "/" {resultBin.setOp("/");} | 
-         "%" {resultBin.setOp("%");} ) 
+        (opToken="*" {resultBin.setOp("*",opToken);} |
+         opToken="/" {resultBin.setOp("/",opToken);} | 
+         opToken="%" {resultBin.setOp("%",opToken);} ) 
          newNode=OpRang_Factor() {resultBin.setSecondary(newNode);result=resultBin;}] 
   {return result;}
 }
@@ -343,18 +342,18 @@ Node OpRang_Unary () : {NodeExpressionUnary unaryOp = null; Node result;
 {
   //gather information for this node...
   [
-    "*" {unaryOp=new NodeExpressionUnaryDereference();} | 
-    "-" {unaryOp=new NodeExpressionUnaryMinus();} | 
-    "~" {unaryOp=new NodeExpressionUnaryBitwiseNegation();} |
-    "!" {unaryOp=new NodeExpressionUnaryNegation();}
+    token="*" {unaryOp=new NodeExpressionUnaryDereference(token);} | 
+    token="-" {unaryOp=new NodeExpressionUnaryMinus(token);} | 
+    token="~" {unaryOp=new NodeExpressionUnaryBitwiseNegation(token);} |
+    token="!" {unaryOp=new NodeExpressionUnaryNegation(token);}
   ]
   (
     result=Vid() [ "(" functionArgs=FunctionCallArgs() ")" 
                     {result = new NodeExpressionFunctionCall(result, functionArgs);} 
                  | 
-                   "--" { result = new NodeExpressionDecrement(result);}
+                   token="--" { result = new NodeExpressionDecrement(result, token);}
                  | 
-                   "++" { result = new NodeExpressionIncrement(result);}
+                   token="++" { result = new NodeExpressionIncrement(result, token);}
                  ]
     |
       token=<NUM>  {result= new NodeExpressionConstNum(token);}	

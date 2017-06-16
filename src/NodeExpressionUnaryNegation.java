@@ -1,7 +1,8 @@
 public class NodeExpressionUnaryNegation extends NodeExpressionUnary{
 
-public NodeExpressionUnaryNegation()
+public NodeExpressionUnaryNegation(Token token_)
 {
+  token = token_;
 }
 
 public String getNodeType()

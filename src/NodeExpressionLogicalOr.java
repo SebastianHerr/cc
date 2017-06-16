@@ -3,7 +3,6 @@ public class NodeExpressionLogicalOr extends NodeExpressionBinary{
 public NodeExpressionLogicalOr(Node primary_)
 {
   super(primary_);
-  setOp("||");
 }
 
 public String getNodeType()

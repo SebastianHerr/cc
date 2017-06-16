@@ -20,9 +20,10 @@ public boolean checkNodeType()
 return true; //Check okay
 }
 
-public void setOp(String op_)
+public void setOp(String op_, Token token_)
 {
   op = op_;
+  token = token_;
 }
 
 public void setSecondary(Node secondary_)

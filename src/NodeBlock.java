@@ -3,8 +3,9 @@ public class NodeBlock extends Node{
 
 ArrayList<Node> statements;
 
-public NodeBlock()
+public NodeBlock(Token token_)
 {
+  token = token_;
   statements = new ArrayList<Node>();
 }
 

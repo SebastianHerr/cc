@@ -5,8 +5,9 @@ Node condition;
 Node iterator;
 Node loopBody;
 
-public NodeStatementFor()
+public NodeStatementFor(Token token_)
 {
+  token = token_;
 }
 
 public String getNodeType()

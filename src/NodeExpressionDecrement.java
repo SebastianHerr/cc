@@ -2,8 +2,9 @@ public class NodeExpressionDecrement extends Node{
 
 Node innerNode;
 
-public NodeExpressionDecrement(Node innerNode_)
+public NodeExpressionDecrement(Node innerNode_,Token token_)
 {
+  token = token_;
   innerNode = innerNode_;
   innerNode.setParent(this);
 }

@@ -3,8 +3,9 @@ public abstract class NodeMemberAccess extends Node{
 Node accessedNode;
 Node accessingNode;
 
-public NodeMemberAccess(Node accessingNode_)
+public NodeMemberAccess(Node accessingNode_,Token token_)
 {
+  token = token_;
   accessingNode = accessingNode_;
   accessingNode.setParent(this);
 }

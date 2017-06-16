@@ -2,8 +2,9 @@ public class NodeStatementReturn extends Node{
 
 Node returnValue;
 
-public NodeStatementReturn()
+public NodeStatementReturn(Token token_)
 {
+  token = token_;
 }
 
 public String getNodeType()
