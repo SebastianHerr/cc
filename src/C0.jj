@@ -364,7 +364,7 @@ Node OpRang_Unary () : {NodeExpressionUnary unaryOp = null; Node result;
     | 
       token=<NULL> {result= new NodeExpressionConstNull(token);}
     |
-    "(" result=OpRang_Conditional() ")"
+    token="(" result=OpRang_Conditional() {result = new NodeExpressionBrackets(result, token);} ")"
   )
   [
     /*
