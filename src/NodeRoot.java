@@ -1,5 +1,5 @@
 import java.util.*;
-public class NodeRoot extends Node{
+public class NodeRoot extends Node implements IScope{
 
 ArrayList<Node> declarationsOrStatements;
 
@@ -31,5 +31,10 @@ public String toString(String indendation)
     result += declarationOrStatement.toString(indendation); //No identation for the members of the root
   }
   return result;
+}
+
+public int getScopeID()
+{
+  return 0;
 }
 }

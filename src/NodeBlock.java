@@ -1,10 +1,14 @@
 import java.util.*;
-public class NodeBlock extends Node{
+public class NodeBlock extends Node implements IScope{
+
+private static int runningID = 1;
+int id;
 
 ArrayList<Node> statements;
 
 public NodeBlock(Token token_)
 {
+  id = runningID++;
   token = token_;
   statements = new ArrayList<Node>();
 }
@@ -27,11 +31,16 @@ public void addStatement(Node node)
 
 public String toString(String indentation)
 {
-  String result = indentation + "{\n";
+  String result = indentation + "{/* Block ID = " +  id + " */\n";
   for (Node statement : statements) {
     result += indentation + standardIndentation + statement.toString(indentation + standardIndentation);
   }
   result += indentation + "}\n";
   return result;
+}
+
+public int getScopeID()
+{
+  return id;
 }
 }

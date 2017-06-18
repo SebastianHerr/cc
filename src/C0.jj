@@ -10,10 +10,15 @@
  */
 
 PARSER_BEGIN(C0)
+import java.util.*;
 public class C0 {
+  
+  static Stack<Node> scope;
+  
 	public static void main(String args[]) {
 		C0 parser;
-    NodeRoot ast;
+    NodeRoot ast;  
+    scope = new Stack<Node>();
 		try {
 			if (args.length > 0) {
 				parser = new C0 (new java.io.FileInputStream(new java.io.File(args[0])));
@@ -76,12 +81,12 @@ TOKEN : {
 
 NodeRoot Program () : {NodeRoot root; Node declarationOrStatement;}
 {
-  {root = new NodeRoot();}
+  {root = new NodeRoot(); scope.push(root);}
   ( 
     declarationOrStatement=Declaration_Definition()
     {root.addDeclarationOrStatement(declarationOrStatement);}
   )* 
-  <EOF> {return root;}
+  <EOF> {scope.pop(); return root;}
 }
 
 
@@ -125,8 +130,9 @@ Node Declaration_Definition () : {Node result = null; Node newNode; Node type; N
 
 Node Block() : {NodeBlock result; Node newNode; Token token;}
 {
-  token="{" {result = new NodeBlock(token);} ( newNode=Statement() {result.addStatement(newNode);})* "}"
-  {return result;}
+  token="{" {result = new NodeBlock(token); scope.push(result);} 
+    ( newNode=Statement() {result.addStatement(newNode);})* "}"
+  {scope.pop(); return result;}
 }
 
 Node Statement () : {Node result = null; NodeStatementIf resultIf;
