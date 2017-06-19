@@ -3,9 +3,12 @@ public class NodeRoot extends Node implements IScope{
 
 ArrayList<Node> declarationsOrStatements;
 
+int scopeID;
+
 public NodeRoot()
 {
   declarationsOrStatements = new ArrayList<Node>();
+  scopeID = SymbolTable.getNextScopeID();
 }
 
 public String getNodeType()
@@ -35,6 +38,6 @@ public String toString(String indendation)
 
 public int getScopeID()
 {
-  return 0;
+  return scopeID;
 }
 }

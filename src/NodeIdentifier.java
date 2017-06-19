@@ -1,5 +1,7 @@
 public class NodeIdentifier extends Node{
 
+int symbolID;
+
 public NodeIdentifier(Token token_)
 {
   token = token_;
@@ -25,8 +27,19 @@ public void setParent(Node newParent)
 parent = newParent;
 }
 
+public void setSymbolID(int symbolID_)
+{
+  symbolID = symbolID_;
+}
+
+public int getSymbolID()
+{
+  return symbolID;
+}
+
+
 public String toString(String indendation)
 {
-  return token.image;
+  return token.image + "/* SyID " + symbolID + "*/";
 }
 }

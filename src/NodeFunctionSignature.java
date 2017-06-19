@@ -1,11 +1,14 @@
 import java.util.*;
-public class NodeFunctionSignature extends Node{
+public class NodeFunctionSignature extends Node implements IScope{
 
 Node type;
 Node name;
 ArrayList<Node> listOfParamters;
+int scopeID;
+
 public NodeFunctionSignature(Node type_, Node name_)
 {
+  scopeID = SymbolTable.getNextScopeID();
   type = type_;
   type.setParent(this);
   name = name_;
@@ -31,6 +34,11 @@ public void addParameter(Node parameterType, Node parameterName)
   listOfParamters.add(parameterName);
 }
 
+public int getScopeID()
+{
+  return scopeID;
+}
+
 public String toString(String indendation)
 {
   String result = type + " " + name + "(";
@@ -40,7 +48,7 @@ public String toString(String indendation)
     }
     result+= listOfParamters.get(i) + " " + listOfParamters.get(i+1);
    }
-  result += ")";
+  result += ") /* Scope ID = " +  scopeID + " */";
   return result;
 }
 }

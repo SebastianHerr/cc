@@ -13,12 +13,14 @@ PARSER_BEGIN(C0)
 import java.util.*;
 public class C0 {
   
-  static Stack<Node> scope;
+  static Stack<IScope> scope;
+  static SymbolTable table;
   
 	public static void main(String args[]) {
 		C0 parser;
     NodeRoot ast;  
-    scope = new Stack<Node>();
+    scope = new Stack<IScope>();
+    table = new SymbolTable();
 		try {
 			if (args.length > 0) {
 				parser = new C0 (new java.io.FileInputStream(new java.io.File(args[0])));
@@ -26,6 +28,7 @@ public class C0 {
 				parser = new C0 (System.in);
 			}
 			ast = parser.Program();
+      table.printStats();
       System.out.println(ast);
 			System.out.println ("[  OK  ]");
 		} catch (Exception ex) {
@@ -92,19 +95,19 @@ NodeRoot Program () : {NodeRoot root; Node declarationOrStatement;}
 
 
 
-Node Sid () : {Token name;}
+Node Sid () : {Token name; NodeIdentifier node;}
 {
-   name=<ID> {return new NodeIdentifier(name);}   // struct name
+   name=<ID> {node = new NodeIdentifier(name); table.addSymbol(node,scope.peek()); return node;}   // struct name
 }
 
-Node Vid () : {Token name;}
+Node Vid () : {Token name; NodeIdentifier node;}
 {
-   name=<ID> {return new NodeIdentifier(name);}   // variable and function name
+   name=<ID> {node = new NodeIdentifier(name); table.addSymbol(node,scope.peek()); return node;}   // variable and function name
 }
 
-Node Fid () : {Token name;}
+Node Fid () : {Token name; NodeIdentifier node;}
 {
-  name=<ID> {return new NodeIdentifier(name);} // field name
+  name=<ID> {node = new NodeIdentifier(name); table.addSymbol(node,scope.peek()); return node;} // field name
 }
 
 
@@ -114,18 +117,18 @@ Node Declaration_Definition () : {Node result = null; Node newNode; Node type; N
 {
   (
   LOOKAHEAD (3)
-	<STRUCT> name=Sid() {resultStructSig = new NodeStructSignature(name);}
+	<STRUCT> name=Sid() {resultStructSig = new NodeStructSignature(name);scope.push(resultStructSig);}
     [ "{" {result = new NodeStructDefinition(resultStructSig);}
       ( type=Type() name=Vid() {((NodeStructDefinition)result).addElement(type, name);}";")* "}" 
     ] ";" {if(result == null) {result = new NodeStructDeclaration(resultStructSig);}}
 	|
-  type=Type() name=Vid() {resultFunctionSig = new NodeFunctionSignature(type, name);}
+  type=Type() name=Vid() {resultFunctionSig = new NodeFunctionSignature(type, name);scope.push(resultFunctionSig);}
     "(" [ type=Type() name=Vid()  {resultFunctionSig.addParameter(type, name);}
       ( "," type=Type() name=Vid() {resultFunctionSig.addParameter(type, name);} )* ] ")" 
     ( newNode=Block() {result = new NodeFunctionDefinition(resultFunctionSig, newNode);}  | 
      ";"{result = new NodeFunctionDeclaration(resultFunctionSig);} )
   )
-  {return result;}
+  {scope.pop(); return result;}
 }
 
 Node Block() : {NodeBlock result; Node newNode; Token token;}
