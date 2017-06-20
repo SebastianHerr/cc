@@ -2,15 +2,27 @@ import java.util.*;
 public class SymbolTable{
   
   private class Symbol{
-    public IScope scope;
-    public Node symbol;
+    public ArrayList<Integer> scope;
+    public ArrayList<Node> symbol;
     public int symbolID;
     public Symbol(IScope scope_,Node symbol_, int symbolID_)
     {
-      scope = scope_;
-      symbol = symbol_;
+      scope = new ArrayList<Integer>();
+      symbol = new ArrayList<Node>();
       symbolID = symbolID_;
+      addAppearance(scope_,symbol_);
     }
+    
+    public void addAppearance(IScope scope_,Node symbol_)
+    {
+      scope.add(scope_.getScopeID());
+      symbol.add(symbol_);
+    }
+    
+     public String toString()
+     {
+       return symbolID + "\t\"" + symbol.get(0) + "\"\t" + scope;
+     }
   }
   
   int nextSymbolID = 0;
@@ -31,6 +43,12 @@ public class SymbolTable{
   public void printStats()
   {
     System.out.println("Seen " + nextSymbolID + " Symbols in " + nextScopeID + " Scopes");
+    for (Map.Entry<String, Symbol> entry : symbols.entrySet()) {
+    String key = entry.getKey();
+    Symbol value = entry.getValue();
+
+    System.out.println ("\tKey: " + key + "\t\tValue: " + value);
+}
   }
 
     
@@ -42,18 +60,20 @@ public class SymbolTable{
     Symbol symbolFromTable = symbols.get(symbolImage);
     if(symbolFromTable != null)
     {
-      System.out.println("Seen  Symbol " + symbol + " in scope " + scope.getScopeID());
+      symbolFromTable.addAppearance(scope,symbol);
+      System.out.println("Seen  Symbol \"" + symbolImage + "\"\t with ID " + symbolFromTable.symbolID + " in scope " + scope.getScopeID());
+      symbol.setSymbolID(symbolFromTable.symbolID);
       returnValue = false;
     }
     else
     {
       symbolFromTable =  new Symbol(scope,symbol, nextSymbolID);
       symbols.put(symbolImage, symbolFromTable);
-      System.out.println("Added Symbol " + symbol + " in scope " + scope.getScopeID());
+      symbol.setSymbolID(symbolFromTable.symbolID);
+      System.out.println("Added Symbol \"" + symbol + "\" in scope " + scope.getScopeID());
       returnValue = true;
       nextSymbolID++;
     }
-    symbol.setSymbolID(symbolFromTable.symbolID);
     return returnValue;
   }
 }
