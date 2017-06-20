@@ -27,8 +27,10 @@ public class C0 {
 			} else {
 				parser = new C0 (System.in);
 			}
+      System.out.println ("/*");
 			ast = parser.Program();
       table.printStats();
+      System.out.println (" */");
       System.out.println(ast);
 			System.out.println ("[  OK  ]");
 		} catch (Exception ex) {
