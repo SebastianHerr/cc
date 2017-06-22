@@ -8,6 +8,7 @@ public NodeStatementIf(Node condition_, Token token_)
 {
   token = token_;
   condition = condition_;
+  condition.setParent(this);
 }
 
 public String getNodeType()

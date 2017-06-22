@@ -38,6 +38,11 @@ public abstract class Node{
     return root;
   }
   
+  public boolean isRoot()
+  {
+    return false;
+  }
+  
   public void setEnclosingBlock(Node enclosingBlock_)
   {
     enclosingBlock = enclosingBlock_;

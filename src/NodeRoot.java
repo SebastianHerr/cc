@@ -21,6 +21,11 @@ public boolean checkNodeType()
 return true; //Check okay
 }
 
+public boolean isRoot()
+{
+  return true;
+}
+
 public void addDeclarationOrStatement(Node node)
 {
   declarationsOrStatements.add(node);
