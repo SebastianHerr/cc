@@ -163,7 +163,7 @@ Node Statement () : {Node result = null; NodeStatementIf resultIf;
      {resultFor.setLoopBody(newNode);result=resultFor;}
 	|
 	token=<RETURN> {resultReturn=new NodeStatementReturn(token);}
-    [ newNode=Expression() {resultReturn.setReturnValue(newNode);result=resultReturn;} ] ";"
+    [ newNode=Expression() {resultReturn.setReturnValue(newNode);} ] ";"{result=resultReturn;}
 	|
 	result=Block() //No need to create a seperate statment block node, everything is already in the block
   )
