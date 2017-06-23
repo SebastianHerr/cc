@@ -23,5 +23,6 @@ return true; //Check okay
 public void setAccessingNode(Node accessedNode_)
 {
   accessedNode = accessedNode_;
+  accessedNode.setParent(this);
 }
 }

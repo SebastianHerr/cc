@@ -5,6 +5,7 @@ Node node;
 public NodeExpressionBrackets(Node node_, Token token_)
 {
   node = node_;
+  node.setParent(this);
   token = token_;
 }
 
