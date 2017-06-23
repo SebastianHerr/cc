@@ -3,7 +3,7 @@ public class NodeFunctionSignature extends Node implements IScope{
 
 Node type;
 Node name;
-ArrayList<Node> listOfParamters;
+NodeFunctionParamArgs params;
 int scopeID;
 
 public NodeFunctionSignature(Node type_, Node name_)
@@ -13,7 +13,6 @@ public NodeFunctionSignature(Node type_, Node name_)
   type.setParent(this);
   name = name_;
   name.setParent(this);
-  listOfParamters = new ArrayList<Node>();
 }
 
 public String getNodeType()
@@ -26,12 +25,10 @@ public boolean checkNodeType()
 return true; //Check okay
 }
 
-public void addParameter(Node parameterType, Node parameterName)
+public void addParameters(NodeFunctionParamArgs params_)
 {
-  parameterType.setParent(this);
-  parameterName.setParent(this);
-  listOfParamters.add(parameterType);
-  listOfParamters.add(parameterName);
+  params = params_;
+  params.setParent(this);
 }
 
 public int getScopeID()
@@ -42,12 +39,7 @@ public int getScopeID()
 public String toString(String indendation)
 {
   String result = type + " " + name + "(";
-  for(int i = 0; i < listOfParamters.size(); i += 2) {
-    if(i!=0) {
-      result += ",";
-    }
-    result+= listOfParamters.get(i) + " " + listOfParamters.get(i+1);
-   }
+  result += params;
   result += ") /* Scope ID = " +  scopeID + " */";
   return result;
 }

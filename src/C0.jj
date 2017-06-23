@@ -112,10 +112,16 @@ Node Fid () : {Token name; NodeIdentifier node;}
   name=<ID> {node = new NodeIdentifier(name); table.addSymbol(node,scope.peek()); return node;} // field name
 }
 
-
+NodeFunctionParamArgs FunctionParamArgs () : {NodeFunctionParamArgs result; Node type; Node name;}
+{
+  {result = new NodeFunctionParamArgs();}
+  [ type=Type() name=Vid()  {result.addParameter(type, name);}
+      ( "," type=Type() name=Vid() {result.addParameter(type, name);} )* ]
+  {return result;}
+}
 
 Node Declaration_Definition () : {Node result = null; Node newNode; Node type; Node name;
-  NodeStructSignature resultStructSig; NodeFunctionSignature resultFunctionSig;}
+  NodeStructSignature resultStructSig; NodeFunctionSignature resultFunctionSig; NodeFunctionParamArgs newParams;}
 {
   (
   LOOKAHEAD (3)
@@ -125,8 +131,7 @@ Node Declaration_Definition () : {Node result = null; Node newNode; Node type; N
     ] ";" {if(result == null) {result = new NodeStructDeclaration(resultStructSig);}}
 	|
   type=Type() name=Vid() {resultFunctionSig = new NodeFunctionSignature(type, name);scope.push(resultFunctionSig);}
-    "(" [ type=Type() name=Vid()  {resultFunctionSig.addParameter(type, name);}
-      ( "," type=Type() name=Vid() {resultFunctionSig.addParameter(type, name);} )* ] ")" 
+    "(" newParams=FunctionParamArgs() {resultFunctionSig.addParameters(newParams);} ")" 
     ( newNode=Block() {result = new NodeFunctionDefinition(resultFunctionSig, newNode);}  | 
      ";"{result = new NodeFunctionDeclaration(resultFunctionSig);} )
   )
