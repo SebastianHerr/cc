@@ -3,17 +3,17 @@ public class SymbolTable{
   
   private class Symbol{
     public ArrayList<Integer> scope;
-    public ArrayList<Node> symbol;
+    public ArrayList<NodeIdentifier> symbol;
     public int symbolID;
-    public Symbol(IScope scope_,Node symbol_, int symbolID_)
+    public Symbol(IScope scope_,NodeIdentifier symbol_, int symbolID_)
     {
       scope = new ArrayList<Integer>();
-      symbol = new ArrayList<Node>();
+      symbol = new ArrayList<NodeIdentifier>();
       symbolID = symbolID_;
       addAppearance(scope_,symbol_);
     }
     
-    public void addAppearance(IScope scope_,Node symbol_)
+    public void addAppearance(IScope scope_,NodeIdentifier symbol_)
     {
       scope.add(scope_.getScopeID());
       symbol.add(symbol_);
@@ -21,7 +21,14 @@ public class SymbolTable{
     
      public String toString()
      {
-       return symbolID + "\t\"" + symbol.get(0) + "\"\t" + scope;
+       String aredefs = "";
+       for(NodeIdentifier node : symbol)
+       {
+          aredefs+=(node.isVariableDefinition() ? "VY":"VN");
+          aredefs+=(node.isFunctionDefinition() ? "FY":"FN");
+          aredefs+=" ";
+       }
+       return symbolID + "\t\"" + symbol.get(0) + "\" ISDEF="+ aredefs + "\t" + scope;
      }
   }
   
@@ -43,12 +50,13 @@ public class SymbolTable{
   public void printStats()
   {
     System.out.println("Seen " + nextSymbolID + " Symbols in " + nextScopeID + " Scopes");
-    for (Map.Entry<String, Symbol> entry : symbols.entrySet()) {
-    String key = entry.getKey();
-    Symbol value = entry.getValue();
+    for (Map.Entry<String, Symbol> entry : symbols.entrySet()) 
+    {
+      String key = entry.getKey();
+      Symbol value = entry.getValue();
 
-    System.out.println ("\tKey: " + key + "\t\tValue: " + value);
-}
+      System.out.println ("\tKey: " + key + "\t\tValue: " + value);
+    }
   }
 
     
