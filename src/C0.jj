@@ -405,7 +405,7 @@ Node OpRang_BitAnd () : {Node result;NodeExpressionBinary resultBin;Token opToke
 {
   result=OpRang_Equality() 
   [
-    resultBin = new NodeExpressionBitAnd(result);} 
+    {resultBin = new NodeExpressionBitAnd(result);}
     ( 
       opToken="&" 
     ) 
