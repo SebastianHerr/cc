@@ -17,6 +17,6 @@ return true; //Check okay
 
 public String toString(String indendation)
 {
-  return "null";
+  return "NULL";
 }
 }

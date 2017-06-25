@@ -40,20 +40,31 @@ public class C0 {
 }
 PARSER_END(C0)
 
+TOKEN_MGR_DECLS:
+{
+  static int commentDepth;
+}
+
 SKIP : 
 { 
   " " | "\t" | "\f" | "\n" | "\r" | "\r\n"
   |
-  "/*" : IN_ML_COMMENT
+  "/*" {commentDepth = 1;} : IN_ML_COMMENT
   |
   < "//" (~["\n","\r"])* ("\n" | "\r" | "\r\n") >
 }
 
+/*
+ * Allowing for nested multiline comments
+ * Implementation from Introduction to "Compiler Construction in a Java World" page 56
+ */
 <IN_ML_COMMENT> SKIP :
 {
   <~[]>
   |
-  "*/" : DEFAULT
+  "*/" {commentDepth -= 1; SwitchTo( commentDepth == 0 ? DEFAULT : IN_ML_COMMENT);}
+  |
+  "/*" {commentDepth += 1;}
 }
 
 // Keywords
