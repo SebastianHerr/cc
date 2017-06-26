@@ -5,12 +5,14 @@ private static int runningID = 1;
 int scopeID;
 
 ArrayList<Node> statements;
+Hashtable<String,NodeIdentifier> vidDefineList;
 
 public NodeBlock(Token token_)
 {
   scopeID = SymbolTable.getNextScopeID();
   token = token_;
   statements = new ArrayList<Node>();
+  vidDefineList = new Hashtable<String,NodeIdentifier>();
 }
 
 public String getNodeType()
@@ -29,6 +31,23 @@ public void addStatement(Node node)
   node.setParent(this);
 }
 
+
+public int getScopeID()
+{
+  return scopeID;
+}
+
+public Hashtable<String,NodeIdentifier> getListOfVidDefines()
+{
+  return vidDefineList;
+}
+
+public IScope getContainingScope()
+{
+  return this;
+}
+
+
 public String toString(String indentation)
 {
   String result = indentation + "{/* Scope ID = " +  scopeID + " */\n";
@@ -37,10 +56,5 @@ public String toString(String indentation)
   }
   result += indentation + "}\n";
   return result;
-}
-
-public int getScopeID()
-{
-  return scopeID;
 }
 }

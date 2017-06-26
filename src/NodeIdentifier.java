@@ -68,7 +68,7 @@ public void updateDefinitions()
     System.out.println("Starting ascend up the tree for symbol" + token.image + ":");
   }*/
   
-  System.out.println(tmp.getClass());
+  //System.out.println(tmp.getClass());
   do
   {
     if((tmp instanceof NodeExpressionVariableDefinition) | (tmp instanceof NodeFunctionParamArgs))
