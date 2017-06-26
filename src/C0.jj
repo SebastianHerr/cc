@@ -18,28 +18,42 @@ public class C0 {
   static SymbolTable sidTable;
   static SymbolTable fidTable;
   
-	public static void main(String args[]) {
-		C0 parser;
+  public static void main(String args[]) {
+    C0 parser;
     NodeRoot ast;  
     scope = new Stack<IScope>();
     vidTable = new SymbolTable();
     sidTable = new SymbolTable();
     fidTable = new SymbolTable();
-		try {
-			if (args.length > 0) {
-				parser = new C0 (new java.io.FileInputStream(new java.io.File(args[0])));
-			} else {
-				parser = new C0 (System.in);
-			}
-			ast = parser.Program();
+    try {
+      if (args.length > 0) {
+        parser = new C0 (new java.io.FileInputStream(new java.io.File(args[0])));
+      } else {
+        parser = new C0 (System.in);
+      }
+      
       System.out.println ("/*");
+      
+      //Parse
+      ast = parser.Program();
+      System.out.println ("Parse complete\n\n\n");
+      
+      //Link Symbols to definitions
+      int symbolLinker = vidTable.addAllSymbolsToScopeNodes();
+      if(symbolLinker!=0)
+      {
+        //System.out.println("Linking failed");
+        throw new Exception("Symbol used twice or undefined");
+      }
+      
+      //Output all debug data
       System.out.println ("Stats of vidTable");
       vidTable.printStats();
       System.out.println ("Stats of sidTable");
       sidTable.printStats();
       System.out.println ("Stats of fidTable");
       fidTable.printStats();
-      System.out.println (" */");
+      System.out.println (" */\n\n\n");
       System.out.println(ast);
 			System.out.println ("[  OK  ]");
 		} catch (Exception ex) {

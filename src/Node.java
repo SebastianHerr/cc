@@ -2,9 +2,7 @@ public abstract class Node{
   
   Node parent = null;
   
-  Node root = null;
-  
-  Node enclosingBlock = null;
+  NodeRoot root = null;
   
   Token token = null;
   
@@ -24,12 +22,7 @@ public abstract class Node{
     parent = parent_;
   }
   
-  public void setRoot(Node root_)
-  {
-    root = root_;
-  }
-  
-  public Node getRoot()
+  public NodeRoot getRoot()
   {
     if (root == null)
     {
@@ -43,18 +36,13 @@ public abstract class Node{
     return false;
   }
   
-  public void setEnclosingBlock(Node enclosingBlock_)
+  /*
+   * Returns the scope in which this node is contained.
+   * null if it's the root node
+   */
+  public IScope getContainingScope()
   {
-    enclosingBlock = enclosingBlock_;
-  }
-  
-  public Node getEnclosingBlock()
-  {
-    if(enclosingBlock == null)
-    {
-      enclosingBlock = parent.getEnclosingBlock();
-    }
-    return enclosingBlock;
+    return parent.getContainingScope();
   }
   
   public abstract String toString(String indendation);

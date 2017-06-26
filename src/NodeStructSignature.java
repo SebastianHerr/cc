@@ -1,3 +1,4 @@
+import java.util.*;
 public class NodeStructSignature extends Node implements IScope{
 
 Node name;
@@ -23,6 +24,17 @@ return true; //Check okay
 public int getScopeID()
 {
   return scopeID;
+}
+
+public Hashtable<String,NodeIdentifier> getListOfVidDefines()
+{
+  //No functions and variables can be defined inside a struct, caller needs to check for null
+  return null;
+}
+
+public IScope getContainingScope()
+{
+  return this;
 }
 
 public String toString(String indendation)

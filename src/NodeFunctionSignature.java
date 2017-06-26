@@ -6,6 +6,9 @@ Node name;
 NodeFunctionParamArgs params;
 int scopeID;
 
+  //Definition of functions in this scope
+  Hashtable<String,NodeIdentifier> vidDefineList;
+
 public NodeFunctionSignature(Node type_, Node name_)
 {
   scopeID = SymbolTable.getNextScopeID();
@@ -13,6 +16,7 @@ public NodeFunctionSignature(Node type_, Node name_)
   type.setParent(this);
   name = name_;
   name.setParent(this);
+  vidDefineList = new Hashtable<String,NodeIdentifier>();
 }
 
 public String getNodeType()
@@ -31,10 +35,22 @@ public void addParameters(NodeFunctionParamArgs params_)
   params.setParent(this);
 }
 
+
 public int getScopeID()
 {
   return scopeID;
 }
+
+public Hashtable<String,NodeIdentifier> getListOfVidDefines()
+{
+  return vidDefineList;
+}
+
+public IScope getContainingScope()
+{
+  return this;
+}
+
 
 public String toString(String indendation)
 {
