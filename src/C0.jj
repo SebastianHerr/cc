@@ -14,22 +14,31 @@ import java.util.*;
 public class C0 {
   
   static Stack<IScope> scope;
-  static SymbolTable table;
+  static SymbolTable vidTable;
+  static SymbolTable sidTable;
+  static SymbolTable fidTable;
   
 	public static void main(String args[]) {
 		C0 parser;
     NodeRoot ast;  
     scope = new Stack<IScope>();
-    table = new SymbolTable();
+    vidTable = new SymbolTable();
+    sidTable = new SymbolTable();
+    fidTable = new SymbolTable();
 		try {
 			if (args.length > 0) {
 				parser = new C0 (new java.io.FileInputStream(new java.io.File(args[0])));
 			} else {
 				parser = new C0 (System.in);
 			}
-      System.out.println ("/*");
 			ast = parser.Program();
-      table.printStats();
+      System.out.println ("/*");
+      System.out.println ("Stats of vidTable");
+      vidTable.printStats();
+      System.out.println ("Stats of sidTable");
+      sidTable.printStats();
+      System.out.println ("Stats of fidTable");
+      fidTable.printStats();
       System.out.println (" */");
       System.out.println(ast);
 			System.out.println ("[  OK  ]");
@@ -111,17 +120,17 @@ NodeRoot Program () : {NodeRoot root = new NodeRoot(); Node node;}
 
 Node Sid () : {Token name; NodeIdentifier node;}
 {
-   name = <ID> {node = new NodeIdentifier(name); table.addSymbol(node, scope.peek()); return node;}   // struct name
+   name = <ID> {node = new NodeIdentifier(name); sidTable.addSymbol(node, scope.peek()); return node;}   // struct name
 }
 
 Node Vid () : {Token name; NodeIdentifier node;}
 {
-   name = <ID> {node = new NodeIdentifier(name); table.addSymbol(node, scope.peek()); return node;}   // variable and function name
+   name = <ID> {node = new NodeIdentifier(name); vidTable.addSymbol(node, scope.peek()); return node;}   // variable and function name
 }
 
 Node Fid () : {Token name; NodeIdentifier node;}
 {
-  name = <ID> {node = new NodeIdentifier(name); table.addSymbol(node, scope.peek()); return node;} // field name
+  name = <ID> {node = new NodeIdentifier(name); fidTable.addSymbol(node, scope.peek()); return node;} // field name
 }
 
 NodeFunctionParamArgs FunctionParamArgs () : {NodeFunctionParamArgs result; Node type; Node name;}
@@ -396,7 +405,7 @@ Node OpRang_BitAnd () : {Node result;NodeExpressionBinary resultBin;Token opToke
 {
   result=OpRang_Equality() 
   [
-    resultBin = new NodeExpressionBitAnd(result);} 
+    {resultBin = new NodeExpressionBitAnd(result);}
     ( 
       opToken="&" 
     ) 
