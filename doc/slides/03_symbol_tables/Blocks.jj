@@ -1,0 +1,51 @@
+PARSER_BEGIN(Blocks)
+
+import java.util.Hashtable;
+
+public class Blocks {
+
+    public static Hashtable symbols = new Hashtable<String, Integer>();
+    
+    public static void main(String[] args) throws Exception {
+        Blocks parser = new Blocks(new java.io.FileInputStream(new java.io.File(args[0])));
+		parser.S();
+		System.out.println("Lines:" + BlocksTokenManager.linecount);
+    }
+}
+
+PARSER_END(Blocks)
+
+TOKEN_MGR_DECLS:
+{
+    public static int linecount=1;
+}
+
+SKIP: { " " | "\t" | "\r" | "\n" {linecount++;} }
+
+TOKEN:
+{
+  <D: "D">
+| <U: "U">
+| <ID: (["a"-"z"])+> { }
+| <LBRACE: "{"> {}
+| <RBRACE: "}">
+}
+
+void S(): {}
+{
+  DeclList()  <EOF> {}
+}
+
+void DeclList() : {}
+{
+  (Decl())* {}
+}
+
+void Decl() : { Token t; String id; }
+{
+  <D> t=<ID> { id = t.image; }
+      ("," t=<ID> { id = t.image; })* ";"  {}
+| <U> <ID> ("," <ID>)* ";" {}
+| <LBRACE> DeclList() <RBRACE> {}
+}
+
