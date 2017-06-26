@@ -36,6 +36,30 @@ public abstract class Node{
     return false;
   }
   
+  public boolean isBelowInTree(Node child)
+  {
+    if(child.isRoot())
+    {
+      //Root can't be the child of anything
+      return false;
+    }
+    
+    while(child != this)
+    {
+      child = child.getParent();
+      if(child == null)
+      {
+        return false;
+      }
+      else if(child == this)
+      {
+        return true;
+      }
+    }
+    //Can only be reached if the node child is a reference to this node
+    return true;
+  }
+  
   /*
    * Returns the scope in which this node is contained.
    * null if it's the root node
