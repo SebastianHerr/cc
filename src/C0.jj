@@ -298,7 +298,7 @@ NodeFunctionCallArgs FunctionCallArgs () : {NodeFunctionCallArgs result; Node ne
 }
 
 Node Expression () : {Node result; Node array_alloc_size; Token token;
-  Node type; Node name; Node newNode; NodeExpressionAssign resultAssign;}
+  Node type; Node name; Node newNode;NodeExpressionVariableDefinition resultDefine;}
 {	
   token=<ALLOC> 
   "(" result=Type() 
@@ -312,13 +312,13 @@ Node Expression () : {Node result; Node array_alloc_size; Token token;
   result=OpRang_Assign() {return result;}
   |
   type=Type() 
-  name=Vid() {result = new NodeExpressionVariableDefinition(type,name);}
+  name=Vid() {resultDefine = new NodeExpressionVariableDefinition(type,name);result=resultDefine; }
   [ 
-    LOOKAHEAD(2) {resultAssign= new NodeExpressionAssign(result);} 
+    LOOKAHEAD(2)
     token = "=" 
-    newNode=OpRang_Conditional() {resultAssign.setOp("=",token);resultAssign.setSecondary(newNode);result=resultAssign;}
+    newNode=OpRang_Conditional() {resultDefine.setAssignment(newNode);}
   ]
-  {return result;}
+  {if(result==null){System.out.println("result null for some reason");}else{return result;}}
 }
 
 Node OpRang_Assign () : {Node result; NodeExpressionBinary operator = null; NodeExpressionAssign resultAssign; Token opToken;}
