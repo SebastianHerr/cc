@@ -1,14 +1,11 @@
 # Compilerbau - SS 2017
-You can find the parser in the [playground](https://github.com/KR-FDAI/cc/tree/playground) branch.
 
 ## Overview
 * [Documentation](/doc) (doc/)
-* [Playground](/playground) (playground/)
 * [Source code](/src) (src/)
 
 ```
 ./
-|- playground/ ............................ Experimental environment
 |- src/ ................................... Project source code
 |  |- test/ ............................... Test programs
 |  |  |- parsing/ ......................... Test programs for parsing
