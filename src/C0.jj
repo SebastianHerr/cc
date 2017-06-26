@@ -173,7 +173,7 @@ Node Declaration_Definition () : {Node result = null; Node newNode; Node type; N
       [ 
         // [ ] Warum hier Klammer nicht tokenized?
         "{" {result = new NodeStructDefinition(resultStructSig);}
-        ( type=Type() name=Vid() {((NodeStructDefinition)result).addElement(type, name);}";")* "}" 
+        ( type=Type() name=Fid() {((NodeStructDefinition)result).addElement(type, name);}";")* "}" 
       ] 
       ";" {if(result == null) {result = new NodeStructDeclaration(resultStructSig);}}
     |
