@@ -53,4 +53,13 @@ PS C:\C0--\src> ./bld -r -filter *pass*
 ```
 
 ### Unix
-...
+
+This will compile the parser and test it with all files located in the `./test` directory:
+```
+PS C:\C0--\src> build.sh -c -r
+```
+This will test the parser with all files containing `pass`:
+```
+PS C:\C0--\src> build.sh -r -f *pass*
+```
+If `-f` is ommited, the default filter `*` will apply.

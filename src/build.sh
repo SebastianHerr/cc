@@ -2,27 +2,52 @@
 
 PARSER='C0'
 
-while getopts cr o
-do	case "$o" in
-	c)	rm bin/*.class
-		rm bin/*.java
+unset COMPILE
+unset TESTP
+unset FILTER
 
-		if [ ! -d "bin/" ]
-		then
-		  mkdir bin
-		fi
+#Set default filter
+FILTER="*"
 
-		javacc -OUTPUT_DIRECTORY=bin/ $PARSER.jj
-		javac -d bin bin/*.java
-		#javac -d bin *.java
-
-		echo -e "\n\e[1mBuilding completed. \e[0m \n"
-	;;
-	r)	for testfile in test/**/*
-		do
-		echo -e "\e[1m$testfile:\e[0m"
-		java -cp bin $PARSER $testfile
-		done
-	;;
-	esac
+while getopts "crf:" opt; do
+  case "$opt" in
+    c)  COMPILE=" "
+        echo "Will recompile the parser"
+    ;;
+    f)  FILTER=$OPTARG
+        echo "Will use the filder $FILTER"
+    ;;
+    r)  TESTP=" "
+        echo "Will run the parser"
+    ;;
+ esac
 done
+
+if test "$COMPILE" ; then
+  echo Compiling Program
+  rm bin/*.class
+  rm bin/*.java
+
+  if [ ! -d "bin/" ]
+  then
+    mkdir bin
+  fi
+
+  javacc -OUTPUT_DIRECTORY=bin/ $PARSER.jj
+  javac -d bin bin/*.java
+
+  echo -e "\n\e[1mBuilding completed. \e[0m \n"
+else
+  echo Parser not recompiled
+fi
+
+if test "$TESTP" ; then
+  echo Parser will be tested with the filter "$FILTER"
+  for testfile in `find test -type f -name "$FILTER"`
+  do
+    echo -e "\e[1m$testfile:\e[0m"
+    java -cp bin $PARSER $testfile
+  done
+else 
+  echo Parser not tested
+fi

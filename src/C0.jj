@@ -36,7 +36,7 @@ public class C0 {
       
       //Parse
       ast = parser.Program();
-      System.out.println ("Parse complete\n\n\n");
+      System.out.println ("[  OK  ] Parse complete\n\n\n");
       
       //Link Symbols to definitions
       int symbolLinker = vidTable.addAllSymbolsToScopeNodes();
@@ -45,6 +45,8 @@ public class C0 {
         //System.out.println("Linking failed");
         throw new Exception("Symbol used twice or undefined");
       }
+      
+      System.out.println ("[  OK  ] Symboltable complete\n\n\n");
       
       //Output all debug data
       System.out.println ("Stats of vidTable");
