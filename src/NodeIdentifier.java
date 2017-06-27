@@ -71,8 +71,9 @@ public void updateDefinitions()
   //System.out.println(tmp.getClass());
   do
   {
-    if((tmp instanceof NodeExpressionVariableDefinition) | (tmp instanceof NodeFunctionParamArgs))
+    if((tmp instanceof NodeFunctionParamArgs) || (this.getParent() instanceof NodeExpressionVariableDefinition))
     {
+      System.out.println("\tToken \"" + token.image + "\"" + getOccouranceLocation() + " is a definition");
       isVDef = true;
     }
     else if(tmp instanceof NodeFunctionSignature)

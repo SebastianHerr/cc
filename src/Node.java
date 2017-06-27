@@ -69,6 +69,11 @@ public abstract class Node{
     return parent.getContainingScope();
   }
   
+  public String getOccouranceLocation()
+  {
+    return "@L" + token.beginLine + "C" + token.beginColumn;
+  }
+  
   public abstract String toString(String indendation);
   
   public String toString()
