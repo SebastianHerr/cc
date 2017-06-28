@@ -62,8 +62,9 @@ public class SymbolTable{
     }
   }
   
-  private boolean isDefinedInScope(IScope scope, String image, int id)
+  private NodeIdentifier getDefinitionNodeInScope(IScope scope, String image, int id)
   {
+    NodeIdentifier node = scope.getListOfVidDefines().get(image);
     //System.out.println("Searching \"" + image + "\" with the ID " + id +" starting in scope " + scope.getScopeID());
     while(scope.getListOfVidDefines().get(image) == null)
     {
@@ -72,7 +73,7 @@ public class SymbolTable{
       if(scope == null)
       {
          //System.out.println("\tReached the root, variable not yet defined");
-        return false;
+        return null;
       }
       else
       {
@@ -80,7 +81,7 @@ public class SymbolTable{
       }
     }
     //System.out.println("\tFound the image in scope " + scope.getScopeID());
-    return true;
+    return scope.getListOfVidDefines().get(image);
   }
 
   /*
@@ -96,6 +97,7 @@ public class SymbolTable{
     //System.out.println("Linking Symbol " + symbol.symbolID + " which has " + symbol.symbolNodes.size() + " Nodes");
     NodeRoot root = symbol.symbolNodes.get(0).getRoot();
     Hashtable<String, NodeIdentifier> functionDefines = root.getListOfVidDefines();
+    Stack<Integer> usages = new Stack<Integer>();
     for(int i = 0; i<symbol.symbolNodes.size();i++)
     {
       NodeIdentifier node = symbol.symbolNodes.get(i);
@@ -107,7 +109,7 @@ public class SymbolTable{
       //definition of Variable
       if(node.isVariableDefinition() && !node.isFunctionDefinition())
       {
-        if(isDefinedInScope(scope, node.getToken().image, symbol.symbolID))
+        if(getDefinitionNodeInScope(scope, node.getToken().image, symbol.symbolID) != null)
         {
           //System.out.println("Variable with Symbol  \"" + node.getToken().image + "\" and ID " + symbol.symbolID + " already defined");
           return 20;
@@ -121,9 +123,15 @@ public class SymbolTable{
       //definition of Function
       else if(!node.isVariableDefinition() && node.isFunctionDefinition())
       {
-        if(functionDefines.containsKey(node.getToken().image))
+        Node functionNode = functionDefines.get(node.getToken().image);
+        if(functionNode != null)
         {
-          //System.out.println("Funtion with Symbol \"" + node.getToken().image + "\" and ID " + symbol.symbolID + " already defined");
+          /*
+           * If there are only declarions with the same types then it's okay.
+           * There can be at most one function definition
+           */
+          //TODO ^
+          System.out.println("Funtion with Symbol \"" + node.getToken().image + "\"" + node.getOccouranceLocation() +  " and ID " + symbol.symbolID + " already defined");
           return 10;
         }
         else
@@ -136,6 +144,8 @@ public class SymbolTable{
       else if(!node.isVariableDefinition() && !node.isFunctionDefinition())
       {
          //System.out.println("Usage of " + symbol.symbolID + " and start searching for definition in " + scope.getScopeID());
+         //Manage all the usages after the definitions have been put in place.
+         usages.push(i);
       }
       //Some kind of error, for example if a variable is used to define a function and variable
       else
@@ -143,6 +153,14 @@ public class SymbolTable{
         //System.out.println("Symbol " + symbol.symbolID + " can't be used to define a function and a variable");
         return 30;
       }
+    }
+    
+    while(!usages.empty() && usages.peek() != null)
+    {
+      int currentIndex = usages.pop();
+      NodeIdentifier node = symbol.symbolNodes.get(currentIndex);
+      NodeIdentifier definition = getDefinitionNodeInScope(node.getContainingScope(),node.getToken().image,symbol.symbolID);
+      
     }
     return 0;
   }
