@@ -43,11 +43,11 @@ public class SymbolTable{
   
   
   int nextSymbolID = 0;
-  Hashtable<String, Symbol> symbols;
+  LinkedHashMap<String, Symbol> symbols;
   
   public SymbolTable()
   {
-    symbols = new Hashtable<String,Symbol>();
+    symbols = new LinkedHashMap<String,Symbol>();
   }
   
   public void printStats()
@@ -62,9 +62,11 @@ public class SymbolTable{
     }
   }
   
+  /*
+   * Returns the Node which is a definition of a variable or function
+   */
   private NodeIdentifier getDefinitionNodeInScope(IScope scope, String image, int id)
   {
-    NodeIdentifier node = scope.getListOfVidDefines().get(image);
     //System.out.println("Searching \"" + image + "\" with the ID " + id +" starting in scope " + scope.getScopeID());
     while(scope.getListOfVidDefines().get(image) == null)
     {
@@ -97,7 +99,7 @@ public class SymbolTable{
     //System.out.println("Linking Symbol " + symbol.symbolID + " which has " + symbol.symbolNodes.size() + " Nodes");
     NodeRoot root = symbol.symbolNodes.get(0).getRoot();
     Hashtable<String, NodeIdentifier> functionDefines = root.getListOfVidDefines();
-    Stack<Integer> usages = new Stack<Integer>();
+    Stack<Integer> funcUsages = new Stack<Integer>();
     for(int i = 0; i<symbol.symbolNodes.size();i++)
     {
       NodeIdentifier node = symbol.symbolNodes.get(i);
@@ -143,9 +145,17 @@ public class SymbolTable{
       //usage as function call or variable access
       else if(!node.isVariableDefinition() && !node.isFunctionDefinition())
       {
-         //System.out.println("Usage of " + symbol.symbolID + " and start searching for definition in " + scope.getScopeID());
-         //Manage all the usages after the definitions have been put in place.
-         usages.push(i);
+        System.out.println("Usage of \"" + node.getToken().image + "\" and start searching for definition in " + scope.getScopeID());
+        
+        if(node.isFunctionCall())
+        {
+          //Manage all the function after the definitions have been put in place.
+          funcUsages.push(i);
+        }
+        else
+        {
+           //But check variable usages here, otherwise "i = 5; int i;" could happen
+        }
       }
       //Some kind of error, for example if a variable is used to define a function and variable
       else
@@ -155,9 +165,10 @@ public class SymbolTable{
       }
     }
     
-    while(!usages.empty() && usages.peek() != null)
+    //Link the usages of fucntions to their definition
+    while(!funcUsages.empty() && funcUsages.peek() != null)
     {
-      int currentIndex = usages.pop();
+      int currentIndex = funcUsages.pop();
       NodeIdentifier node = symbol.symbolNodes.get(currentIndex);
       NodeIdentifier definition = getDefinitionNodeInScope(node.getContainingScope(),node.getToken().image,symbol.symbolID);
       

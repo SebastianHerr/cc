@@ -3,6 +3,7 @@ public class NodeIdentifier extends Node{
 int symbolID;
 boolean isVDef = false;
 boolean isFDef = false;
+boolean isFCall = false;
 boolean needsUpdate = true;
 
 public NodeIdentifier(Token token_)
@@ -54,6 +55,13 @@ public boolean isFunctionDefinition()
   return isFDef;
 }
 
+public boolean isFunctionCall()
+{
+  if(needsUpdate)
+    updateDefinitions();
+  return isFCall;
+}
+
 //Needs to be run once after the AST is built up completely
 public void updateDefinitions()
 {
@@ -80,6 +88,10 @@ public void updateDefinitions()
     {
       isFDef = true;
     }
+    else if (this.parent instanceof NodeExpressionFunctionCall)
+    {
+      isFCall = true;
+    }
     else
     {
       tmp2 = tmp.getParent();
@@ -90,7 +102,7 @@ public void updateDefinitions()
       tmp=tmp2;
     }
     //System.out.println(tmp.getClass());
-  }while((!isVDef && !isFDef) && !tmp.isRoot());
+  }while((!isVDef && !isFDef && !isFCall) && !tmp.isRoot());
   
   //System.out.println("Done ascending up the tree, usage was " + (!isVDef?"not":"XXX") + " a defintition");
 }
