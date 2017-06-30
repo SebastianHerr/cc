@@ -1,12 +1,10 @@
-public class NodeFunctionDefinition extends Node{
+public class NodeFunctionDefinition extends NodeFunctionDeclaration{
 
-NodeFunctionSignature name;
 Node functionblock;
 
 public NodeFunctionDefinition(NodeFunctionSignature name_, Node functionblock_)
 {
-   name = name_;
-   name.setParent(this);
+   super(name_);
    functionblock = functionblock_;
    functionblock.setParent(this);
 }
@@ -23,6 +21,6 @@ return true; //Check okay
 
 public String toString(String indendation)
 {
-  return name.toString(indendation) + "\n" + functionblock.toString(indendation);
+  return super.toString(indendation) + "\n" + functionblock.toString(indendation);
 }
 }

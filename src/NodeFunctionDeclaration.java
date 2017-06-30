@@ -8,6 +8,11 @@ public NodeFunctionDeclaration(NodeFunctionSignature name_)
    name.setParent(this);
 }
 
+public NodeFunctionSignature getSig()
+{
+  return name;
+}
+
 public String getNodeType()
 {
 return "NodeFunctionDeclaration";
