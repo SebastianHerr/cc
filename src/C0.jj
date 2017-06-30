@@ -126,7 +126,7 @@ NodeRoot Program () : {NodeRoot root = new NodeRoot(); Node node;}
   
   (
     ( 
-      node = Declaration_Definition() {root.addDeclarationOrStatement(node);}
+      node = Declaration_Definition() {root.addDeclarationOrDefinition(node);}
     )* 
     <EOF> 
   )

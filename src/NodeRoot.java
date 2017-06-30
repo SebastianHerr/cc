@@ -1,7 +1,7 @@
 import java.util.*;
 public class NodeRoot extends Node implements IScope{
 
-ArrayList<Node> declarationsOrStatements;
+ArrayList<Node> declarationsOrDefinitions;
 
 int scopeID;
   //Definitions at each scope possible
@@ -16,7 +16,7 @@ int scopeID;
 
 public NodeRoot()
 {
-  declarationsOrStatements = new ArrayList<Node>();
+  declarationsOrDefinitions = new ArrayList<Node>();
   scopeID = SymbolTable.getNextScopeID();
   vidDefineList = new Hashtable<String,NodeIdentifier>();
 }
@@ -41,9 +41,9 @@ public boolean isRoot()
     return this;
   }
 
-public void addDeclarationOrStatement(Node node)
+public void addDeclarationOrDefinition(Node node)
 {
-  declarationsOrStatements.add(node);
+  declarationsOrDefinitions.add(node);
   node.setParent(this);
 }
 
@@ -70,8 +70,8 @@ public IScope getContainingScope()
 public String toString(String indendation)
 {
   String result = "";
-  for (Node declarationOrStatement : declarationsOrStatements) {
-    result += declarationOrStatement.toString(indendation); //No identation for the members of the root
+  for (Node declarationOrdefinition : declarationsOrDefinitions) {
+    result += declarationOrdefinition.toString(indendation); //No identation for the members of the root
   }
   return result;
 }
