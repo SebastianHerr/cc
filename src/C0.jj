@@ -166,8 +166,8 @@ NodeFunctionParamArgs FunctionParamArgs () : {NodeFunctionParamArgs result; Node
   {return result;}
 }
 
-Node Declaration_Definition () : {Node result = null; Node newNode; Node type; Node name;
-  NodeStructSignature resultStructSig; NodeFunctionSignature resultFunctionSig; NodeFunctionParamArgs newParams;}
+Node Declaration_Definition () : {Node result = null; Node type; Node name; NodeBlock nodeFunctionCode;
+  NodeStructSignature resultStructSig; NodeFunction resultFunction; NodeFunctionParamArgs newParams;}
 {
   (
     LOOKAHEAD (3)
@@ -179,20 +179,20 @@ Node Declaration_Definition () : {Node result = null; Node newNode; Node type; N
       ] 
       ";" {if(result == null) {result = new NodeStructDeclaration(resultStructSig);}}
     |
-    type=Type() name=Vid() {resultFunctionSig = new NodeFunctionSignature(type, name);scope.push(resultFunctionSig);}
+    type=Type() name=Vid() {resultFunction = new NodeFunction(type, name);scope.push(resultFunction);}
     "(" 
-    newParams = FunctionParamArgs() {resultFunctionSig.addParameters(newParams);} 
+    newParams = FunctionParamArgs() {resultFunction.addParameters(newParams);} 
     ")" 
     ( 
-      newNode=Block() {result = new NodeFunctionDefinition(resultFunctionSig, newNode);}  
+      nodeFunctionCode=Block() {resultFunction.setFunctionCodeBlock(nodeFunctionCode);}  
       | 
-      ";" {result = new NodeFunctionDeclaration(resultFunctionSig);} 
-    )
+      ";"
+    ) {result = resultFunction;} 
   )
   {scope.pop(); return result;}
 }
 
-Node Block() : {NodeBlock result; Node newNode; Token token;}
+NodeBlock Block() : {NodeBlock result; Node newNode; Token token;}
 {
   // [ ] Warum hier Klammer tokenized?
   token = "{" {result = new NodeBlock(token); scope.push(result);} 

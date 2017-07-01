@@ -129,11 +129,11 @@ public class SymbolTable{
         if(functionNode != null)
         {
           /*
-           * If there are only declarions with the same types then it's okay.
-           * There can be at most one function definition
+           * If there are only declarions with the same types then it's okay, this is checked in the type checking stage.
+           * There can be at most one function definition.
            */
-          //TODO ^
-          System.out.println("Funtion with Symbol \"" + node.getToken().image + "\"" + node.getOccouranceLocation() +  " and ID " + symbol.symbolID + " already defined");
+          
+          //System.out.println("Funtion with Symbol \"" + node.getToken().image + "\"" + node.getOccouranceLocation() +  " and ID " + symbol.symbolID + " already defined");
           return 10;
         }
         else

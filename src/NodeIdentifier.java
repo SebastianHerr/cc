@@ -1,3 +1,4 @@
+import java.util.*;
 public class NodeIdentifier extends Node{
 
 int symbolID;
@@ -6,9 +7,15 @@ boolean isFDef = false;
 boolean isFCall = false;
 boolean needsUpdate = true;
 
+//Link to the NodeIdentifier of a function definition  or of a variable definition
+Node definition;
+//This List contains the usages of a variables, empty when it's no definition;
+ArrayList<NodeIdentifier> usages;
+
 public NodeIdentifier(Token token_)
 {
   token = token_;
+  usages = new ArrayList<NodeIdentifier>();
 }
 
 public String getNodeType()
@@ -41,6 +48,18 @@ public int getSymbolID()
   return symbolID;
 }
 
+public void addUsage(NodeIdentifier node)
+{
+  System.out.println("Added usage for " + token.image + getOccouranceLocation() + " at location " + node.getOccouranceLocation());
+  usages.add(node);
+  node.setDefintion(this);
+}
+
+public void setDefintion(Node definition_)
+{
+  definition = definition_;
+}
+
 public boolean isVariableDefinition()
 {
   if(needsUpdate)
@@ -65,6 +84,14 @@ public boolean isFunctionCall()
 //Needs to be run once after the AST is built up completely
 public void updateDefinitions()
 {
+  if(!needsUpdate)
+  {
+    return;
+  }
+  else
+  {
+    needsUpdate = false;
+  }
   Node tmp = getParent();
   Node tmp2 = null;
   if(tmp == null)
@@ -84,7 +111,7 @@ public void updateDefinitions()
       System.out.println("\tToken \"" + token.image + "\"" + getOccouranceLocation() + " is a definition");
       isVDef = true;
     }
-    else if(tmp instanceof NodeFunctionSignature)
+    else if(this.parent instanceof NodeFunction)
     {
       isFDef = true;
     }
@@ -109,6 +136,6 @@ public void updateDefinitions()
 
 public String toString(String indendation)
 {
-  return token.image + "/* SyID " + symbolID + "*/";
+  return token.image + "/* SyID " + symbolID + ";\t" + getOccouranceLocation() + "*/";
 }
 }
