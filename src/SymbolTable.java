@@ -155,6 +155,13 @@ public class SymbolTable{
         else
         {
            //But check variable usages here, otherwise "i = 5; int i;" could happen
+           NodeIdentifier definitionName = getDefinitionNodeInScope(scope, node.getToken().image, symbol.symbolID);
+           if(definitionName==null)
+           {
+             System.out.println("Variable " + node.getToken().image + " at location " + node .getOccouranceLocation() + " is used without beinging defined first");
+             return 25;
+           }
+           definitionName.addUsage(node);
         }
       }
       //Some kind of error, for example if a variable is used to define a function and variable
