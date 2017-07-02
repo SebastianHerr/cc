@@ -2,17 +2,19 @@ import java.util.*;
 public class NodeFunction extends Node implements IScope{
 
 Node type;
-Node name;
+NodeIdentifier name;
 NodeFunctionParamArgs params;
 
 NodeBlock nodeFunctionCode;
+
+NodeFunction functionLink;
 
 int scopeID;
 
   //Definition of functions in this scope
   Hashtable<String,NodeIdentifier> vidDefineList;
 
-public NodeFunction(Node type_, Node name_)
+public NodeFunction(Node type_, NodeIdentifier name_)
 {
   scopeID = SymbolTable.getNextScopeID();
   type = type_;
@@ -42,6 +44,44 @@ public void setFunctionCodeBlock(NodeBlock nodeFunctionCode_)
 {
   nodeFunctionCode = nodeFunctionCode_;
   nodeFunctionCode.setParent(this);
+}
+
+public Node getName()
+{
+  return name;
+}
+
+public boolean isDefinition()
+{
+  return nodeFunctionCode != null;
+}
+
+public boolean isDefined()
+{
+  return isDefinition() || (functionLink != null ? functionLink.isDefinition() : false);
+}
+
+public void setFunctionLink(NodeFunction functionLink_)
+{
+  if(isDefined())
+  {
+    //Should never be reached unless i made a stupid programming mistake :)
+    System.out.println("This can only be changed when there isn't already a definition");
+  }
+  
+  functionLink = functionLink_;
+}
+
+public NodeFunction getFunctionLink()
+{
+  if(isDefinition())
+  {
+    return this;
+  }
+  else
+  {
+    return functionLink;
+  }
 }
 
 

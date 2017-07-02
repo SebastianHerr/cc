@@ -90,6 +90,7 @@ public class SymbolTable{
    * returns 0 if all is okay
    * returns 10 if a function is defined twice
    * returns 15 if a function is undefined
+   * returns 16 if a function is declared but undefined
    * returns 20 if a variable is defined twice
    * returns 25 if a variable is undefined
    * returns 30 if a symbol is used ot define a function and variable
@@ -102,6 +103,7 @@ public class SymbolTable{
     Stack<Integer> funcUsages = new Stack<Integer>();
     for(int i = 0; i<symbol.symbolNodes.size();i++)
     {
+      boolean isLastSymbol = i == symbol.symbolNodes.size() - 1;
       NodeIdentifier node = symbol.symbolNodes.get(i);
       IScope scope = symbol.scopes.get(i);
       
@@ -122,22 +124,70 @@ public class SymbolTable{
           scope.getListOfVidDefines().put(node.getToken().image,node);
         }
       }
-      //definition of Function
+      //definition or declaration of a function
       else if(!node.isVariableDefinition() && node.isFunctionDefinition())
       {
-        Node functionNode = functionDefines.get(node.getToken().image);
-        if(functionNode != null)
+        //Information of the already saved node
+        Node functionName = functionDefines.get(node.getToken().image);
+        
+        if(functionName != null)
         {
+          NodeFunction functionNode = (NodeFunction)functionName.getParent();
+          //Information about the new node
+          NodeFunction newFunctionNode = (NodeFunction)node.getParent();
+          
           /*
            * If there are only declarions with the same types then it's okay, this is checked in the type checking stage.
            * There can be at most one function definition.
            */
+          if(functionNode.isDefined() && newFunctionNode.isDefinition())
+          {
+            System.out.println("Function with Symbol \"" + node.getToken().image + "\"" + node.getOccouranceLocation() +  " and ID " + symbol.symbolID + " already defined");
+            return 10;
+          }
           
-          //System.out.println("Funtion with Symbol \"" + node.getToken().image + "\"" + node.getOccouranceLocation() +  " and ID " + symbol.symbolID + " already defined");
-          return 10;
+          /*
+           * Link all the declations together in a linked list. If the first definition is found link all to this definition.
+           * When there are no further declarations/definitions with this symbol, then check if a function definition has been supplied.
+           * If there isn't a definition, then return with an error.
+           */
+          if( functionNode.isDefined() && !newFunctionNode.isDefinition())
+          {
+            //System.out.println("\t\tLinking to definition node " + functionName);
+            newFunctionNode.setFunctionLink(functionNode.getFunctionLink());
+          }
+          else if( !functionNode.isDefined() && !newFunctionNode.isDefinition())
+          {
+            //System.out.println("\t\tLinking to previous node " + functionName);
+            newFunctionNode.setFunctionLink(functionNode);
+            if(isLastSymbol)
+            {
+              System.out.println("The function " + node + " has been declared, but not yet defined");
+              return 16;
+            }
+          }
+          else if( !functionNode.isDefined() && newFunctionNode.isDefinition())
+          {
+            //System.out.println("\t\tRelinking all nodes to the definition " + functionName);
+            //Traverse the list and replace all functionLinks with a new link to the new definition
+            NodeFunction tmpLink = functionNode;
+            NodeFunction tmpLink2;
+            do
+            {
+              tmpLink2 = tmpLink.getFunctionLink();
+              tmpLink.setFunctionLink(newFunctionNode);
+              tmpLink = tmpLink2;
+            }
+            while( tmpLink!= null);
+          }
         }
         else
         {
+          if(isLastSymbol && !((NodeFunction)node.getParent()).isDefinition())
+          {
+            System.out.println("The function " + node + " has been declared, but not yet defined");
+            return 16;
+          }
           //System.out.println("Funtion defintion of Symbol " + symbol.symbolID + " adding to root scope " + scope.getScopeID());
           functionDefines.put(node.getToken().image,node);
         }
@@ -176,10 +226,21 @@ public class SymbolTable{
     while(!funcUsages.empty() && funcUsages.peek() != null)
     {
       int currentIndex = funcUsages.pop();
+        System.out.println(currentIndex);
       NodeIdentifier node = symbol.symbolNodes.get(currentIndex);
-      NodeIdentifier definition = getDefinitionNodeInScope(node.getContainingScope(),node.getToken().image,symbol.symbolID);
-      
+        System.out.println(node);
+      Node definitionName = functionDefines.get(node.getToken().image);
+        System.out.println(definitionName);
+      if(definitionName == null)
+      {
+        System.out.println("The function " + node + " which was called has never been defined");
+        return 15;
+      }
+      NodeFunction definition = (NodeFunction)definitionName.getParent();
+        System.out.println(definition);
+      node.setDefintion(definition.getName());
     }
+    
     return 0;
   }
   
