@@ -134,17 +134,17 @@ NodeRoot Program () : {NodeRoot root = new NodeRoot(); Node node;}
   {scope.pop(); return root;}
 }
 
-Node Sid () : {Token name; NodeIdentifier node;}
+NodeIdentifier Sid () : {Token name; NodeIdentifier node;}
 {
    name = <ID> {node = new NodeIdentifier(name); sidTable.addSymbol(node, scope.peek()); return node;}   // struct name
 }
 
-Node Vid () : {Token name; NodeIdentifier node;}
+NodeIdentifier Vid () : {Token name; NodeIdentifier node;}
 {
    name = <ID> {node = new NodeIdentifier(name); vidTable.addSymbol(node, scope.peek()); return node;}   // variable and function name
 }
 
-Node Fid () : {Token name; NodeIdentifier node;}
+NodeIdentifier Fid () : {Token name; NodeIdentifier node;}
 {
   name = <ID> {node = new NodeIdentifier(name); fidTable.addSymbol(node, scope.peek()); return node;} // field name
 }
@@ -166,7 +166,7 @@ NodeFunctionParamArgs FunctionParamArgs () : {NodeFunctionParamArgs result; Node
   {return result;}
 }
 
-Node Declaration_Definition () : {Node result = null; Node type; Node name; NodeBlock nodeFunctionCode;
+Node Declaration_Definition () : {Node result = null; Node type; NodeIdentifier name; NodeBlock nodeFunctionCode;
   NodeStructSignature resultStructSig; NodeFunction resultFunction; NodeFunctionParamArgs newParams;}
 {
   (
