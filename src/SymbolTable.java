@@ -70,9 +70,9 @@ public class SymbolTable{
     //System.out.println("Searching \"" + image + "\" with the ID " + id +" starting in scope " + scope.getScopeID());
     while(scope.getListOfVidDefines().get(image) == null)
     {
-      scope = scope.getParent().getContainingScope();
+      scope = ((Node)scope).getParent().getContainingScope();
       //If the scope is now null, then we reached the root and the image is not defined
-      if(scope == null)
+      if(((Node)scope).isRoot())
       {
          //System.out.println("\tReached the root, variable not yet defined");
         return null;
@@ -122,6 +122,7 @@ public class SymbolTable{
         {
           //System.out.println("Variable defintion of Symbol " + symbol.symbolID + " adding to scope " + scope.getScopeID());
           scope.getListOfVidDefines().put(node.getToken().image,node);
+          ((Node)scope).getParent().getContainingScope().addSubscope(scope);
         }
       }
       //definition or declaration of a function
@@ -212,6 +213,7 @@ public class SymbolTable{
              return 25;
            }
            definitionName.addUsage(node);
+           ((Node)scope).getParent().getContainingScope().addSubscope(scope);
         }
       }
       //Some kind of error, for example if a variable is used to define a function and variable

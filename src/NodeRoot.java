@@ -16,6 +16,7 @@ int scopeID;
 
 public NodeRoot()
 {
+  super();
   declarationsOrDefinitions = new ArrayList<Node>();
   scopeID = SymbolTable.getNextScopeID();
   vidDefineList = new Hashtable<String,NodeIdentifier>();
@@ -63,7 +64,7 @@ public Hashtable<String,NodeIdentifier> getListOfVidDefines()
 
 public IScope getContainingScope()
 {
-  return null;
+  return this;
 }
 
 

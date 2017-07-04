@@ -8,6 +8,7 @@ Hashtable<String,NodeIdentifier> vidDefineList;
 
 public NodeBlock(Token token_)
 {
+  super();
   scopeID = SymbolTable.getNextScopeID();
   token = token_;
   statements = new ArrayList<Node>();

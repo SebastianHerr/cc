@@ -8,7 +8,7 @@ public interface IScope
   //Below some functions of the class Node which all IScope nodes should already have
   public IScope getContainingScope();
   
-  public Node getParent();
+  public void addSubscope(IScope node);
 }
 
 /* 

@@ -1,3 +1,4 @@
+import java.util.*;
 public abstract class Node{
   
   Node parent = null;
@@ -11,6 +12,16 @@ public abstract class Node{
 	public abstract String getNodeType();
 	
 	public abstract boolean checkNodeType();
+  //This list is only ever initialized when this is an implementation of IScope
+  ArrayList<IScope> subscopes;
+  
+  public Node()
+  {
+    if(this instanceof IScope)
+    {
+      subscopes = new ArrayList<IScope>();
+    }
+  }
 	
 	public Node getParent()
   {
@@ -67,6 +78,30 @@ public abstract class Node{
   public IScope getContainingScope()
   {
     return parent.getContainingScope();
+  }
+  
+  /*
+   * Place the definition of this method here, since all IScope Members need to be a subtype of Node
+   */
+  public void addSubscope(IScope scope)
+  {
+    if(this instanceof IScope)
+    {
+      if(!subscopes.contains(scope))
+      {
+        subscopes.add(scope);
+      }
+    }
+  }
+   
+  public ArrayList<IScope> getSubscopes()
+  {
+    if(this instanceof IScope)
+    {
+      return subscopes;
+    }
+    System.out.println("Called getSubscopes on a non IScope node");
+    return null;
   }
   
   public String getOccouranceLocation()
