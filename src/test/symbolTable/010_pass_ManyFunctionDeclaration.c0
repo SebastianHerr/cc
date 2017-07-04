@@ -1,0 +1,9 @@
+void function_name();
+void function_name();
+void function_name();
+void function_name();
+
+void function_name()
+{
+  int i =0;
+}
