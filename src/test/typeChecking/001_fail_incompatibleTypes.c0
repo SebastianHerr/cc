@@ -1,0 +1,9 @@
+void main()
+{
+  bool b;
+  int i;
+  i = 15;
+  
+  b = i;
+}
+
