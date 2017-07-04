@@ -10,3 +10,11 @@ public interface IScope
   
   public Node getParent();
 }
+
+/* 
+ * Implemented by:
+ * NodeBlock
+ * NodeFunction
+ * NodeRoot
+ * NodeStructSignature
+ */

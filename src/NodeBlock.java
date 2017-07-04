@@ -1,7 +1,6 @@
 import java.util.*;
 public class NodeBlock extends Node implements IScope{
 
-private static int runningID = 1;
 int scopeID;
 
 ArrayList<Node> statements;
