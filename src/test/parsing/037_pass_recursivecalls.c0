@@ -3,5 +3,5 @@ void main(int[] args) {
 }
 
 int recfun(int p1, int p2) {
-    recrun(recfun(recfun(p1), p2), recfun(p2, p1));
+    recfun(recfun(recfun(p1), p2), recfun(p2, p1));
 }
