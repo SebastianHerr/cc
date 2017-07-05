@@ -9,6 +9,11 @@ public interface IScope
   public IScope getContainingScope();
   
   public void addSubscope(IScope node);
+  
+  /*
+   * Return the offset of the vidtable, relativ to the location of the table of a function
+   */
+  public int getOffsetAfterLocalVidTable();
 }
 
 /* 

@@ -62,6 +62,11 @@ public Hashtable<String,NodeIdentifier> getListOfVidDefines()
   return vidDefineList;
 }
 
+public int getOffsetAfterLocalVidTable()
+{
+  return 0;
+}
+
 public IScope getContainingScope()
 {
   return this;

@@ -42,6 +42,16 @@ public Hashtable<String,NodeIdentifier> getListOfVidDefines()
   return vidDefineList;
 }
 
+public int getOffsetAfterLocalVidTable()
+{
+  int size = getParent().getContainingScope().getOffsetAfterLocalVidTable();
+  for(Node node: vidDefineList.values())
+  {
+    size += node.getTypeSize();
+  }
+  return size;
+}
+
 public IScope getContainingScope()
 {
   return this;

@@ -32,6 +32,11 @@ public Hashtable<String,NodeIdentifier> getListOfVidDefines()
   return null;
 }
 
+public int getOffsetAfterLocalVidTable()
+{
+  return 0;
+}
+
 public IScope getContainingScope()
 {
   return this;
