@@ -167,17 +167,17 @@ NodeFunctionParamArgs FunctionParamArgs () : {NodeFunctionParamArgs result; Node
 }
 
 Node Declaration_Definition () : {Node result = null; Node type; NodeIdentifier name; NodeBlock nodeFunctionCode;
-  NodeStructSignature resultStructSig; NodeFunction resultFunction; NodeFunctionParamArgs newParams;}
+  NodeStruct resultStruct; NodeFunction resultFunction; NodeFunctionParamArgs newParams;}
 {
   (
     LOOKAHEAD (3)
-    <STRUCT> name = Sid() {resultStructSig = new NodeStructSignature(name);scope.push(resultStructSig);}
+    <STRUCT> name = Sid() {resultStruct = new NodeStruct(name);scope.push(resultStruct);}
       [ 
         // [ ] Warum hier Klammer nicht tokenized?
-        "{" {result = new NodeStructDefinition(resultStructSig);}
-        ( type=Type() name=Fid() {((NodeStructDefinition)result).addElement(type, name);}";")* "}" 
+        "{" 
+        ( type=Type() name=Fid() { resultStruct.addElement(type, name);}";")* "}" 
       ] 
-      ";" {if(result == null) {result = new NodeStructDeclaration(resultStructSig);}}
+      ";" {result = resultStruct;}
     |
     type=Type() name=Vid() {resultFunction = new NodeFunction(type, name);scope.push(resultFunction);}
     "(" 
