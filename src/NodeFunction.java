@@ -98,7 +98,7 @@ public Hashtable<String,NodeIdentifier> getListOfVidDefines()
 
 public int getOffsetAfterLocalVidTable()
 {
-  int size;
+  int size = 0;
   for(Node node: vidDefineList.values())
   {
     size += node.getTypeSize();

@@ -23,6 +23,15 @@ public abstract class Node{
     }
   }
 	
+  /*
+   * Return the size of the type of the node in bytes, defaults to 1.
+   * Override if the node uses a type of different size.
+   */
+  public int getTypeSize()
+  {
+    return 1;
+  }
+  
 	public Node getParent()
   {
     return parent;
