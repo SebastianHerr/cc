@@ -1,6 +1,6 @@
 public class NodeStatementReturn extends Node{
 
-Node returnValue;
+Node returnNode;
 
 public NodeStatementReturn(Token token_)
 {
@@ -19,12 +19,12 @@ return true; //Check okay
 
 public void setReturnValue(Node returnValue_)
 {
-  returnValue = returnValue_;
-  returnValue.setParent(this);
+  returnNode = returnValue_;
+  returnNode.setParent(this);
 }
 
 public String toString(String indendation)
 {
-  return "return " + ((returnValue==null)?"":" " + returnValue.toString(indendation)) + ";\n";
+  return "return " + ((returnNode==null)?"":" " + returnNode.toString(indendation)) + ";\n";
 }
 }
