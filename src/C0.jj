@@ -532,9 +532,9 @@ Node OpRang_Unary () : {NodeExpressionUnary unaryOp = null; Node result;
     |
     token=<NUM>  {result= new NodeExpressionConstNum(token);}	
     | 
-    token=<TRUE> {result= new NodeExpressionConstTrue(token);} 
+    token=<TRUE> {result= new NodeExpressionConstBoolean(token, true);} 
     | 
-    token=<FALSE>{result= new NodeExpressionConstFalse(token);} 
+    token=<FALSE>{result= new NodeExpressionConstBoolean(token, false);} 
     | 
     token=<NULL> {result= new NodeExpressionConstNull(token);}
     |
