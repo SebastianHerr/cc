@@ -48,15 +48,17 @@ public class C0 {
       
       System.out.println ("[  OK  ] Symboltable complete\n\n\n");
       
+      //System.out.println (ast.compareNodeType(ast));
+      
       //Output all debug data
-      System.out.println ("Stats of vidTable");
-      vidTable.printStats();
-      System.out.println ("Stats of sidTable");
-      sidTable.printStats();
-      System.out.println ("Stats of fidTable");
-      fidTable.printStats();
+      //System.out.println ("Stats of vidTable");
+      //vidTable.printStats();
+      //System.out.println ("Stats of sidTable");
+      //sidTable.printStats();
+      //System.out.println ("Stats of fidTable");
+      //fidTable.printStats();
       System.out.println (" */\n\n\n");
-      System.out.println(ast);
+      //System.out.println(ast);
 			System.out.println ("[  OK  ]");
 		} catch (Exception ex) {
 			System.out.println ("[ FAIL ]" + ((args.length > 1) ? ex.getMessage() + "\n\n" : ""));

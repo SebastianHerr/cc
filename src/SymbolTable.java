@@ -115,7 +115,7 @@ public class SymbolTable{
       {
         if(getDefinitionNodeInScope(scope, node.getToken().image, symbol.symbolID) != null)
         {
-          //System.out.println("Variable with Symbol  \"" + node.getToken().image + "\" and ID " + symbol.symbolID + " already defined");
+          System.out.println("Variable with Symbol  \"" + node.getToken().image + "\" and ID " + symbol.symbolID + " already defined");
           return 20;
         }
         else
@@ -196,7 +196,7 @@ public class SymbolTable{
       //usage as function call or variable access
       else if(!node.isVariableDefinition() && !node.isFunctionDefinition())
       {
-        System.out.println("Usage of \"" + node.getToken().image + "\" and start searching for definition in " + scope.getScopeID());
+        //System.out.println("Usage of \"" + node.getToken().image + "\" and start searching for definition in " + scope.getScopeID());
         
         if(node.isFunctionCall())
         {
@@ -228,18 +228,18 @@ public class SymbolTable{
     while(!funcUsages.empty() && funcUsages.peek() != null)
     {
       int currentIndex = funcUsages.pop();
-        System.out.println(currentIndex);
+      //System.out.println(currentIndex);
       NodeIdentifier node = symbol.symbolNodes.get(currentIndex);
-        System.out.println(node);
+      //System.out.println(node);
       Node definitionName = functionDefines.get(node.getToken().image);
-        System.out.println(definitionName);
+      //System.out.println(definitionName);
       if(definitionName == null)
       {
         System.out.println("The function " + node + " which was called has never been defined");
         return 15;
       }
       NodeFunction definition = (NodeFunction)definitionName.getParent();
-        System.out.println(definition);
+      //System.out.println(definition);
       node.setDefintion(definition.getName());
     }
     
