@@ -9,6 +9,12 @@
  * @date      2017/06/03
  */
 
+options
+{
+  DEBUG_PARSER = false;
+  DEBUG_TOKEN_MANAGER = false;
+}
+
 PARSER_BEGIN(C0)
 import java.util.*;
 public class C0 {

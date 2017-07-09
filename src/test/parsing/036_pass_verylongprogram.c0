@@ -11,6 +11,8 @@ int *select_sort(int *arr, int n);
 int *bubble_sort(int *arr, int n);
 int *generate_random(int n);
 void messure(int n);
+int rand();
+int clock();
 
 int main(int count, int **args)
 {
@@ -114,3 +116,14 @@ int *select_sort(int *arr, int n)
 
   return arr;
 }
+
+int rand()
+{
+  return 42;
+}
+
+int clock()
+{
+  return 1942;
+}
+
