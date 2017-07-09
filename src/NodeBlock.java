@@ -15,16 +15,6 @@ public NodeBlock(Token token_)
   vidDefineList = new Hashtable<String,NodeIdentifier>();
 }
 
-public String getNodeType()
-{
-return "NodeBlock";
-}
-
-public boolean checkNodeType()
-{
-return true; //Check okay
-}
-
 public void addStatement(Node node)
 {
   statements.add(node);
@@ -57,6 +47,25 @@ public IScope getContainingScope()
   return this;
 }
 
+public boolean compareNodeType(Node otherNode)
+{
+  if(!(otherNode instanceof NodeBlock))
+  {
+    Thread.dumpStack();
+		System.out.println(this.getClass());
+		return false;
+  }
+  boolean returnValue = true;
+  for(int i = 0; i<statements.size();i++)
+  {
+    Node thisSubNode = statements.get(i);
+    Node otherSubNode = ((NodeBlock)otherNode).statements.get(i);
+    returnValue &= thisSubNode.compareNodeType(otherSubNode);
+    if(!returnValue)
+      return false;
+  }
+  return true;
+}
 
 public String toString(String indentation)
 {

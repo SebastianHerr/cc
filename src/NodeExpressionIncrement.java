@@ -9,14 +9,15 @@ public NodeExpressionIncrement(Node innerNode_, Token token_)
   innerNode.setParent(this);
 }
 
-public String getNodeType()
+public boolean compareNodeType(Node otherNode)
 {
-return "NodeExpressionIncrement";
-}
-
-public boolean checkNodeType()
-{
-return true; //Check okay
+  if(!(otherNode instanceof NodeExpressionIncrement))
+  {
+    Thread.dumpStack();
+		System.out.println(this.getClass());
+		return false;
+  }
+  return innerNode.compareNodeType(((NodeExpressionIncrement)otherNode).innerNode);
 }
 
 public String toString(String indendation)

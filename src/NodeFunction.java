@@ -25,16 +25,6 @@ public NodeFunction(Node type_, NodeIdentifier name_)
   vidDefineList = new Hashtable<String,NodeIdentifier>();
 }
 
-public String getNodeType()
-{
-return "NodeFunction";
-}
-
-public boolean checkNodeType()
-{
-return true; //Check okay
-}
-
 public void addParameters(NodeFunctionParamArgs params_)
 {
   params = params_;
@@ -111,6 +101,23 @@ public IScope getContainingScope()
   return this;
 }
 
+public boolean compareNodeType(Node otherNode)
+{
+  if(!(otherNode instanceof NodeFunction))
+  {
+    Thread.dumpStack();
+		System.out.println(this.getClass());
+		return false;
+  }
+  NodeFunction otherNodeCast = (NodeFunction)otherNode;
+  NodeFunction thisNode = getFunctionLink();
+  boolean returnValue = true;
+  
+  returnValue &= thisNode.type.compareNodeType(otherNodeCast.type);
+  returnValue &= thisNode.params.compareNodeType(otherNodeCast.params);
+
+  return returnValue;
+}
 
 public String toString(String indendation)
 {

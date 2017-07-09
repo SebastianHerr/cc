@@ -7,20 +7,21 @@ public NodeStatementReturn(Token token_)
   token = token_;
 }
 
-public String getNodeType()
-{
-return "NodeStatementReturn";
-}
-
-public boolean checkNodeType()
-{
-return true; //Check okay
-}
-
 public void setReturnValue(Node returnValue_)
 {
   returnNode = returnValue_;
   returnNode.setParent(this);
+}
+
+public boolean compareNodeType(Node otherNode)
+{
+  if(!(otherNode instanceof NodeStatementReturn))
+  {
+    Thread.dumpStack();
+		System.out.println(this.getClass());
+		return false;
+  }
+  return returnNode.compareNodeType(((NodeStatementReturn)otherNode).returnNode);
 }
 
 public String toString(String indendation)

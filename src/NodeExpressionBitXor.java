@@ -5,13 +5,14 @@ public NodeExpressionBitXor(Node primary_)
   super(primary_);
 }
 
-public String getNodeType()
+public boolean compareNodeType(Node otherNode)
 {
-return "NodeExpressionBitXor";
-}
-
-public boolean checkNodeType()
-{
-return true; //Check okay
+  if(!(otherNode instanceof NodeExpressionBitXor))
+  {
+    Thread.dumpStack();
+		System.out.println(this.getClass());
+		return false;
+  }
+  return super.compareNodeType((NodeExpressionBitXor)otherNode);
 }
 }

@@ -5,14 +5,16 @@ public NodeTypeVoid(Token token_)
   token = token_;
 }
 
-public String getNodeType()
+public boolean compareNodeType(Node otherNode)
 {
-return "NodeTypeVoid";
-}
-
-public boolean checkNodeType()
-{
-return true; //Check okay
+  if(!(otherNode instanceof NodeTypeVoid))
+  {
+    Thread.dumpStack();
+		System.out.println(this.getClass());
+		return false;
+  }
+  else
+    return true;
 }
 
 public String toString(String indendation)

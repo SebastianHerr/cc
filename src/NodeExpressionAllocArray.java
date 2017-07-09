@@ -11,15 +11,20 @@ public NodeExpressionAllocArray(Node type_, Token token_, Node size_)
    size.setParent(this);
 }
 
-public String getNodeType()
+public boolean compareNodeType(Node otherNode)
 {
-return "NodeExpressionAllocArray";
+  if(!(otherNode instanceof NodeExpressionAllocArray))
+  {
+    Thread.dumpStack();
+		System.out.println(this.getClass());
+		return false;
+  }
+  boolean returnValue = type.compareNodeType(((NodeExpressionAllocArray)otherNode).type);
+  returnValue &= size.compareNodeType(((NodeExpressionAllocArray)otherNode).size);
+
+  return returnValue;
 }
 
-public boolean checkNodeType()
-{
-return true; //Check okay
-}
 
 public String toString(String indendation)
 {

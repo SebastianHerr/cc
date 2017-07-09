@@ -16,16 +16,6 @@ public NodeStruct(NodeIdentifier name_)
   listOfMembers = new ArrayList<Node>();
 }
 
-public String getNodeType()
-{
-return "NodeStructDefinition";
-}
-
-public boolean checkNodeType()
-{
-return true; //Check okay
-}
-
 public void addElement(Node type_, Node name_)
 {
   type_.setParent(this);
@@ -86,6 +76,23 @@ public int getOffsetAfterLocalVidTable()
 public IScope getContainingScope()
 {
   return this;
+}
+
+public boolean compareNodeType(Node otherNode)
+{
+  if(!(otherNode instanceof NodeStruct))
+  {
+    Thread.dumpStack();
+		System.out.println(this.getClass());
+		return false;
+  }
+  boolean returnValue = true;
+  for(int i = 0; i < listOfMembers.size(); i += 2) 
+  {
+    returnValue &= listOfMembers.get(i).compareNodeType(((NodeStruct)otherNode).listOfMembers.get(i));
+  }
+
+  return returnValue;
 }
 
 public String toString(String indendation)

@@ -6,14 +6,15 @@ public NodeExpressionUnary()
 {
 }
 
-public String getNodeType()
+public boolean compareNodeType(Node otherNode)
 {
-return "NodeExpressionUnary";
-}
-
-public boolean checkNodeType()
-{
-return true; //Check okay
+  if(!(otherNode instanceof NodeExpressionUnary))
+  {
+    Thread.dumpStack();
+		System.out.println(this.getClass());
+		return false;
+  }
+  return innerNode.compareNodeType(((NodeExpressionUnary)otherNode).innerNode);
 }
 
 public void setInternNode(Node innerNode_)

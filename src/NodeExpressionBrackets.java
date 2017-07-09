@@ -9,14 +9,15 @@ public NodeExpressionBrackets(Node node_, Token token_)
   token = token_;
 }
 
-public String getNodeType()
+public boolean compareNodeType(Node otherNode)
 {
-return "NodeExpressionBrackets";
-}
-
-public boolean checkNodeType()
-{
-return true; //Check okay
+  if(!(otherNode instanceof NodeExpressionBrackets))
+  {
+    Thread.dumpStack();
+		System.out.println(this.getClass());
+		return false;
+  }
+  return node.compareNodeType(((NodeExpressionBrackets)otherNode).node);
 }
 
 public String toString(String indentation)

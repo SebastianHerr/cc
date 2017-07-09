@@ -9,9 +9,6 @@ public abstract class Node{
   
   public static String standardIndentation = "  ";
   
-	public abstract String getNodeType();
-	
-	public abstract boolean checkNodeType();
   //This list is only ever initialized when this is an implementation of IScope
   ArrayList<IScope> subscopes;
   
@@ -22,7 +19,22 @@ public abstract class Node{
       subscopes = new ArrayList<IScope>();
     }
   }
-	
+  
+  /***********************************************************/
+  /*
+   * Type checking functions
+   */
+
+  /*
+   * Returns the Type of the node
+   */
+  //public abstract Node getNodeType();
+  
+  //public abstract boolean checkNodeType();
+  
+  public abstract boolean compareNodeType(Node otherNode);
+  /***********************************************************/
+  
   /*
    * Return the size of the type of the node in bytes, defaults to 1.
    * Override if the node uses a type of different size.

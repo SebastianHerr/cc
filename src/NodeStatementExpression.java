@@ -8,14 +8,15 @@ public NodeStatementExpression(Node expression_)
   expression.setParent(this);
 }
 
-public String getNodeType()
+public boolean compareNodeType(Node otherNode)
 {
-return "NodeStatementExpression";
-}
-
-public boolean checkNodeType()
-{
-return true; //Check okay
+  if(!(otherNode instanceof NodeStatementExpression))
+  {
+    Thread.dumpStack();
+		System.out.println(this.getClass());
+		return false;
+  }
+  return expression.compareNodeType(((NodeStatementExpression)otherNode).expression);
 }
 
 public String toString(String indendation)

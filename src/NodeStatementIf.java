@@ -11,16 +11,6 @@ public NodeStatementIf(Node condition_, Token token_)
   condition.setParent(this);
 }
 
-public String getNodeType()
-{
-return "NodeStatementIf";
-}
-
-public boolean checkNodeType()
-{
-return true; //Check okay
-}
-
 public void setIf(Node statement)
 {
   ifStatement = statement;
@@ -31,6 +21,22 @@ public void setElse(Node statement)
 {
   elseStatement = statement;
   elseStatement.setParent(this);
+}
+
+public boolean compareNodeType(Node otherNode)
+{
+  if(!(otherNode instanceof NodeStatementIf))
+  {
+    Thread.dumpStack();
+		System.out.println(this.getClass());
+		return false;
+  }
+  NodeStatementIf otherNodeIf = (NodeStatementIf)otherNode;
+  boolean returnValue = condition.compareNodeType(otherNodeIf.condition);
+  returnValue &= ifStatement.compareNodeType(otherNodeIf.ifStatement);
+  returnValue &= elseStatement.compareNodeType(otherNodeIf.elseStatement);
+
+  return returnValue;
 }
 
 public String toString(String indendation)

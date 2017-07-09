@@ -8,14 +8,15 @@ public NodeTypePointer(Node pointingTo_)
   pointingTo.setParent(this);
 }
 
-public String getNodeType()
+public boolean compareNodeType(Node otherNode)
 {
-return "NodeTypePointer";
-}
-
-public boolean checkNodeType()
-{
-return true; //Check okay
+  if(!(otherNode instanceof NodeTypePointer))
+  {
+    Thread.dumpStack();
+		System.out.println(this.getClass());
+		return false;
+  }
+  return pointingTo.compareNodeType(((NodeTypePointer)otherNode).pointingTo);
 }
 
 public String toString(String indendation)

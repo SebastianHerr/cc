@@ -11,14 +11,18 @@ public NodeExpressionFunctionCall(Node name_, NodeFunctionCallArgs args_)
   args.setParent(this);
 }
 
-public String getNodeType()
+public boolean compareNodeType(Node otherNode)
 {
-return "NodeExpressionFunctionCall";
-}
+  if(!(otherNode instanceof NodeExpressionFunctionCall))
+  {
+    Thread.dumpStack();
+		System.out.println(this.getClass());
+		return false;
+  }
+  boolean returnValue = name.compareNodeType(((NodeExpressionFunctionCall)otherNode).name);
+  returnValue &= args.compareNodeType(((NodeExpressionFunctionCall)otherNode).args);
 
-public boolean checkNodeType()
-{
-return true; //Check okay
+  return returnValue;
 }
 
 public String toString(String indendation)

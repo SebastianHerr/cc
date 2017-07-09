@@ -9,16 +9,6 @@ public NodeExpressionAlloc(Node type_, Token token_)
   type.setParent(this);
 }
 
-public String getNodeType()
-{
-return "NodeExpressionAlloc";
-}
-
-public boolean checkNodeType()
-{
-return true; //Check okay
-}
-
 public Node getParent()
 {
 return parent;
@@ -27,6 +17,17 @@ return parent;
 public void setParent(Node newParent)
 {
 parent = newParent;
+}
+
+public boolean compareNodeType(Node otherNode)
+{
+  if(!(otherNode instanceof NodeExpressionAlloc))
+  {
+    Thread.dumpStack();
+		System.out.println(this.getClass());
+		return false;
+  }
+  return type.compareNodeType(((NodeExpressionAlloc)otherNode).type);
 }
 
 public String toString(String indendation)

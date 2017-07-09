@@ -22,16 +22,6 @@ public NodeRoot()
   vidDefineList = new Hashtable<String,NodeIdentifier>();
 }
 
-public String getNodeType()
-{
-return "NodeRoot";
-}
-
-public boolean checkNodeType()
-{
-return true; //Check okay
-}
-
 public boolean isRoot()
 {
   return true;
@@ -72,6 +62,21 @@ public IScope getContainingScope()
   return this;
 }
 
+public boolean compareNodeType(Node otherNode)
+{
+  if(!(otherNode instanceof NodeRoot))
+  {
+    Thread.dumpStack();
+		System.out.println(this.getClass());
+		return false;
+  }
+  
+  boolean returnValue = true;
+  for (int i = 0; i<declarationsOrDefinitions.size();i++) {
+    returnValue &= declarationsOrDefinitions.get(i).compareNodeType(((NodeRoot)otherNode).declarationsOrDefinitions.get(i)); 
+  }
+  return returnValue;
+}
 
 public String toString(String indendation)
 {

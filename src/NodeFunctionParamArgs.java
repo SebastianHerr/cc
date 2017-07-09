@@ -9,22 +9,30 @@ public class NodeFunctionParamArgs extends Node
     listOfParamters = new ArrayList<Node>();
   }
   
-  public String getNodeType()
-  {
-    return "NodeFunctionParamArgs";
-  }
-
-  public boolean checkNodeType()
-  {
-    return true; //Check okay
-  }
-  
   public void addParameter(Node parameterType, Node parameterName)
   {
     parameterType.setParent(this);
     parameterName.setParent(this);
     listOfParamters.add(parameterType);
     listOfParamters.add(parameterName);
+  }
+
+  public boolean compareNodeType(Node otherNode)
+  {
+    if(!(otherNode instanceof NodeFunctionParamArgs))
+  {
+    Thread.dumpStack();
+		System.out.println(this.getClass());
+		return false;
+    }
+    
+    boolean returnValue = true;
+    
+    for(int i = 0; i < listOfParamters.size(); i += 2) {
+      returnValue &= listOfParamters.get(i).compareNodeType(((NodeFunctionParamArgs)otherNode).listOfParamters.get(i));
+    }
+
+    return returnValue;
   }
 
   public String toString(String indendation)

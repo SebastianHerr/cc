@@ -5,14 +5,14 @@ public NodeExpressionFactor(Node primary_)
   super(primary_);
 }
 
-public String getNodeType()
+public boolean compareNodeType(Node otherNode)
 {
-return "NodeExpressionFactor";
+  if(!(otherNode instanceof NodeExpressionFactor))
+  {
+    Thread.dumpStack();
+		System.out.println(this.getClass());
+		return false;
+  }
+  return super.compareNodeType((NodeExpressionFactor)otherNode);
 }
-
-public boolean checkNodeType()
-{
-return true; //Check okay
-}
-
 }

@@ -5,13 +5,14 @@ public NodeExpressionBitShift(Node primary_)
   super(primary_);
 }
 
-public String getNodeType()
+public boolean compareNodeType(Node otherNode)
 {
-return "NodeExpressionBitShift";
-}
-
-public boolean checkNodeType()
-{
-return true; //Check okay
+  if(!(otherNode instanceof NodeExpressionBitShift))
+  {
+    Thread.dumpStack();
+		System.out.println(this.getClass());
+		return false;
+  }
+  return super.compareNodeType((NodeExpressionBitShift)otherNode);
 }
 }

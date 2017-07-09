@@ -8,14 +8,15 @@ public NodeExpressionConstNum(Token token_)
   value = Integer.parseInt(token.image);
 }
 
-public String getNodeType()
+public boolean compareNodeType(Node otherNode)
 {
-return "NodeExpressionConstNum";
-}
-
-public boolean checkNodeType()
-{
-return true; //Check okay
+  if(!(otherNode instanceof NodeTypeInt) && !(otherNode instanceof NodeExpressionConstNum))
+  {
+    Thread.dumpStack();
+		System.out.println(this.getClass());
+		return false;
+  }
+  return true;
 }
 
 public String toString(String indendation)

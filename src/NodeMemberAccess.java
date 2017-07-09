@@ -10,14 +10,18 @@ public NodeMemberAccess(Node accessingNode_,Token token_)
   accessingNode.setParent(this);
 }
 
-public String getNodeType()
+public boolean compareNodeType(Node otherNode)
 {
-return "NodeMemberAccess";
-}
+  if(!(otherNode instanceof NodeMemberAccess))
+  {
+    Thread.dumpStack();
+		System.out.println(this.getClass());
+		return false;
+  }
+  boolean returnValue = accessedNode.compareNodeType(((NodeMemberAccess)otherNode).accessedNode);
+  returnValue &= accessingNode.compareNodeType(((NodeMemberAccess)otherNode).accessingNode);
 
-public boolean checkNodeType()
-{
-return true; //Check okay
+  return returnValue;
 }
 
 public void setAccessingNode(Node accessedNode_)

@@ -8,14 +8,15 @@ public NodeTypeStruct(Node name_)
   name.setParent(this);
 }
 
-public String getNodeType()
+public boolean compareNodeType(Node otherNode)
 {
-return "NodeTypeStruct";
-}
-
-public boolean checkNodeType()
-{
-return true; //Check okay
+  if(!(otherNode instanceof NodeTypeStruct))
+  {
+    Thread.dumpStack();
+		System.out.println(this.getClass());
+		return false;
+  }
+  return name.compareNodeType(((NodeTypeStruct)otherNode).name);
 }
 
 public String toString(String indendation)

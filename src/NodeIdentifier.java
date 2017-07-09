@@ -126,6 +126,39 @@ public void updateDefinitions()
   //System.out.println("Done ascending up the tree, usage was " + (!isVDef?"not":"XXX") + " a defintition");
 }
 
+
+public boolean compareNodeType(Node otherNode)
+{
+  if(!(otherNode instanceof NodeIdentifier))
+  {
+    Thread.dumpStack();
+		System.out.println(this.getClass());
+		return false;
+  }
+  
+  if(type == IdentifierType.VID && (isVDef || isFDef || isFCall))
+  {
+    return definition.compareNodeType(((NodeIdentifier)otherNode).definition);
+  }
+  else if(type == IdentifierType.FID && ((NodeIdentifier)otherNode).type == IdentifierType.FID)
+  {
+    //Thread.dumpStack();
+		//System.out.println(this.getClass() + "\t" + otherNode.getClass());
+    return true;
+  }
+  else if(type == IdentifierType.SID && ((NodeIdentifier)otherNode).type == IdentifierType.SID)
+  {
+    //Thread.dumpStack();
+		//System.out.println(this.getClass() + "\t" + otherNode.getClass());
+    return true;
+  }
+  else
+  {
+    //Something is odd here, should never be reached
+    return false;
+  }
+}
+
 public String toString(String indendation)
 {
   return token.image + "/* SyID " + symbolID + ";\t" + getOccouranceLocation() + "*/";

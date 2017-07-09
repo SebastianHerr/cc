@@ -5,14 +5,15 @@ public NodeExpressionUnaryBitwiseNegation(Token token_)
   token = token_;
 }
 
-public String getNodeType()
+public boolean compareNodeType(Node otherNode)
 {
-return "NodeExpressionUnaryBitwiseNegation";
-}
-
-public boolean checkNodeType()
-{
-return true; //Check okay
+  if(!(otherNode instanceof NodeExpressionUnaryBitwiseNegation))
+  {
+    Thread.dumpStack();
+		System.out.println(this.getClass());
+		return false;
+  }
+  return super.compareNodeType((NodeExpressionUnaryBitwiseNegation)otherNode);
 }
 
 public String toString(String indendation)

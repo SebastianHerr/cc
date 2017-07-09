@@ -9,14 +9,15 @@ public NodeExpressionDecrement(Node innerNode_,Token token_)
   innerNode.setParent(this);
 }
 
-public String getNodeType()
+public boolean compareNodeType(Node otherNode)
 {
-return "NodeExpressionDecrement";
-}
-
-public boolean checkNodeType()
-{
-return true; //Check okay
+  if(!(otherNode instanceof NodeExpressionDecrement))
+  {
+    Thread.dumpStack();
+		System.out.println(this.getClass());
+		return false;
+  }
+  return innerNode.compareNodeType(((NodeExpressionDecrement)otherNode).innerNode);
 }
 
 public String toString(String indendation)

@@ -8,20 +8,28 @@ public NodeFunctionCallArgs()
   arguments = new ArrayList<Node>();
 }
 
-public String getNodeType()
-{
-return "NodeFunctionCallArgs";
-}
-
-public boolean checkNodeType()
-{
-return true; //Check okay
-}
-
 public void addArg(Node argument)
 {
   arguments.add(argument);
   argument.setParent(this);
+}
+
+public boolean compareNodeType(Node otherNode)
+{
+  if(!(otherNode instanceof NodeFunctionCallArgs))
+  {
+    Thread.dumpStack();
+		System.out.println(this.getClass());
+		return false;
+  }
+  
+  boolean returnValue = true;
+  
+  for(int i = 0; i < arguments.size(); i += 2) {
+    returnValue &= arguments.get(i).compareNodeType(((NodeFunctionCallArgs)otherNode).arguments.get(i));
+  }
+
+  return returnValue;
 }
 
 public String toString(String indendation)

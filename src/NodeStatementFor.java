@@ -10,16 +10,6 @@ public NodeStatementFor(Token token_)
   token = token_;
 }
 
-public String getNodeType()
-{
-return "NodeStatementFor";
-}
-
-public boolean checkNodeType()
-{
-return true; //Check okay
-}
-
 public void setInitializer(Node init_)
 {
   init = init_;
@@ -42,6 +32,22 @@ public void setLoopBody(Node loopBody_)
 {
   loopBody = loopBody_;
   loopBody.setParent(this);
+}
+
+public boolean compareNodeType(Node otherNode)
+{
+  if(!(otherNode instanceof NodeStatementFor))
+  {
+    Thread.dumpStack();
+		System.out.println(this.getClass());
+		return false;
+  }
+  NodeStatementFor otherNodeTyped = (NodeStatementFor) otherNode;
+  boolean returnValue = init.compareNodeType(otherNodeTyped.init);
+  returnValue &= condition.compareNodeType(otherNodeTyped.condition);
+  returnValue &= iterator.compareNodeType(otherNodeTyped.iterator);
+  returnValue &= loopBody.compareNodeType(otherNodeTyped.loopBody);
+  return returnValue;
 }
 
 public String toString(String indendation)

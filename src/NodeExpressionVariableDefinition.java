@@ -12,20 +12,25 @@ public NodeExpressionVariableDefinition(Node type_, Node name_)
   name.setParent(this);
 }
 
-public String getNodeType()
-{
-return "NodeExpressionVariableDefinition";
-}
-
-public boolean checkNodeType()
-{
-return true; //Check okay
-}
-
 public void setAssignment(Node assigment_)
 {
   assigment = assigment_;
   assigment.setParent(this);
+}
+
+public boolean compareNodeType(Node otherNode)
+{
+  if(!(otherNode instanceof NodeExpressionVariableDefinition))
+  {
+    Thread.dumpStack();
+		System.out.println(this.getClass());
+		return false;
+  }
+  boolean returnValue = type.compareNodeType(((NodeExpressionVariableDefinition)otherNode).type);
+  returnValue &= name.compareNodeType(((NodeExpressionVariableDefinition)otherNode).name);
+  returnValue &= assigment != null ? assigment.compareNodeType(((NodeExpressionVariableDefinition)otherNode).assigment) : true;
+
+  return returnValue;
 }
 
 public String toString(String indendation)

@@ -5,14 +5,9 @@ public NodeMemberAccessDot(Node accessingNode_,Token token_)
   super(accessingNode_,token_);
 }
 
-public String getNodeType()
+public boolean compareNodeType(Node otherNode)
 {
-return "NodeMemberAccessDot";
-}
-
-public boolean checkNodeType()
-{
-return true; //Check okay
+  return super.compareNodeType(otherNode);
 }
 
 public String toString(String indendation)

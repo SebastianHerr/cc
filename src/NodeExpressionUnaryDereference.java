@@ -5,14 +5,15 @@ public NodeExpressionUnaryDereference(Token token_)
   token = token_;
 }
 
-public String getNodeType()
+public boolean compareNodeType(Node otherNode)
 {
-return "NodeExpressionUnaryDereference";
-}
-
-public boolean checkNodeType()
-{
-return true; //Check okay
+  if(!(otherNode instanceof NodeExpressionUnaryDereference))
+  {
+    Thread.dumpStack();
+		System.out.println(this.getClass());
+		return false;
+  }
+  return super.compareNodeType((NodeExpressionUnaryDereference)otherNode);
 }
 
 public String toString(String indendation)

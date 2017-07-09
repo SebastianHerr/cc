@@ -5,15 +5,11 @@ public NodeMemberAccessArrow(Node accessingNode_,Token token_)
   super(accessingNode_,token_);
 }
 
-public String getNodeType()
+public boolean compareNodeType(Node otherNode)
 {
-return "NodeMemberAccessArrow";
+  return super.compareNodeType(otherNode);
 }
 
-public boolean checkNodeType()
-{
-return true; //Check okay
-}
 public String toString(String indendation)
 {
   return accessedNode.toString(indendation) + "->" + accessingNode.toString(indendation);

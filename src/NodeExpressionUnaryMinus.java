@@ -5,14 +5,15 @@ public NodeExpressionUnaryMinus(Token token_)
   token = token_;
 }
 
-public String getNodeType()
+public boolean compareNodeType(Node otherNode)
 {
-return "NodeExpressionUnaryMinus";
-}
-
-public boolean checkNodeType()
-{
-return true; //Check okay
+  if(!(otherNode instanceof NodeExpressionUnaryMinus))
+  {
+    Thread.dumpStack();
+		System.out.println(this.getClass());
+		return false;
+  }
+  return super.compareNodeType((NodeExpressionUnaryMinus)otherNode);
 }
 
 public String toString(String indendation)

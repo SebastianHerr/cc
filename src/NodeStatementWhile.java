@@ -10,20 +10,24 @@ public NodeStatementWhile(Node condition_, Token token_)
   condition.setParent(this);
 }
 
-public String getNodeType()
-{
-return "NodeStatementWhile";
-}
-
-public boolean checkNodeType()
-{
-return true; //Check okay
-}
-
 public void setLoopBody(Node loopBody_)
 {
   loopBody = loopBody_;
   loopBody.setParent(this);
+}
+
+public boolean compareNodeType(Node otherNode)
+{
+  if(!(otherNode instanceof NodeStatementWhile))
+  {
+    Thread.dumpStack();
+		System.out.println(this.getClass());
+		return false;
+  }
+  boolean returnValue = condition.compareNodeType(((NodeStatementWhile)otherNode).condition);
+  returnValue &= loopBody.compareNodeType(((NodeStatementWhile)otherNode).loopBody);
+
+  return returnValue;
 }
 
 public String toString(String indentation)
