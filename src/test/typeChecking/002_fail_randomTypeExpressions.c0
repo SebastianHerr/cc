@@ -1,0 +1,10 @@
+struct list { int info; struct list* next; };
+int f(struct list* l) { return 1; }
+struct b{ struct list* c; };
+
+void main()
+{
+  int*[] a;
+  int b;
+  int d = *a[f(b->c)]*2;
+}
