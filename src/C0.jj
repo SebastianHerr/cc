@@ -138,17 +138,17 @@ NodeRoot Program () : {NodeRoot root = new NodeRoot(); Node node;}
 
 NodeIdentifier Sid () : {Token name; NodeIdentifier node;}
 {
-   name = <ID> {node = new NodeIdentifier(name); sidTable.addSymbol(node, scope.peek()); return node;}   // struct name
+   name = <ID> {node = new NodeIdentifier(name,IdentifierType.SID); sidTable.addSymbol(node, scope.peek()); return node;}   // struct name
 }
 
 NodeIdentifier Vid () : {Token name; NodeIdentifier node;}
 {
-   name = <ID> {node = new NodeIdentifier(name); vidTable.addSymbol(node, scope.peek()); return node;}   // variable and function name
+   name = <ID> {node = new NodeIdentifier(name,IdentifierType.VID); vidTable.addSymbol(node, scope.peek()); return node;}   // variable and function name
 }
 
 NodeIdentifier Fid () : {Token name; NodeIdentifier node;}
 {
-  name = <ID> {node = new NodeIdentifier(name); fidTable.addSymbol(node, scope.peek()); return node;} // field name
+  name = <ID> {node = new NodeIdentifier(name,IdentifierType.FID); fidTable.addSymbol(node, scope.peek()); return node;} // field name
 }
 
 NodeFunctionParamArgs FunctionParamArgs () : {NodeFunctionParamArgs result; Node type; Node name;}

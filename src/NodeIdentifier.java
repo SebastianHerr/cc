@@ -6,26 +6,18 @@ boolean isVDef = false;
 boolean isFDef = false;
 boolean isFCall = false;
 boolean needsUpdate = true;
+IdentifierType type ;
 
 //Link to the NodeIdentifier of a function definition  or of a variable definition
 Node definition;
 //This List contains the usages of a variables, empty when it's no definition;
 ArrayList<NodeIdentifier> usages;
 
-public NodeIdentifier(Token token_)
+public NodeIdentifier(Token token_, IdentifierType type_)
 {
   token = token_;
   usages = new ArrayList<NodeIdentifier>();
-}
-
-public String getNodeType()
-{
-return "NodeIdentifier";
-}
-
-public boolean checkNodeType()
-{
-return true; //Check okay
+  type = type_;
 }
 
 public Node getParent()
@@ -50,7 +42,7 @@ public int getSymbolID()
 
 public void addUsage(NodeIdentifier node)
 {
-  System.out.println("Added usage for " + token.image + getOccouranceLocation() + " at location " + node.getOccouranceLocation());
+  //System.out.println("Added usage for " + token.image + getOccouranceLocation() + " at location " + node.getOccouranceLocation());
   usages.add(node);
   node.setDefintion(this);
 }
@@ -108,7 +100,7 @@ public void updateDefinitions()
   {
     if((tmp instanceof NodeFunctionParamArgs) || (this.getParent() instanceof NodeExpressionVariableDefinition))
     {
-      System.out.println("\tToken \"" + token.image + "\"" + getOccouranceLocation() + " is a definition");
+      //System.out.println("\tToken \"" + token.image + "\"" + getOccouranceLocation() + " is a definition");
       isVDef = true;
     }
     else if(this.parent instanceof NodeFunction)
