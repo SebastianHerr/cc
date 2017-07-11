@@ -12,19 +12,19 @@ FILTER="*"
 while getopts "crf:" opt; do
   case "$opt" in
     c)  COMPILE=" "
-        echo "Will recompile the parser"
+        echo -e "\e[1mWill recompile the parser\e[0m"
     ;;
     f)  FILTER=$OPTARG
-        echo "Will use the filder $FILTER"
+        echo -e "\e[1mWill use the filder $FILTER\e[0m"
     ;;
     r)  TESTP=" "
-        echo "Will run the parser"
+        echo -e "\e[1mWill run the parser\e[0m"
     ;;
  esac
 done
 
 if test "$COMPILE" ; then
-  echo Compiling Program
+  echo -e "\e[1mCompiling Program\e[0m"
   rm bin/*.class
   rm bin/*.java
 
@@ -36,13 +36,13 @@ if test "$COMPILE" ; then
   javacc -OUTPUT_DIRECTORY=bin/ $PARSER.jj
   javac -d bin bin/*.java
 
-  echo -e "\n\e[1mBuilding completed. \e[0m \n"
+  echo -e "\e[1mBuilding completed. \e[0m"
 else
-  echo Parser not recompiled
+  echo -e "\e[1mParser not recompiled\e[0m"
 fi
 
 if test "$TESTP" ; then
-  echo Parser will be tested with the filter "$FILTER"
+  echo -e "\n\e[1mParser will be tested with the filter $FILTER\e[0m \n"
   PASSEDALLTEST=0
   for testfile in `find test -type f -name "$FILTER"`
   do
@@ -93,5 +93,5 @@ if test "$TESTP" ; then
     echo -e "\e[31mOne or more tests failed\e[39m"
   fi
 else 
-  echo Parser not tested
+  echo -e "\e[1mParser not tested\e[0m"
 fi
