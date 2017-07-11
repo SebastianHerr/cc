@@ -95,7 +95,7 @@ public class SymbolTable{
    * returns 25 if a variable is undefined
    * returns 30 if a symbol is used ot define a function and variable
    */
-  public int addSymbolToScopeNodes(Symbol symbol)
+  public void addSymbolToScopeNodes(Symbol symbol) throws SymbolTableException
   {
     //System.out.println("Linking Symbol " + symbol.symbolID + " which has " + symbol.symbolNodes.size() + " Nodes");
     NodeRoot root = symbol.symbolNodes.get(0).getRoot();
@@ -115,8 +115,7 @@ public class SymbolTable{
       {
         if(getDefinitionNodeInScope(scope, node.getToken().image, symbol.symbolID) != null)
         {
-          System.out.println("Variable with Symbol  \"" + node.getToken().image + "\" and ID " + symbol.symbolID + " already defined");
-          return 20;
+          throw new SymbolTableException("Variable with Symbol  \"" + node.getToken().image + "\" and ID " + symbol.symbolID + " already defined");
         }
         else
         {
@@ -143,8 +142,7 @@ public class SymbolTable{
            */
           if(functionNode.isDefined() && newFunctionNode.isDefinition())
           {
-            System.out.println("Function with Symbol \"" + node.getToken().image + "\"" + node.getOccouranceLocation() +  " and ID " + symbol.symbolID + " already defined");
-            return 10;
+            throw new SymbolTableException("Function with Symbol \"" + node.getToken().image + "\"" + node.getOccouranceLocation() +  " and ID " + symbol.symbolID + " already defined");
           }
           
           /*
@@ -163,8 +161,7 @@ public class SymbolTable{
             newFunctionNode.setFunctionLink(functionNode);
             if(isLastSymbol)
             {
-              System.out.println("The function " + node + " has been declared, but not yet defined");
-              return 16;
+              throw new SymbolTableException("The function " + node + " has been declared, but not yet defined");
             }
           }
           else if( !functionNode.isDefined() && newFunctionNode.isDefinition())
@@ -186,8 +183,8 @@ public class SymbolTable{
         {
           if(isLastSymbol && !((NodeFunction)node.getParent()).isDefinition())
           {
-            System.out.println("The function " + node + " has been declared, but not yet defined");
-            return 16;
+            throw new SymbolTableException("The function " + node + " has been declared, but not yet defined");
+            
           }
           //System.out.println("Funtion defintion of Symbol " + symbol.symbolID + " adding to root scope " + scope.getScopeID());
           functionDefines.put(node.getToken().image,node);
@@ -209,8 +206,7 @@ public class SymbolTable{
            NodeIdentifier definitionName = getDefinitionNodeInScope(scope, node.getToken().image, symbol.symbolID);
            if(definitionName==null)
            {
-             System.out.println("Variable " + node.getToken().image + " at location " + node .getOccouranceLocation() + " is used without beinging defined first");
-             return 25;
+             throw new SymbolTableException("Variable " + node.getToken().image + " at location " + node .getOccouranceLocation() + " is used without beinging defined first");             
            }
            definitionName.addUsage(node);
            ((Node)scope).getParent().getContainingScope().addSubscope(scope);
@@ -219,8 +215,7 @@ public class SymbolTable{
       //Some kind of error, for example if a variable is used to define a function and variable
       else
       {
-        //System.out.println("Symbol " + symbol.symbolID + " can't be used to define a function and a variable");
-        return 30;
+        throw new SymbolTableException("Symbol " + symbol.symbolID + " can't be used to define a function and a variable");
       }
     }
     
@@ -235,30 +230,21 @@ public class SymbolTable{
       //System.out.println(definitionName);
       if(definitionName == null)
       {
-        System.out.println("The function " + node + " which was called has never been defined");
-        return 15;
+        throw new SymbolTableException("The function " + node + " which was called has never been defined");
       }
       NodeFunction definition = (NodeFunction)definitionName.getParent();
       //System.out.println(definition);
       node.setDefintion(definition.getName());
     }
-    
-    return 0;
   }
   
-  public int addAllSymbolsToScopeNodes()
+  public void addAllSymbolsToScopeNodes() throws SymbolTableException
   {
     for (Map.Entry<String, Symbol> entry : symbols.entrySet()) 
     {
       //System.out.println("Adding new " + entry.getValue().image);
-      int symbolLinker = addSymbolToScopeNodes(entry.getValue());
-      if(symbolLinker != 0)
-      {
-        //System.out.println("Aborted with " + symbolLinker);
-        return symbolLinker;
-      }
+      addSymbolToScopeNodes(entry.getValue());
     }
-    return 0;
   }
     
   //Adds the symbol if it's not present and returns true, does nothing otherwise and returns false

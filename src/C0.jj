@@ -42,17 +42,11 @@ public class C0 {
       
       //Parse
       ast = parser.Program();
-      System.out.println ("[  OK  ] Parse complete\n\n\n");
+      System.out.println ("[  OK  ] Parse complete");
       
       //Link Symbols to definitions
-      int symbolLinker = vidTable.addAllSymbolsToScopeNodes();
-      if(symbolLinker!=0)
-      {
-        //System.out.println("Linking failed");
-        throw new Exception("Symbol used twice or undefined");
-      }
-      
-      System.out.println ("[  OK  ] Symboltable complete\n\n\n");
+      vidTable.addAllSymbolsToScopeNodes();
+      System.out.println ("[  OK  ] Symboltable complete");
       
       //System.out.println (ast.compareNodeType(ast));
       
@@ -63,12 +57,31 @@ public class C0 {
       //sidTable.printStats();
       //System.out.println ("Stats of fidTable");
       //fidTable.printStats();
-      System.out.println (" */\n\n\n");
+      System.out.println (" */");
       //System.out.println(ast);
-			System.out.println ("[  OK  ]");
-		} catch (Exception ex) {
-			System.out.println ("[ FAIL ]" + ((args.length > 1) ? ex.getMessage() + "\n\n" : ""));
-		}
+			System.out.println ("/*\n[  OK  ]\n*/");
+      System.exit(0);
+		} 
+    catch (ParseException ex) 
+    {
+			System.out.println ("[ FAIL PARSE ]\n" + ((args.length > 1) ? ex.getMessage() + "\n\n" : ""));
+      System.exit(1);
+		} 
+    catch (TokenMgrError ex)
+    {
+      System.out.println ("[ FAIL TOKEN]\n" + ((args.length > 1) ? ex.getMessage() + "\n\n" : ""));
+      System.exit(2);
+    } 
+    catch (SymbolTableException ex)    
+    {
+      System.out.println ("[ FAIL SYMBOLTABLE]\n" + ((args.length > 1) ? ex.getMessage() + "\n\n" : ""));
+      System.exit(3);
+    } 
+    catch (Exception ex)
+    {
+      System.out.println("UNKNOWN ERROR");
+      System.exit(666);
+    }
 	}
 }
 PARSER_END(C0)
