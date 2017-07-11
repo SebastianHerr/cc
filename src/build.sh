@@ -53,18 +53,18 @@ if test "$TESTP" ; then
     RETURNVALUE=$?
     if [ "$RETURNVALUE" -ne "0" ] 
     then
-      if [[ $testfile == *"pass"* ]];
+      if [[ $testfile == *"_pass_"* ]];
       then
         echo -e "\e[31m failed this test checking if good enough\e[39m"
         #at this point the return value is != 0 but the test is called pass, some error occured.
         #Now it needs to be tested that enough of the parser has done it's job
-        if [[ $testfile == *"parsing"* ]]  && [ "$RETURNVALUE" -lt "2" ]; 
+        if [[ $testfile == *"01parsing"* ]]  && [ "$RETURNVALUE" -lt "2" ]; 
         then
           #Failed in the parsing stage
           echo  -e "\e[31m Test failed in the parsing stage\e[39m"
           PASSEDALLTEST=1
         else
-          if [[ $testfile == *"symbolTable"* ]]  && [ "$RETURNVALUE" -lt "3" ]; 
+          if [[ $testfile == *"02symbolTable"* ]]  && [ "$RETURNVALUE" -lt "3" ]; 
           then
             #failed in the symbol table stage
             echo  -e "\e[31mTets failed in the symbol table stage\e[39m"
@@ -77,7 +77,7 @@ if test "$TESTP" ; then
         echo  -e "\e[32m Test failed as planned, not checking where it failed.\e[39m"
       fi
     else
-      if [[ $testfile == *"fail"* ]];
+      if [[ $testfile == *"_fail_"* ]];
       then
         echo  -e "\e[31m This test which should have failed but did not!\e[39m"
         PASSEDALLTEST=1
