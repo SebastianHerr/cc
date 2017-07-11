@@ -76,6 +76,12 @@ if test "$TESTP" ; then
       else
         echo  -e "\e[32m Test failed as planned, not checking where it failed.\e[39m"
       fi
+    else
+      if [[ $testfile == *"fail"* ]];
+      then
+        echo  -e "\e[31m This test which should have failed but did not!\e[39m"
+        PASSEDALLTEST=1
+      fi
     fi
     
   done
