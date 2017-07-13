@@ -9,7 +9,7 @@ boolean needsUpdate = true;
 IdentifierType type ;
 
 //Link to the NodeIdentifier of a function definition  or of a variable definition
-Node definition;
+NodeIdentifier definition;
 //This List contains the usages of a variables, empty when it's no definition;
 ArrayList<NodeIdentifier> usages;
 
@@ -47,7 +47,7 @@ public void addUsage(NodeIdentifier node)
   node.setDefintion(this);
 }
 
-public void setDefintion(Node definition_)
+public void setDefintion(NodeIdentifier definition_)
 {
   definition = definition_;
 }

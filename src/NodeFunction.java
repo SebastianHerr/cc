@@ -37,7 +37,7 @@ public void setFunctionCodeBlock(NodeBlock nodeFunctionCode_)
   nodeFunctionCode.setParent(this);
 }
 
-public Node getName()
+public NodeIdentifier getName()
 {
   return name;
 }
@@ -84,6 +84,23 @@ public int getScopeID()
 public Hashtable<String,NodeIdentifier> getListOfVidDefines()
 {
   return vidDefineList;
+}
+
+public int locationInTable(NodeIdentifier nodeToGetIndexFrom)
+{
+  int index = 0;
+  for(NodeIdentifier node: vidDefineList.values())
+  {
+    if(nodeToGetIndexFrom == node)
+    {
+      break;
+    }
+    else
+    {
+      index += node.getTypeSize();
+    }
+  }
+  return index;
 }
 
 public int getOffsetAfterLocalVidTable()

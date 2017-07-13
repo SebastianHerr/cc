@@ -42,6 +42,23 @@ public int getOffsetAfterLocalVidTable()
   return size;
 }
 
+public int locationInTable(NodeIdentifier nodeToGetIndexFrom)
+{
+  int index = 0;
+  for(NodeIdentifier node: vidDefineList.values())
+  {
+    if(nodeToGetIndexFrom == node)
+    {
+      break;
+    }
+    else
+    {
+      index += node.getTypeSize();
+    }
+  }
+  return index;
+}
+
 public IScope getContainingScope()
 {
   return this;
