@@ -159,6 +159,44 @@ public boolean compareNodeType(Node otherNode)
   }
 }
 
+public Node getNodeType()
+{
+  if(!(isVDef || isFDef || isFCall))
+  {
+    return definition.getNodeType();
+  }
+  else if(type == IdentifierType.VID)
+  {
+    //Here this node can be the definition of a variable or a function
+    if(isVDef)
+    {
+      return ((NodeExpressionVariableDefinition)getParent()).type;
+    }
+    else if(isFDef)
+    {
+      return ((NodeFunction)getParent()).type;
+    }
+  }
+  else if(type == IdentifierType.FID)
+  {
+    //TODO implement for fields
+    return null;
+  }
+  else if(type == IdentifierType.SID)
+  {
+    //TODO implement for structs
+    return null;    
+  }
+  else
+  {
+    //Should never be reached
+    return null;
+  }
+  
+  //TODO remove
+    return null;
+}
+
 public String toString(String indendation)
 {
   return token.image + "/* SyID " + symbolID + ";\t" + getOccouranceLocation() + "*/";

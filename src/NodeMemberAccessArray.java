@@ -10,6 +10,11 @@ public boolean compareNodeType(Node otherNode)
   return super.compareNodeType(otherNode);
 }
 
+public Node getNodeType()
+{
+  return accessedNode.getNodeType();
+}
+
 public String toString(String indendation)
 {
   return accessedNode.toString(indendation) + "[" + accessingNode.toString(indendation) + "]";

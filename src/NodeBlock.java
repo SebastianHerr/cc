@@ -64,6 +64,11 @@ public IScope getContainingScope()
   return this;
 }
 
+public Node getNodeType()
+{
+  return new NodeTypeVoid();
+}
+
 public boolean compareNodeType(Node otherNode)
 {
   if(!(otherNode instanceof NodeBlock))

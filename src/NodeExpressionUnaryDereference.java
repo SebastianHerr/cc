@@ -16,6 +16,11 @@ public boolean compareNodeType(Node otherNode)
   return super.compareNodeType((NodeExpressionUnaryDereference)otherNode);
 }
 
+public Node getNodeType()
+{
+  return new NodeTypePointer(innerNode);
+}
+
 public String toString(String indendation)
 {
   return "*" + innerNode.toString(indendation);

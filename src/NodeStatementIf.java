@@ -23,6 +23,11 @@ public void setElse(Node statement)
   elseStatement.setParent(this);
 }
 
+public Node getNodeType()
+{
+  return new NodeTypeVoid();
+}
+
 public boolean compareNodeType(Node otherNode)
 {
   if(!(otherNode instanceof NodeStatementIf))

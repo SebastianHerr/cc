@@ -19,6 +19,12 @@ public void setParent(Node newParent)
 parent = newParent;
 }
 
+public Node getNodeType()
+{
+  NodeTypeInt size = new NodeTypeInt();
+  return new NodeTypePointer(size);
+}
+
 public boolean compareNodeType(Node otherNode)
 {
   if(!(otherNode instanceof NodeExpressionAlloc))

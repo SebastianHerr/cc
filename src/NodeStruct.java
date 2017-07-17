@@ -95,6 +95,11 @@ public boolean compareNodeType(Node otherNode)
   return returnValue;
 }
 
+public Node getNodeType()
+{
+  return new NodeTypeStruct(name);
+}
+
 public String toString(String indendation)
 {
   String result = "struct " + name.toString(indendation) + " /* Scope ID = " +  scopeID + " */" ;

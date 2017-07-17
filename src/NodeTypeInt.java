@@ -1,8 +1,17 @@
 public class NodeTypeInt extends Node{
 
+public NodeTypeInt()
+{
+}
+
 public NodeTypeInt(Token token_)
 {
   token = token_;
+}
+
+public Node getNodeType()
+{
+  return this;
 }
 
 public boolean compareNodeType(Node otherNode)

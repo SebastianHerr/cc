@@ -1,8 +1,17 @@
 public class NodeTypeVoid extends Node{
 
+public NodeTypeVoid()
+{
+}
+
 public NodeTypeVoid(Token token_)
 {
   token = token_;
+}
+
+public Node getNodeType()
+{
+  return this;
 }
 
 public boolean compareNodeType(Node otherNode)

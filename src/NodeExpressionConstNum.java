@@ -19,6 +19,11 @@ public boolean compareNodeType(Node otherNode)
   return true;
 }
 
+public Node getNodeType()
+{
+  return new NodeTypeInt();
+}
+
 public String toString(String indendation)
 {
   return value + "";

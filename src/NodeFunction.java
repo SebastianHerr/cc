@@ -136,6 +136,11 @@ public boolean compareNodeType(Node otherNode)
   return returnValue;
 }
 
+public Node getNodeType()
+{
+  return type;
+}
+
 public String toString(String indendation)
 {
   String result = type + " " + name + "(";

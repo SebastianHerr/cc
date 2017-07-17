@@ -24,4 +24,9 @@ public String toString(String indentation)
 {
   return "(" + node.toString(indentation) + ")";
 }
+
+public Node getNodeType()
+{
+  return node.getNodeType();
+}
 }

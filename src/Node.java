@@ -28,7 +28,7 @@ public abstract class Node{
   /*
    * Returns the Type of the node
    */
-  //public abstract Node getNodeType();
+  public abstract Node getNodeType();
   
   //public abstract boolean checkNodeType();
   
@@ -90,6 +90,21 @@ public abstract class Node{
     }
     //Can only be reached if the node child is a reference to this node
     return true;
+  }
+  
+  public NodeFunction getContainingFunction()
+  {
+    Node tmp = getParent();
+    while(tmp != null)
+    {
+      if(tmp instanceof NodeFunction)
+      {
+        return (NodeFunction)tmp;
+      }
+      tmp = tmp.getParent();
+    }
+    //There is no containing function around this node.
+    return null;
   }
   
   /*

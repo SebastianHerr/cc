@@ -15,4 +15,9 @@ public boolean compareNodeType(Node otherNode)
   }
   return super.compareNodeType((NodeExpressionLogicalOr)otherNode);
 }
+
+public Node getNodeType()
+{
+  return new NodeTypeBool();
+}
 }

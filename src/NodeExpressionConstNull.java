@@ -16,6 +16,11 @@ public boolean compareNodeType(Node otherNode)
   return true;
 }
 
+public Node getNodeType()
+{
+  return new NodeTypePointer();
+}
+
 public String toString(String indendation)
 {
   return "NULL";

@@ -8,6 +8,11 @@ public NodeTypeArray(Node pointingTo_)
   pointingTo.setParent(this);
 }
 
+public Node getNodeType()
+{
+  return this;
+}
+
 public boolean compareNodeType(Node otherNode)
 {
   if(!(otherNode instanceof NodeTypeArray))

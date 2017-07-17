@@ -1,6 +1,6 @@
 public class NodeExpressionVariableDefinition extends Node{
 
-Node type;
+public Node type;
 Node name;
 Node assigment;
 
@@ -31,6 +31,11 @@ public boolean compareNodeType(Node otherNode)
   returnValue &= assigment != null ? assigment.compareNodeType(((NodeExpressionVariableDefinition)otherNode).assigment) : true;
 
   return returnValue;
+}
+
+public Node getNodeType()
+{
+  return new NodeTypeVoid();
 }
 
 public String toString(String indendation)

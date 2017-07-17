@@ -35,6 +35,11 @@ public class NodeFunctionParamArgs extends Node
     return returnValue;
   }
 
+  public Node getNodeType()
+  {
+    return new NodeTypeVoid();
+  }
+
   public String toString(String indendation)
   {
     String result = "";

@@ -16,6 +16,11 @@ public boolean compareNodeType(Node otherNode)
   return super.compareNodeType((NodeExpressionUnaryNegation)otherNode);
 }
 
+public Node getNodeType()
+{
+  return new NodeTypeInt();
+}
+
 public String toString(String indendation)
 {
   return "!" + innerNode.toString(indendation);

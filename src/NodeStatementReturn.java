@@ -13,6 +13,18 @@ public void setReturnValue(Node returnValue_)
   returnNode.setParent(this);
 }
 
+public Node getNodeType()
+{
+  if(returnNode == null)
+  {
+    return new NodeTypeVoid();
+  }
+  else
+  {
+    return returnNode.getNodeType();
+  }
+}
+
 public boolean compareNodeType(Node otherNode)
 {
   if(!(otherNode instanceof NodeStatementReturn))

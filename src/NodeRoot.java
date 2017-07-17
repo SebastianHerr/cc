@@ -78,6 +78,11 @@ public boolean compareNodeType(Node otherNode)
   return returnValue;
 }
 
+public Node getNodeType()
+{
+  return new NodeTypeVoid();
+}
+
 public String toString(String indendation)
 {
   String result = "";

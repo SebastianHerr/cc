@@ -8,6 +8,15 @@ public NodeTypePointer(Node pointingTo_)
   pointingTo.setParent(this);
 }
 
+public NodeTypePointer()
+{
+}
+
+public Node getNodeType()
+{
+  return this;
+}
+
 public boolean compareNodeType(Node otherNode)
 {
   if(!(otherNode instanceof NodeTypePointer))
@@ -16,7 +25,19 @@ public boolean compareNodeType(Node otherNode)
 		System.out.println(this.getClass());
 		return false;
   }
-  return pointingTo.compareNodeType(((NodeTypePointer)otherNode).pointingTo);
+  NodeTypePointer otherNodeCast = (NodeTypePointer)otherNode;
+  if(pointingTo != null && otherNodeCast.pointingTo != null)
+  {
+    return pointingTo.compareNodeType(((NodeTypePointer)otherNode).pointingTo);
+  }
+  else if (pointingTo == null && otherNodeCast.pointingTo == null)
+  {
+    return true;
+  }
+  else
+  {
+    return false;
+  }
 }
 
 public String toString(String indendation)

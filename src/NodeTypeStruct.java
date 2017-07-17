@@ -19,6 +19,11 @@ public boolean compareNodeType(Node otherNode)
   return name.compareNodeType(((NodeTypeStruct)otherNode).name);
 }
 
+public Node getNodeType()
+{
+  return this;
+}
+
 public String toString(String indendation)
 {
   return "struct " + name.toString(indendation);

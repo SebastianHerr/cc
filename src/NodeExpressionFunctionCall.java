@@ -25,6 +25,11 @@ public boolean compareNodeType(Node otherNode)
   return returnValue;
 }
 
+public Node getNodeType()
+{
+  return name.getNodeType();
+}
+
 public String toString(String indendation)
 {
   return name.toString(indendation) + "(" + args.toString(indendation) + ")";

@@ -1,8 +1,17 @@
 public class NodeTypeBool extends Node{
 
+public NodeTypeBool()
+{
+}
+
 public NodeTypeBool(Token token_)
 {
   token = token_;
+}
+
+public Node getNodeType()
+{
+  return this;
 }
 
 public boolean compareNodeType(Node otherNode)

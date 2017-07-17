@@ -11,6 +11,12 @@ public NodeExpressionAllocArray(Node type_, Token token_, Node size_)
    size.setParent(this);
 }
 
+public Node getNodeType()
+{
+  NodeTypeInt size = new NodeTypeInt();
+  return new NodeTypePointer(size);
+}
+
 public boolean compareNodeType(Node otherNode)
 {
   if(!(otherNode instanceof NodeExpressionAllocArray))

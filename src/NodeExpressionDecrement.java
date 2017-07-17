@@ -20,6 +20,11 @@ public boolean compareNodeType(Node otherNode)
   return innerNode.compareNodeType(((NodeExpressionDecrement)otherNode).innerNode);
 }
 
+public Node getNodeType()
+{
+  return new NodeTypeInt();
+}
+
 public String toString(String indendation)
 {
   return innerNode.toString(indendation) + "--";
