@@ -55,22 +55,27 @@ if test "$TESTP" ; then
     then
       if [[ $testfile == *"_pass_"* ]];
       then
-        echo -e "\e[31m failed this test checking if good enough\e[39m"
-        #at this point the return value is != 0 but the test is called pass, some error occured.
-        #Now it needs to be tested that enough of the parser has done it's job
-        if [[ $testfile == *"01parsing"* ]]  && [ "$RETURNVALUE" -lt "2" ]; 
-        then
-          #Failed in the parsing stage
-          echo  -e "\e[31m Test failed in the parsing stage\e[39m"
+        if [ "$RETURNVALUE" -eq "666" ]; then
+          echo  -e "\e[31m Test failed for an unknown reason\e[39m"
           PASSEDALLTEST=1
         else
-          if [[ $testfile == *"02symbolTable"* ]]  && [ "$RETURNVALUE" -lt "3" ]; 
+          echo -e "\e[31m failed this test checking if good enough\e[39m"
+          #at this point the return value is != 0 but the test is called pass, some error occured.
+          #Now it needs to be tested that enough of the parser has done it's job
+          if [[ $testfile == *"01parsing"* ]]  && [ "$RETURNVALUE" -lt "2" ]; 
           then
-            #failed in the symbol table stage
-            echo  -e "\e[31mTets failed in the symbol table stage\e[39m"
+            #Failed in the parsing stage
+            echo  -e "\e[31m Test failed in the parsing stage\e[39m"
             PASSEDALLTEST=1
-          else 
-            echo  -e "\e[32m This test failed, but outside of the scope of the test.\e[39m"
+          else
+            if [[ $testfile == *"02symbolTable"* ]]  && [ "$RETURNVALUE" -lt "3" ]; 
+            then
+              #failed in the symbol table stage
+              echo  -e "\e[31mTets failed in the symbol table stage\e[39m"
+              PASSEDALLTEST=1
+            else 
+              echo  -e "\e[32m This test failed, but outside of the scope of the test.\e[39m"
+            fi
           fi
         fi
       else
