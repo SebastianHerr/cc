@@ -8,6 +8,7 @@ NodeFunctionParamArgs params;
 NodeBlock nodeFunctionCode;
 
 NodeFunction functionLink;
+ArrayList<NodeStatementReturn> returnNodes;
 
 int scopeID;
 
@@ -23,6 +24,7 @@ public NodeFunction(Node type_, NodeIdentifier name_)
   name = name_;
   name.setParent(this);
   vidDefineList = new Hashtable<String,NodeIdentifier>();
+  returnNodes = new ArrayList<NodeStatementReturn>();
 }
 
 public void addParameters(NodeFunctionParamArgs params_)
@@ -35,6 +37,11 @@ public void setFunctionCodeBlock(NodeBlock nodeFunctionCode_)
 {
   nodeFunctionCode = nodeFunctionCode_;
   nodeFunctionCode.setParent(this);
+}
+
+public void addReturnStatement(NodeStatementReturn node)
+{
+  returnNodes.add(node);
 }
 
 public NodeIdentifier getName()
