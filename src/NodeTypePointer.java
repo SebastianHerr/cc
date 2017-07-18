@@ -19,19 +19,28 @@ public Node getNodeType()
 
 public boolean compareNodeType(Node otherNode)
 {
-  return compareNodeType(otherNode, false);
+  if(getParent() == null || otherNode.getParent() == null)
+  {
+    //If a parent is null, then it's not part of the main ast and only used to check if this is actually a pointer to somewhere
+    return compareNodeType(otherNode, true);
+  }
+  else
+  {    
+    return compareNodeType(otherNode, false);
+  }
 }
 
 public boolean compareNodeType(Node otherNode, boolean onelevel)
 {
-  if(!(otherNode instanceof NodeTypePointer))
+  if(!(otherNode instanceof NodeTypePointer || otherNode instanceof NodeTypeInt ))
   {
     Thread.dumpStack();
 		System.out.println(this.getClass());
+		System.out.println(otherNode.getClass());
 		return false;
   }
   
-  if(onelevel)
+  if(onelevel || otherNode instanceof NodeTypeInt)
   {
     return true;
   }

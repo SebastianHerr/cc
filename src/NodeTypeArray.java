@@ -8,6 +8,11 @@ public NodeTypeArray(Node pointingTo_)
   pointingTo.setParent(this);
 }
 
+public NodeTypeArray()
+{
+  //Dummy node for type checking
+}
+
 public Node getNodeType()
 {
   return this;

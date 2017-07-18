@@ -62,8 +62,7 @@ public boolean checkNodeType()
   {
     return false;
   }
-  
-  return  init.checkNodeType() && condition.checkNodeType() && iterator.checkNodeType()&& loopBody.checkNodeType();
+  return (init!= null ? init.checkNodeType() : true) && condition.checkNodeType() && (iterator != null? iterator.checkNodeType() : true) && loopBody.checkNodeType();
 }
 
 public String toString(String indendation)

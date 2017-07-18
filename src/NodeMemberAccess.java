@@ -24,11 +24,6 @@ public boolean compareNodeType(Node otherNode)
   return returnValue;
 }
 
-public boolean checkNodeType()
-{
-  return accessedNode.checkNodeType() && accessingNode.checkNodeType() ;
-}
-
 public void setAccessingNode(Node accessedNode_)
 {
   accessedNode = accessedNode_;

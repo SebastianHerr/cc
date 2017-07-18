@@ -15,6 +15,15 @@ public Node getNodeType()
   return accessedNode.getNodeType();
 }
 
+public boolean checkNodeType()
+{
+  if(!accessedNode.getNodeType().compareNodeType(new NodeTypePointer()) || !accessingNode.getNodeType().compareNodeType(new NodeTypeInt()))
+  {
+    return false;
+  }
+  return accessedNode.checkNodeType() && accessingNode.checkNodeType();
+}
+
 public String toString(String indendation)
 {
   return accessedNode.toString(indendation) + "[" + accessingNode.toString(indendation) + "]";

@@ -8,6 +8,11 @@ public NodeTypeStruct(Node name_)
   name.setParent(this);
 }
 
+public NodeTypeStruct()
+{
+  //Dummy Node for type checking
+}
+
 public boolean compareNodeType(Node otherNode)
 {
   if(!(otherNode instanceof NodeTypeStruct))
