@@ -51,7 +51,7 @@ public boolean checkNodeType()
   {
     return false;
   }
-  return condition.checkNodeType() && ifStatement.checkNodeType() && elseStatement.checkNodeType();
+  return condition.checkNodeType() && ifStatement.checkNodeType() && (elseStatement != null ? elseStatement.checkNodeType() : true);
 }
 
 

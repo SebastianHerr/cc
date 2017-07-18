@@ -27,7 +27,7 @@ public Node getNodeType()
   
 public boolean checkNodeType()
 {
-  return innerNode.compareNodeType(new NodeTypeInt());
+  return innerNode.getNodeType().compareNodeType(new NodeTypeInt());
 }
 
 public String toString(String indendation)

@@ -42,10 +42,10 @@ public boolean checkNodeType()
   //If there is no return value given, then the return type of this function needs to be void
   if(returnNode == null)
   {
-    return getContainingFunction().compareNodeType(new NodeTypeVoid());
+    return getContainingFunction().getNodeType().compareNodeType(new NodeTypeVoid());
   }
   //If there is a return value, then it needs to match the type of the function
-  if(!getContainingFunction().compareNodeType(returnNode.getNodeType()))
+  if(!getContainingFunction().getNodeType().compareNodeType(returnNode.getNodeType()))
   {
     return false;
   }

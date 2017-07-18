@@ -16,6 +16,12 @@ public class NodeFunctionParamArgs extends Node
     listOfParamters.add(parameterType);
     listOfParamters.add(parameterName);
   }
+  
+  public Node getTypeOfNode(NodeIdentifier node)
+  {
+    int i = listOfParamters.indexOf(node);
+    return listOfParamters.get(i-1);
+  }
 
   public boolean compareNodeType(Node otherNode)
   {

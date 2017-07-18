@@ -16,8 +16,8 @@ public Node getNodeType()
 
 public boolean compareNodeType(Node otherNode)
 {
-  if(!(otherNode instanceof NodeTypeInt) && !(otherNode instanceof NodeExpressionConstNum))
-  {
+  if(!(otherNode instanceof NodeTypeInt) && !(otherNode instanceof NodeExpressionConstNum) && !(otherNode instanceof NodeTypePointer))
+  { 
     Thread.dumpStack();
 		System.out.println(this.getClass());
 		return false;

@@ -170,11 +170,22 @@ public Node getNodeType()
     //Here this node can be the definition of a variable or a function
     if(isVDef)
     {
-      return ((NodeExpressionVariableDefinition)getParent()).type;
+      if(getParent() instanceof NodeExpressionVariableDefinition)
+      {
+        return ((NodeExpressionVariableDefinition)getParent()).type;
+      }
+      else
+      {
+        return ((NodeFunctionParamArgs)getParent()).getTypeOfNode(this);
+      }
     }
     else if(isFDef)
     {
       return ((NodeFunction)getParent()).type;
+    }
+    else if(isFCall)
+    {
+      return definition.getParent().getNodeType();
     }
   }
   else if(type == IdentifierType.FID)
@@ -192,9 +203,14 @@ public Node getNodeType()
     //Should never be reached
     return null;
   }
+  System.out.println("ERROR");
+  System.out.println(isVDef);
+  System.out.println(isFDef);
+  System.out.println(isFCall);
+  System.out.println(type);
   
   //TODO remove
-    return null;
+  return null;
 }
 
 public boolean checkNodeType()
