@@ -156,8 +156,16 @@ public abstract class Node{
     if(definition != null)
     {
       Set<String> keys = vidDefineList.keySet();
-      int i =getParent().getContainingScope().getOffsetAfterLocalVidTable();
-      System.out.println("Start set for search of " + nodeToGetIndexFrom.getToken().image);
+      int i;
+      if(this instanceof NodeBlock)
+      {
+        i = getParent().getContainingScope().getOffsetAfterLocalVidTable();
+      }
+      else
+      {
+        i = 1 - 3 - ((NodeFunction)this).getSizeOfFormalParameters();
+      }
+      System.out.println("Start set for search of " + nodeToGetIndexFrom.getToken().image + nodeToGetIndexFrom.getOccouranceLocation() );
       for(String key: keys){
         System.out.println("\tIndex of "+key + " is " + i);
         if(nodeToGetIndexFrom.getToken().image == key)
@@ -166,13 +174,13 @@ public abstract class Node{
         }
         i += vidDefineList.get(key).getTypeSize();
       }
-      System.out.println("End  searched part of set");
+      System.out.println("End  searched part of set, returning index " + i);
       
       return i;
     }
     else
     {
-      return 42;
+      return getParent().getContainingScope().locationInTable(nodeToGetIndexFrom);
     }
   }
   

@@ -100,6 +100,12 @@ public int locationInTable(NodeIdentifier nodeToGetIndexFrom)
 
 public int getOffsetAfterLocalVidTable()
 {
+  //Local variables start at index 1 according to Chapter 5 Code Generation 2 Slide 13
+  return 1;
+}
+
+public int getSizeOfFormalParameters()
+{
   int size = 0;
   for(Node node: vidDefineList.values())
   {
