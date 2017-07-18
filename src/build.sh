@@ -74,7 +74,21 @@ if test "$TESTP" ; then
               echo  -e "\e[31mTets failed in the symbol table stage\e[39m"
               PASSEDALLTEST=1
             else 
-              echo  -e "\e[32m This test failed, but outside of the scope of the test.\e[39m"
+              if [[ $testfile == *"03typeChecking"* ]]  && [ "$RETURNVALUE" -lt "4" ]; 
+              then
+                #failed in the symbol table stage
+                echo  -e "\e[31mTets failed in the type checking stage\e[39m"
+                PASSEDALLTEST=1
+              else 
+                if [[ $testfile == *"04codeGeneration"* ]]  && [ "$RETURNVALUE" -lt "5" ]; 
+                then
+                  #failed in the symbol table stage
+                  echo  -e "\e[31mTets failed in the type checking stage\e[39m"
+                  PASSEDALLTEST=1
+                else 
+                  echo  -e "\e[32m This test failed, but outside of the scope of the test.\e[39m"
+                fi
+              fi
             fi
           fi
         fi
