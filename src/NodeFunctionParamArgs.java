@@ -40,6 +40,12 @@ public class NodeFunctionParamArgs extends Node
     return new NodeTypeVoid();
   }
 
+  public boolean checkNodeType()
+  {
+    //TODO proper checking needed
+    return true;
+  }
+
   public String toString(String indendation)
   {
     String result = "";

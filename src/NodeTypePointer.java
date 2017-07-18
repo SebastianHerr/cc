@@ -19,12 +19,23 @@ public Node getNodeType()
 
 public boolean compareNodeType(Node otherNode)
 {
+  return compareNodeType(otherNode, false);
+}
+
+public boolean compareNodeType(Node otherNode, boolean onelevel)
+{
   if(!(otherNode instanceof NodeTypePointer))
   {
     Thread.dumpStack();
 		System.out.println(this.getClass());
 		return false;
   }
+  
+  if(onelevel)
+  {
+    return true;
+  }
+  
   NodeTypePointer otherNodeCast = (NodeTypePointer)otherNode;
   if(pointingTo != null && otherNodeCast.pointingTo != null)
   {
@@ -38,6 +49,11 @@ public boolean compareNodeType(Node otherNode)
   {
     return false;
   }
+}
+  
+public boolean checkNodeType()
+{
+  return true;
 }
 
 public String toString(String indendation)

@@ -24,6 +24,11 @@ public Node getNodeType()
   return new NodeTypeVoid();
 }
 
+public boolean checkNodeType()
+{
+  return expression.checkNodeType();
+}
+
 public String toString(String indendation)
 {
   return expression.toString(indendation) + ";\n";

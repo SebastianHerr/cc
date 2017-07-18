@@ -13,8 +13,7 @@ public NodeExpressionAllocArray(Node type_, Token token_, Node size_)
 
 public Node getNodeType()
 {
-  NodeTypeInt size = new NodeTypeInt();
-  return new NodeTypePointer(size);
+  return new NodeTypePointer(new NodeTypeInt());
 }
 
 public boolean compareNodeType(Node otherNode)
@@ -30,7 +29,11 @@ public boolean compareNodeType(Node otherNode)
 
   return returnValue;
 }
-
+  
+public boolean checkNodeType()
+{
+  return true; //Nothing to check here, the parser makes sure that the given node is already a type
+}
 
 public String toString(String indendation)
 {

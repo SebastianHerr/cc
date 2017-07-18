@@ -23,6 +23,11 @@ public boolean compareNodeType(Node otherNode)
   }
   return pointingTo.compareNodeType(((NodeTypeArray)otherNode).pointingTo);
 }
+  
+public boolean checkNodeType()
+{
+  return true;
+}
 
 public String toString(String indendation)
 {

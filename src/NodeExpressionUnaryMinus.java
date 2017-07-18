@@ -21,6 +21,11 @@ public Node getNodeType()
   return new NodeTypeInt();
 }
 
+public boolean checkNodeType()
+{
+  return innerNode.compareNodeType(new NodeTypeInt());
+}
+
 public String toString(String indendation)
 {
   return "-" + innerNode.toString(indendation);

@@ -20,4 +20,9 @@ public Node getNodeType()
 {
   return new NodeTypeBool();
 }
+
+public boolean checkNodeType()
+{
+  return primary.compareNodeType(new NodeTypeBool()) && secondary.compareNodeType(new NodeTypeBool()) && primary.checkNodeType() && secondary.checkNodeType();
+}
 }

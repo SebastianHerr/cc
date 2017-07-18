@@ -20,6 +20,11 @@ public abstract class Node{
     }
   }
   
+  public String emitCode()
+  {
+    return "X";
+  }
+  
   /***********************************************************/
   /*
    * Type checking functions
@@ -30,7 +35,7 @@ public abstract class Node{
    */
   public abstract Node getNodeType();
   
-  //public abstract boolean checkNodeType();
+  public abstract boolean checkNodeType();
   
   public abstract boolean compareNodeType(Node otherNode);
   /***********************************************************/
@@ -138,6 +143,37 @@ public abstract class Node{
     }
     System.out.println("Called getSubscopes on a non IScope node");
     return null;
+  }
+
+  public int locationInTable(NodeIdentifier nodeToGetIndexFrom, Hashtable<String,NodeIdentifier> vidDefineList)
+  {
+    if(!(this instanceof NodeFunction || this instanceof NodeBlock))
+    {
+      throw new Error();
+    }
+    NodeIdentifier definition;
+    definition = vidDefineList.get(nodeToGetIndexFrom.getToken().image);
+    if(definition != null)
+    {
+      Set<String> keys = vidDefineList.keySet();
+      int i =getParent().getContainingScope().getOffsetAfterLocalVidTable();
+      System.out.println("Start set for search of " + nodeToGetIndexFrom.getToken().image);
+      for(String key: keys){
+        System.out.println("\tIndex of "+key + " is " + i);
+        if(nodeToGetIndexFrom.getToken().image == key)
+        {
+          break;
+        }
+        i += vidDefineList.get(key).getTypeSize();
+      }
+      System.out.println("End  searched part of set");
+      
+      return i;
+    }
+    else
+    {
+      return 42;
+    }
   }
   
   public String getOccouranceLocation()

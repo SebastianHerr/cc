@@ -9,4 +9,14 @@ public Node getNodeType()
 {
   return primary.getNodeType();
 }
+  
+public boolean checkNodeType()
+{
+  //Both sides need to be the same, no futher conditions
+  if(!(primary.getNodeType().compareNodeType(secondary.getNodeType())))
+  {
+    return false;
+  }
+  return primary.checkNodeType() && secondary.checkNodeType();
+}
 }

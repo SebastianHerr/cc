@@ -48,7 +48,15 @@ public class C0 {
       vidTable.addAllSymbolsToScopeNodes();
       System.out.println ("[  OK  ] Symboltable complete");
       
-      //System.out.println (ast.compareNodeType(ast));
+      //Type checking
+      if(ast.checkNodeType() == false)
+      {
+        throw new Exception("Type");
+      }
+      
+      String binaryCode = ast.emitCode();
+      
+      System.out.println(binaryCode);
       
       //Output all debug data
       //System.out.println ("Stats of vidTable");

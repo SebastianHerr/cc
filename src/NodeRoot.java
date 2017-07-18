@@ -57,6 +57,12 @@ public int getOffsetAfterLocalVidTable()
   return 0;
 }
 
+public int locationInTable(NodeIdentifier nodeToGetIndexFrom)
+{
+  //TODO maybe return location of a function in the code memory?
+  return 0;
+}
+
 public IScope getContainingScope()
 {
   return this;
@@ -74,6 +80,15 @@ public boolean compareNodeType(Node otherNode)
   boolean returnValue = true;
   for (int i = 0; i<declarationsOrDefinitions.size();i++) {
     returnValue &= declarationsOrDefinitions.get(i).compareNodeType(((NodeRoot)otherNode).declarationsOrDefinitions.get(i)); 
+  }
+  return returnValue;
+}
+
+public boolean checkNodeType()
+{
+  boolean returnValue = true;
+  for (int i = 0; i<declarationsOrDefinitions.size();i++) {
+    returnValue &= declarationsOrDefinitions.get(i).checkNodeType(); 
   }
   return returnValue;
 }

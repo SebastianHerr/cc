@@ -55,6 +55,17 @@ public Node getNodeType()
   return new NodeTypeVoid();
 }
 
+public boolean checkNodeType()
+{
+  //The condition needs to be boolean
+  if(!condition.getNodeType().compareNodeType(new NodeTypeBool()))
+  {
+    return false;
+  }
+  
+  return  init.checkNodeType() && condition.checkNodeType() && iterator.checkNodeType()&& loopBody.checkNodeType();
+}
+
 public String toString(String indendation)
 {
   //Init and Iterator are optional

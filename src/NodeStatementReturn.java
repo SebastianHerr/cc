@@ -15,6 +15,7 @@ public void setReturnValue(Node returnValue_)
 
 public Node getNodeType()
 {
+  //return getContainingFunction().getNodeType();
   if(returnNode == null)
   {
     return new NodeTypeVoid();
@@ -34,6 +35,22 @@ public boolean compareNodeType(Node otherNode)
 		return false;
   }
   return returnNode.compareNodeType(((NodeStatementReturn)otherNode).returnNode);
+}
+
+public boolean checkNodeType()
+{
+  //If there is no return value given, then the return type of this function needs to be void
+  if(returnNode == null)
+  {
+    return getContainingFunction().compareNodeType(new NodeTypeVoid());
+  }
+  //If there is a return value, then it needs to match the type of the function
+  if(!getContainingFunction().compareNodeType(returnNode.getNodeType()))
+  {
+    return false;
+  }
+  
+  return returnNode.checkNodeType();
 }
 
 public String toString(String indendation)

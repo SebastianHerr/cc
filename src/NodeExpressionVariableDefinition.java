@@ -38,6 +38,18 @@ public Node getNodeType()
   return new NodeTypeVoid();
 }
 
+public boolean checkNodeType()
+{
+  if(assigment != null)
+  {
+    if (!type.compareNodeType(assigment.getNodeType()) || !assigment.checkNodeType())
+    {
+      return false;
+    }
+  }
+  return name.checkNodeType();
+}
+
 public String toString(String indendation)
 {
   return type.toString(indendation) + " " + name.toString(indendation) + (assigment != null ? "=" + assigment : "");

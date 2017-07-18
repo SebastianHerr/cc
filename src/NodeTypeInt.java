@@ -24,6 +24,11 @@ public boolean compareNodeType(Node otherNode)
   }
   return true;
 }
+  
+public boolean checkNodeType()
+{
+  return true;
+}
 
 public String toString(String indendation)
 {

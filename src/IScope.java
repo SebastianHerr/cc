@@ -14,6 +14,9 @@ public interface IScope
    * Return the offset of the vidtable, relativ to the location of the table of a function
    */
   public int getOffsetAfterLocalVidTable();
+  
+  
+  public int locationInTable(NodeIdentifier nodeToGetIndexFrom);
 }
 
 /* 

@@ -29,4 +29,10 @@ public Node getNodeType()
 {
   return node.getNodeType();
 }
+  
+public boolean checkNodeType()
+{
+  return node.checkNodeType();
+}
+
 }

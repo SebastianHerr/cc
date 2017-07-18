@@ -44,6 +44,17 @@ public boolean compareNodeType(Node otherNode)
   return returnValue;
 }
 
+public boolean checkNodeType()
+{
+  //The condition needs to be boolean
+  if(!condition.getNodeType().compareNodeType(new NodeTypeBool()))
+  {
+    return false;
+  }
+  return condition.checkNodeType() && ifStatement.checkNodeType() && elseStatement.checkNodeType();
+}
+
+
 public String toString(String indendation)
 {
   return "if(" + condition.toString(indendation) + ")\n" + 

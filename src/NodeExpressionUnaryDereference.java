@@ -21,6 +21,11 @@ public Node getNodeType()
   return new NodeTypePointer(innerNode);
 }
 
+public boolean checkNodeType()
+{
+  return innerNode.checkNodeType();
+}
+
 public String toString(String indendation)
 {
   return "*" + innerNode.toString(indendation);

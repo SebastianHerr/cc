@@ -197,8 +197,27 @@ public Node getNodeType()
     return null;
 }
 
+public boolean checkNodeType()
+{
+  return true;
+}
+
+boolean isprinting = false;
 public String toString(String indendation)
 {
-  return token.image + "/* SyID " + symbolID + ";\t" + getOccouranceLocation() + "*/";
+  /* Just commented out code to see what some internal values are
+  String testing = "";
+  if(isprinting)
+  { 
+    testing += "";
+  }
+  else
+  {
+     isprinting = true;
+     
+     testing += getContainingScope().locationInTable(definition != null ? (definition) : this) + (definition == null ? "D" : "O");
+     isprinting = false;
+  }*/
+  return token.image;// + "|-" + testing + "-|";// + "/* SyID " + symbolID + ";\t" + getOccouranceLocation() + "*/";
 }
 }

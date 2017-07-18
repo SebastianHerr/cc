@@ -21,8 +21,7 @@ parent = newParent;
 
 public Node getNodeType()
 {
-  NodeTypeInt size = new NodeTypeInt();
-  return new NodeTypePointer(size);
+  return new NodeTypePointer(new NodeTypeInt());
 }
 
 public boolean compareNodeType(Node otherNode)
@@ -34,6 +33,11 @@ public boolean compareNodeType(Node otherNode)
 		return false;
   }
   return type.compareNodeType(((NodeExpressionAlloc)otherNode).type);
+}
+  
+public boolean checkNodeType()
+{
+  return true; //Nothing to check here, the parser makes sure that the given node is already a type
 }
 
 public String toString(String indendation)

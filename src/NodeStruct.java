@@ -73,6 +73,11 @@ public int getOffsetAfterLocalVidTable()
   return 0;
 }
 
+public int locationInTable(NodeIdentifier nodeToGetIndexFrom)
+{
+  return 0;
+}
+
 public IScope getContainingScope()
 {
   return this;
@@ -98,6 +103,11 @@ public boolean compareNodeType(Node otherNode)
 public Node getNodeType()
 {
   return new NodeTypeStruct(name);
+}
+  
+public boolean checkNodeType()
+{
+  return true;
 }
 
 public String toString(String indendation)

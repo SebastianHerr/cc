@@ -88,19 +88,7 @@ public Hashtable<String,NodeIdentifier> getListOfVidDefines()
 
 public int locationInTable(NodeIdentifier nodeToGetIndexFrom)
 {
-  int index = 0;
-  for(NodeIdentifier node: vidDefineList.values())
-  {
-    if(nodeToGetIndexFrom == node)
-    {
-      break;
-    }
-    else
-    {
-      index += node.getTypeSize();
-    }
-  }
-  return index;
+  return locationInTable(nodeToGetIndexFrom, vidDefineList);
 }
 
 public int getOffsetAfterLocalVidTable()
@@ -141,11 +129,24 @@ public Node getNodeType()
   return type;
 }
 
+public boolean checkNodeType()
+{
+  //Check if the delcarions and the definition match up
+  if(functionLink != null)
+  {
+    functionLink.compareNodeType(this);
+  }
+  return params.checkNodeType() && (nodeFunctionCode!= null ? nodeFunctionCode.checkNodeType() : true);
+}
+
 public String toString(String indendation)
 {
   String result = type + " " + name + "(";
   result += params;
   result += ") /* Scope ID = " +  scopeID + " */";
+  
+  //result += "/* \n\t\t<VIDLIST>" + vidDefineList + " </VIDLIST>@OFFSET=*/" + getParent().getContainingScope().getOffsetAfterLocalVidTable() + "\n";
+  
   if(nodeFunctionCode == null)
   {
     result += ";\n";

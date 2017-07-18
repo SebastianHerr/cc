@@ -35,6 +35,14 @@ public boolean compareNodeType(Node otherNode)
   return returnValue;
 }
 
+public boolean checkNodeType()
+{
+  if(!condition.compareNodeType(new NodeTypeBool()))
+    return false;
+  
+  return condition.checkNodeType() && loopBody.checkNodeType();
+}
+
 public String toString(String indentation)
 {
   return indentation + "while(" + condition.toString(indentation) +")\n" 

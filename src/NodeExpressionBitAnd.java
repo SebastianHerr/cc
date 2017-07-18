@@ -15,6 +15,16 @@ public boolean compareNodeType(Node otherNode)
   }
   return super.compareNodeType((NodeExpressionBitAnd)otherNode);
 }
+  
+public boolean checkNodeType()
+{
+  //Both sides need to be the same, and both need to be integers
+  if(!(primary.getNodeType().compareNodeType(secondary.getNodeType())) && primary.getNodeType().compareNodeType(new NodeTypeInt()))
+  {
+    return false;
+  }
+  return primary.checkNodeType() && secondary.checkNodeType();
+}
 
 public Node getNodeType()
 {

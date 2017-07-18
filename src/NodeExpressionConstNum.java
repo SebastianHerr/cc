@@ -23,6 +23,11 @@ public Node getNodeType()
 {
   return new NodeTypeInt();
 }
+  
+public boolean checkNodeType()
+{
+  return true;
+}
 
 public String toString(String indendation)
 {

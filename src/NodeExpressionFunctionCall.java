@@ -30,6 +30,12 @@ public Node getNodeType()
   return name.getNodeType();
 }
 
+public boolean checkNodeType()
+{
+  //TODO proper check for types
+  return true;
+}
+
 public String toString(String indendation)
 {
   return name.toString(indendation) + "(" + args.toString(indendation) + ")";

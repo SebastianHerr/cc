@@ -37,6 +37,12 @@ public Node getNodeType()
   return new NodeTypeVoid();
 }
 
+public boolean checkNodeType()
+{
+  //TODO proper checking needed
+  return true;
+}
+
 public String toString(String indendation)
 {
   String result = "";

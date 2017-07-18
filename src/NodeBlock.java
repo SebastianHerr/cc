@@ -44,19 +44,7 @@ public int getOffsetAfterLocalVidTable()
 
 public int locationInTable(NodeIdentifier nodeToGetIndexFrom)
 {
-  int index = 0;
-  for(NodeIdentifier node: vidDefineList.values())
-  {
-    if(nodeToGetIndexFrom == node)
-    {
-      break;
-    }
-    else
-    {
-      index += node.getTypeSize();
-    }
-  }
-  return index;
+  return locationInTable(nodeToGetIndexFrom, vidDefineList);
 }
 
 public IScope getContainingScope()
@@ -88,10 +76,25 @@ public boolean compareNodeType(Node otherNode)
   }
   return true;
 }
+  
+public boolean checkNodeType()
+{
+  boolean returnValue = true;
+  for(int i = 0; i<statements.size();i++)
+  {
+    returnValue &= statements.get(i).checkNodeType();
+    if(!returnValue)
+      return false;
+  }
+  return true;
+}
 
 public String toString(String indentation)
 {
   String result = indentation + "{/* Scope ID = " +  scopeID + " */\n";
+  
+  //result += "/* \n\t\t<VIDLIST>" + vidDefineList + " </VIDLIST>@OFFSET=*/" + getParent().getContainingScope().getOffsetAfterLocalVidTable() + "\n";
+  
   for (Node statement : statements) {
     result += indentation + standardIndentation + statement.toString(indentation + standardIndentation);
   }

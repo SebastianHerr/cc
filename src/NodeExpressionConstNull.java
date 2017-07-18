@@ -20,6 +20,11 @@ public Node getNodeType()
 {
   return new NodeTypePointer();
 }
+  
+public boolean checkNodeType()
+{
+  return true;
+}
 
 public String toString(String indendation)
 {
