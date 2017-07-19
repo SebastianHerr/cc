@@ -4,3 +4,4 @@
 bin/
 /doc/examples
 javacc-examples 
+src/test/*/*.cma
