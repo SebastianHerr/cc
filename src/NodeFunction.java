@@ -18,7 +18,7 @@ int scopeID;
 public NodeFunction(Node type_, NodeIdentifier name_)
 {
   super();
-  scopeID = SymbolTable.getNextScopeID();
+  scopeID = AppearanceTable.getNextScopeID();
   type = type_;
   type.setParent(this);
   name = name_;

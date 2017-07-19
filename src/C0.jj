@@ -20,16 +20,16 @@ import java.util.*;
 import java.io.*;
 public class C0 {
   
-  static SymbolTable vidTable;
-  static SymbolTable sidTable;
-  static SymbolTable fidTable;
+  static AppearanceTable vidTable;
+  static AppearanceTable sidTable;
+  static AppearanceTable fidTable;
   
   public static void main(String args[]) {
     C0 parser;
     NodeRoot ast;  
-    vidTable = new SymbolTable();
-    sidTable = new SymbolTable();
-    fidTable = new SymbolTable();
+    vidTable = new AppearanceTable();
+    sidTable = new AppearanceTable();
+    fidTable = new AppearanceTable();
     
     String filename = "bin/code.cma";
     
@@ -88,7 +88,7 @@ public class C0 {
       System.out.println ("[ FAIL TOKEN]\n" + ((args.length > 1) ? ex.getMessage() + "\n\n" : ""));
       System.exit(2);
     } 
-    catch (SymbolTableException ex)    
+    catch (SymbolTableGenerationException ex)    
     {
       System.out.println ("[ FAIL SYMBOLTABLE]\n" + ((args.length > 1) ? ex.getMessage() + "\n\n" : ""));
       System.exit(3);

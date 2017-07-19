@@ -5,11 +5,11 @@ ArrayList<Node> declarationsOrDefinitions;
 
 int scopeID;
   //Definitions at each scope possible
-  SymbolTable vidTable;
+  AppearanceTable vidTable;
   //Definitions only possible at root scope
-  SymbolTable sidTable;
+  AppearanceTable sidTable;
   //Definitions only possible inside struct definitions
-  SymbolTable fidTable;
+  AppearanceTable fidTable;
   
   //Definition of functions in this scope
   Hashtable<String,NodeIdentifier> vidDefineList;
@@ -18,7 +18,7 @@ public NodeRoot()
 {
   super();
   declarationsOrDefinitions = new ArrayList<Node>();
-  scopeID = SymbolTable.getNextScopeID();
+  scopeID = AppearanceTable.getNextScopeID();
   vidDefineList = new Hashtable<String,NodeIdentifier>();
 }
 
@@ -39,7 +39,7 @@ public void addDeclarationOrDefinition(Node node)
 }
 
 
-public void addSymbolTables(SymbolTable vidTable_, SymbolTable sidTable_, SymbolTable fidTable_)
+public void addSymbolTables(AppearanceTable vidTable_, AppearanceTable sidTable_, AppearanceTable fidTable_)
 {
   //Update only new tables
   vidTable = vidTable_ != null ? vidTable_ : vidTable;

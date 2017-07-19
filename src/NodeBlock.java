@@ -9,7 +9,7 @@ Hashtable<String,NodeIdentifier> vidDefineList;
 public NodeBlock(Token token_)
 {
   super();
-  scopeID = SymbolTable.getNextScopeID();
+  scopeID = AppearanceTable.getNextScopeID();
   token = token_;
   statements = new ArrayList<Node>();
   vidDefineList = new Hashtable<String,NodeIdentifier>();
