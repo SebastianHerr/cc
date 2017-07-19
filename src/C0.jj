@@ -18,6 +18,7 @@ options
 PARSER_BEGIN(C0)
 import java.util.*;
 import java.io.*;
+import CMA.*;
 public class C0 {
   
   static AppearanceTable vidTable;
@@ -65,6 +66,38 @@ public class C0 {
       out.close();
       System.out.println ("[  OK  ] Code generation complete");
       System.out.println ("\tSaved the code to:" + filename + ".cma");
+      
+      
+      //temporarly hide the system.out, because the cma code would spam too much
+      PrintStream originalStream = System.out;
+      PrintStream dummyStream    = new PrintStream(new OutputStream(){public void write(int b) {/*NO-OP*/}});
+      System.setOut(dummyStream);
+      
+      int cmaResult;
+      try
+      {
+        cmaResult = Main.run(binaryCode);      
+      }
+      catch(Exception ex)
+      {
+        throw new CodeExecutionException(ex);
+      }
+      
+      //restore system.out
+      System.setOut(originalStream);
+
+      //Checking return value
+      int count = filename.length() - filename.replace("_", "").length();
+      //Only test with 3 underscores should have the return value tested
+      if(count == 3)
+      {
+        String[] parts = filename.split("_");
+        int supposedValue = Integer.parseInt(parts[2]);
+        System.out.println("Value is supposed to be " +supposedValue + " and is " + cmaResult);
+        System.out.println ("[  OK  ] Code running complete");
+      }
+      
+      
       
       //Output all debug data
       //System.out.println ("Stats of vidTable");
