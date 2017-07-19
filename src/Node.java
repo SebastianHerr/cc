@@ -164,16 +164,16 @@ public abstract class Node{
       {
         i = 1 - 3 - ((NodeFunction)this).getSizeOfFormalParameters();
       }
-      System.out.println("Start set for search of " + nodeToGetIndexFrom.getToken().image + nodeToGetIndexFrom.getOccouranceLocation() );
+      //System.out.println("Start set for search of " + nodeToGetIndexFrom.getToken().image + nodeToGetIndexFrom.getOccouranceLocation() );
       for(String key: keys){
-        System.out.println("\tIndex of "+key + " is " + i);
+        //System.out.println("\tIndex of "+key + " is " + i);
         if(nodeToGetIndexFrom.getToken().image == key)
         {
           break;
         }
         i += vidDefineList.get(key).getTypeSize();
       }
-      System.out.println("End  searched part of set, returning index " + i);
+      //System.out.println("End  searched part of set, returning index " + i);
       
       return i;
     }
