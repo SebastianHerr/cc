@@ -14,13 +14,11 @@ public void addArg(Node argument)
   argument.setParent(this);
 }
 
-public boolean compareNodeType(Node otherNode)
+public boolean compareNodeType(Node otherNode) throws TypeCheckingException
 {
   if(!(otherNode instanceof NodeFunctionCallArgs))
   {
-    Thread.dumpStack();
-		System.out.println(this.getClass());
-		return false;
+    throw new TypeCheckingException();
   }
   
   boolean returnValue = true;
@@ -37,10 +35,19 @@ public Node getNodeType()
   return new NodeTypeVoid();
 }
 
-public boolean checkNodeType()
+public boolean checkNodeType() throws TypeCheckingException
 {
   //TODO proper checking needed
   return true;
+}
+  
+public String emitCode() throws CodeGenerationException
+{
+  String result = "";
+  for(int i = arguments.size(); i > 0; i -= 2) {
+    result += arguments.get(i).emitCode();
+  }
+  return result;
 }
 
 public String toString(String indendation)

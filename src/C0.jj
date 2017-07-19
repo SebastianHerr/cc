@@ -17,6 +17,7 @@ options
 
 PARSER_BEGIN(C0)
 import java.util.*;
+import java.io.*;
 public class C0 {
   
   static Stack<IScope> scope;
@@ -31,9 +32,13 @@ public class C0 {
     vidTable = new SymbolTable();
     sidTable = new SymbolTable();
     fidTable = new SymbolTable();
+    
+    String filename = "bin/code.cma";
+    
     try {
       if (args.length > 0) {
-        parser = new C0 (new java.io.FileInputStream(new java.io.File(args[0])));
+        filename = args[0];
+        parser = new C0 (new java.io.FileInputStream(new java.io.File(filename)));
       } else {
         parser = new C0 (System.in);
       }
@@ -53,10 +58,15 @@ public class C0 {
       {
         throw new Exception("Type");
       }
+      System.out.println ("[  OK  ] Typechecking complete");
       
       String binaryCode = ast.emitCode();
       
-      System.out.println(binaryCode);
+      BufferedWriter out = new BufferedWriter(new FileWriter(filename + ".cma"));
+      out.write(binaryCode);
+      out.close();
+      System.out.println ("[  OK  ] Code generation complete");
+      System.out.println ("\tSaved the code to:" + filename + ".cma");
       
       //Output all debug data
       //System.out.println ("Stats of vidTable");
@@ -84,7 +94,17 @@ public class C0 {
     {
       System.out.println ("[ FAIL SYMBOLTABLE]\n" + ((args.length > 1) ? ex.getMessage() + "\n\n" : ""));
       System.exit(3);
+    }  
+    catch (TypeCheckingException ex)    
+    {
+      System.out.println ("[ FAIL TYPECHECKING]\n" + ((args.length > 1) ? ex.getMessage() + "\n\n" : ""));
+      System.exit(4);
     } 
+    catch (CodeGenerationException ex)
+    {
+      System.out.println ("[ FAIL CODEGENERATION]\n" + ((args.length > 1) ? ex.getMessage() + "\n\n" : ""));
+      System.exit(5);
+    }
     catch (Exception ex)
     {
       System.out.println(ex);
@@ -331,7 +351,7 @@ NodeFunctionCallArgs FunctionCallArgs () : {NodeFunctionCallArgs result; Node ne
 }
 
 Node Expression () : {Node result; Node array_alloc_size; Token token;
-  Node type; Node name; Node newNode;NodeExpressionVariableDefinition resultDefine;}
+  Node type; NodeIdentifier name; Node newNode;NodeExpressionVariableDefinition resultDefine;}
 {	
   token=<ALLOC> 
   "(" result=Type() 
@@ -556,9 +576,9 @@ Node OpRang_Unary () : {NodeExpressionUnary unaryOp = null; Node result;
       functionArgs=FunctionCallArgs() 
       ")" {result = new NodeExpressionFunctionCall(result, functionArgs);} 
       | 
-      token="--" { result = new NodeExpressionDecrement(result, token);}
+      token="--" { result = new NodeExpressionDecrement((NodeIdentifier)result, token);}
       | 
-      token="++" { result = new NodeExpressionIncrement(result, token);}
+      token="++" { result = new NodeExpressionIncrement((NodeIdentifier)result, token);}
     ]
     |
     token=<NUM>  {result= new NodeExpressionConstNum(token);}	

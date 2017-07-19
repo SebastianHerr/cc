@@ -5,13 +5,11 @@ public NodeExpressionUnaryBitwiseNegation(Token token_)
   token = token_;
 }
 
-public boolean compareNodeType(Node otherNode)
+public boolean compareNodeType(Node otherNode) throws TypeCheckingException
 {
   if(!(otherNode instanceof NodeExpressionUnaryBitwiseNegation))
   {
-    Thread.dumpStack();
-		System.out.println(this.getClass());
-		return false;
+    throw new TypeCheckingException();
   }
   return super.compareNodeType((NodeExpressionUnaryBitwiseNegation)otherNode);
 }
@@ -21,9 +19,14 @@ public Node getNodeType()
   return new NodeTypeInt();
 }
 
-public boolean checkNodeType()
+public boolean checkNodeType() throws TypeCheckingException
 {
   return innerNode.compareNodeType(new NodeTypeInt()) && innerNode.checkNodeType();
+}
+
+public String emitCode() throws CodeGenerationException
+{
+  return innerNode.emitCode() + "neg\n";
 }
 
 public String toString(String indendation)

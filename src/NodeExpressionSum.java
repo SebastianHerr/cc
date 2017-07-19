@@ -5,13 +5,11 @@ public NodeExpressionSum(Node primary_)
   super(primary_);
 }
 
-public boolean compareNodeType(Node otherNode)
+public boolean compareNodeType(Node otherNode) throws TypeCheckingException
 {
   if(!(otherNode instanceof NodeExpressionSum))
   {
-    Thread.dumpStack();
-		System.out.println(this.getClass());
-		return false;
+    throw new TypeCheckingException();
   }
   return super.compareNodeType((NodeExpressionSum)otherNode);
 }
@@ -21,7 +19,14 @@ public Node getNodeType()
   return new NodeTypeInt();
 }
 
-public boolean checkNodeType()
+public String emitCode() throws CodeGenerationException
+{
+  String result = super.emitCode();
+  result += (op == "+" ? "add\n": "sub\n");
+  return result;
+}
+
+public boolean checkNodeType() throws TypeCheckingException
 {
   return primary.getNodeType().compareNodeType(new NodeTypeInt()) && secondary.getNodeType().compareNodeType(new NodeTypeInt()) && primary.checkNodeType() && secondary.checkNodeType();
 }

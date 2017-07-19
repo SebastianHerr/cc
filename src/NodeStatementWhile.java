@@ -21,13 +21,11 @@ public Node getNodeType()
   return new NodeTypeVoid();
 }
 
-public boolean compareNodeType(Node otherNode)
+public boolean compareNodeType(Node otherNode) throws TypeCheckingException
 {
   if(!(otherNode instanceof NodeStatementWhile))
   {
-    Thread.dumpStack();
-		System.out.println(this.getClass());
-		return false;
+    throw new TypeCheckingException();
   }
   boolean returnValue = condition.compareNodeType(((NodeStatementWhile)otherNode).condition);
   returnValue &= loopBody.compareNodeType(((NodeStatementWhile)otherNode).loopBody);
@@ -35,12 +33,24 @@ public boolean compareNodeType(Node otherNode)
   return returnValue;
 }
 
-public boolean checkNodeType()
+public boolean checkNodeType() throws TypeCheckingException
 {
-  if(!condition.compareNodeType(new NodeTypeBool()))
+  if(!condition.getNodeType().compareNodeType(new NodeTypeBool()))
     return false;
   
   return condition.checkNodeType() && loopBody.checkNodeType();
+}
+
+public String emitCode() throws CodeGenerationException
+{
+  String loopBegin = "whileStart" + JumpPointerManager.getID();
+  String loopEnd = "whileEnd" + JumpPointerManager.getID();
+  String result = loopBegin + ":" + condition.emitCode();
+  result += "jumpz " +loopEnd + "\n";
+  result += loopBody.emitCode();
+  result += "jump " + loopBegin + "\n";
+  result += loopEnd + ":" + CMAnop + "\n";
+  return result;
 }
 
 public String toString(String indentation)

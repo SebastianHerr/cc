@@ -10,13 +10,11 @@ public NodeMemberAccess(Node accessingNode_,Token token_)
   accessingNode.setParent(this);
 }
 
-public boolean compareNodeType(Node otherNode)
+public boolean compareNodeType(Node otherNode) throws TypeCheckingException
 {
   if(!(otherNode instanceof NodeMemberAccess))
   {
-    Thread.dumpStack();
-		System.out.println(this.getClass());
-		return false;
+    throw new TypeCheckingException();
   }
   boolean returnValue = accessedNode.compareNodeType(((NodeMemberAccess)otherNode).accessedNode);
   returnValue &= accessingNode.compareNodeType(((NodeMemberAccess)otherNode).accessingNode);
@@ -28,5 +26,10 @@ public void setAccessingNode(Node accessedNode_)
 {
   accessedNode = accessedNode_;
   accessedNode.setParent(this);
+}
+  
+public String emitCode() throws CodeGenerationException
+{
+  throw new CodeGenerationException("Not implemented");
 }
 }

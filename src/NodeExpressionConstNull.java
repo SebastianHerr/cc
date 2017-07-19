@@ -5,13 +5,11 @@ public NodeExpressionConstNull(Token token_)
   token = token_;
 }
 
-public boolean compareNodeType(Node otherNode)
+public boolean compareNodeType(Node otherNode) throws TypeCheckingException
 {
   if(!(otherNode instanceof NodeExpressionConstNull))
   {
-    Thread.dumpStack();
-		System.out.println(this.getClass());
-		return false;
+    throw new TypeCheckingException();
   }
   return true;
 }
@@ -21,9 +19,14 @@ public Node getNodeType()
   return new NodeTypePointer();
 }
   
-public boolean checkNodeType()
+public boolean checkNodeType() throws TypeCheckingException
 {
   return true;
+}
+
+public String emitCode() throws CodeGenerationException
+{
+  return "0";
 }
 
 public String toString(String indendation)

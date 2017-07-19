@@ -68,13 +68,11 @@ public IScope getContainingScope()
   return this;
 }
 
-public boolean compareNodeType(Node otherNode)
+public boolean compareNodeType(Node otherNode) throws TypeCheckingException
 {
   if(!(otherNode instanceof NodeRoot))
   {
-    Thread.dumpStack();
-		System.out.println(this.getClass());
-		return false;
+    throw new TypeCheckingException();
   }
   
   boolean returnValue = true;
@@ -84,7 +82,7 @@ public boolean compareNodeType(Node otherNode)
   return returnValue;
 }
 
-public boolean checkNodeType()
+public boolean checkNodeType() throws TypeCheckingException
 {
   boolean returnValue = true;
   for (int i = 0; i<declarationsOrDefinitions.size();i++) {
@@ -96,6 +94,31 @@ public boolean checkNodeType()
 public Node getNodeType()
 {
   return new NodeTypeVoid();
+}
+
+public String emitCode() throws CodeGenerationException
+{
+  if(getListOfVidDefines().get("main") == null)
+  {
+    throw new CodeGenerationException("Missing main function");
+  }   
+  String result = "enter 4\n";
+  result += "alloc 1\n";
+  result += "mark\n";
+  result += "loadc _main\n";
+  result += "call\n";
+  result += "halt\n";
+  
+  for (Node declarationOrdefinition : declarationsOrDefinitions) 
+  {
+    if(declarationOrdefinition != null && declarationOrdefinition instanceof NodeFunction)
+    {
+      result += declarationOrdefinition.emitCode();    
+    }
+    
+  }
+  
+  return result;
 }
 
 public String toString(String indendation)

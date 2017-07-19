@@ -83,13 +83,11 @@ public IScope getContainingScope()
   return this;
 }
 
-public boolean compareNodeType(Node otherNode)
+public boolean compareNodeType(Node otherNode) throws TypeCheckingException
 {
   if(!(otherNode instanceof NodeStruct))
   {
-    Thread.dumpStack();
-		System.out.println(this.getClass());
-		return false;
+    throw new TypeCheckingException();
   }
   boolean returnValue = true;
   for(int i = 0; i < listOfMembers.size(); i += 2) 
@@ -105,9 +103,14 @@ public Node getNodeType()
   return new NodeTypeStruct(name);
 }
   
-public boolean checkNodeType()
+public boolean checkNodeType() throws TypeCheckingException
 {
   return true;
+}
+
+public String emitCode() throws CodeGenerationException
+{
+  throw new CodeGenerationException("No code needed for structs");
 }
 
 public String toString(String indendation)

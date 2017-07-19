@@ -17,7 +17,7 @@ public Node getNodeType()
   return this;
 }
 
-public boolean compareNodeType(Node otherNode)
+public boolean compareNodeType(Node otherNode) throws TypeCheckingException
 {
   if(getParent() == null || otherNode.getParent() == null)
   {
@@ -30,14 +30,11 @@ public boolean compareNodeType(Node otherNode)
   }
 }
 
-public boolean compareNodeType(Node otherNode, boolean onelevel)
+public boolean compareNodeType(Node otherNode, boolean onelevel) throws TypeCheckingException
 {
   if(!(otherNode instanceof NodeTypePointer || otherNode instanceof NodeTypeInt ))
   {
-    Thread.dumpStack();
-		System.out.println(this.getClass());
-		System.out.println(otherNode.getClass());
-		return false;
+    throw new TypeCheckingException();
   }
   
   if(onelevel || otherNode instanceof NodeTypeInt)
@@ -60,9 +57,14 @@ public boolean compareNodeType(Node otherNode, boolean onelevel)
   }
 }
   
-public boolean checkNodeType()
+public boolean checkNodeType() throws TypeCheckingException
 {
   return true;
+}
+
+public String emitCode() throws CodeGenerationException
+{
+  throw new CodeGenerationException("No code generation for type nodes");
 }
 
 public String toString(String indendation)

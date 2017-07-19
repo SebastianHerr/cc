@@ -5,13 +5,11 @@ public NodeExpressionEquality(Node primary_)
   super(primary_);
 }
 
-public boolean compareNodeType(Node otherNode)
+public boolean compareNodeType(Node otherNode) throws TypeCheckingException
 {
   if(!(otherNode instanceof NodeExpressionEquality))
   {
-    Thread.dumpStack();
-		System.out.println(this.getClass());
-		return false;
+    throw new TypeCheckingException();
   }
   return super.compareNodeType((NodeExpressionEquality)otherNode);
 }
@@ -20,8 +18,22 @@ public Node getNodeType()
 {
   return new NodeTypeBool();
 }
+
+public String emitCode() throws CodeGenerationException
+{
+  String result = super.emitCode();
+  if(op == "!=")
+  {
+    result += "neq\n";
+  }
+  else
+  {
+    result += "eq\n";
+  }
+  return result;
+}
   
-public boolean checkNodeType()
+public boolean checkNodeType() throws TypeCheckingException
 {
   //Both sides need to be the same, no further restriction
   if(!(primary.getNodeType().compareNodeType(secondary.getNodeType())))

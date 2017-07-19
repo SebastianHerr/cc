@@ -26,18 +26,16 @@ public Node getNodeType()
   }
 }
 
-public boolean compareNodeType(Node otherNode)
+public boolean compareNodeType(Node otherNode) throws TypeCheckingException
 {
   if(!(otherNode instanceof NodeStatementReturn))
   {
-    Thread.dumpStack();
-		System.out.println(this.getClass());
-		return false;
+    throw new TypeCheckingException();
   }
   return returnNode.compareNodeType(((NodeStatementReturn)otherNode).returnNode);
 }
 
-public boolean checkNodeType()
+public boolean checkNodeType() throws TypeCheckingException
 {
   //If there is no return value given, then the return type of this function needs to be void
   if(returnNode == null)
@@ -52,6 +50,18 @@ public boolean checkNodeType()
   }
   
   return returnNode.checkNodeType();
+}
+  
+public String emitCode() throws CodeGenerationException
+{
+  String result = "";
+  if(returnNode != null)
+  {
+    result += returnNode.emitCode();
+  }
+  result += "storer -3\n";
+  result += "return\n";
+  return result;
 }
 
 public String toString(String indendation)

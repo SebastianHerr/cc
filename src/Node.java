@@ -9,6 +9,8 @@ public abstract class Node{
   
   public static String standardIndentation = "  ";
   
+  public static final  String CMAnop = "alloc 0";
+  
   //This list is only ever initialized when this is an implementation of IScope
   ArrayList<IScope> subscopes;
   
@@ -20,10 +22,7 @@ public abstract class Node{
     }
   }
   
-  public String emitCode()
-  {
-    return "X";
-  }
+  public abstract String emitCode() throws CodeGenerationException;
   
   /***********************************************************/
   /*
@@ -35,9 +34,9 @@ public abstract class Node{
    */
   public abstract Node getNodeType();
   
-  public abstract boolean checkNodeType();
+  public abstract boolean checkNodeType() throws TypeCheckingException;
   
-  public abstract boolean compareNodeType(Node otherNode);
+  public abstract boolean compareNodeType(Node otherNode) throws TypeCheckingException;
   /***********************************************************/
   
   /*

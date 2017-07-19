@@ -127,13 +127,11 @@ public void updateDefinitions()
 }
 
 
-public boolean compareNodeType(Node otherNode)
+public boolean compareNodeType(Node otherNode) throws TypeCheckingException
 {
   if(!(otherNode instanceof NodeIdentifier))
   {
-    Thread.dumpStack();
-		System.out.println(this.getClass());
-		return false;
+    throw new TypeCheckingException();
   }
   
   if(type == IdentifierType.VID && (isVDef || isFDef || isFCall))
@@ -213,9 +211,20 @@ public Node getNodeType()
   return null;
 }
 
-public boolean checkNodeType()
+public boolean checkNodeType() throws TypeCheckingException
 {
   return true;
+}
+
+public int getStackAdress()
+{
+  return getContainingScope().locationInTable(definition != null ? (definition) : this);
+}
+  
+//Loads the value of this variable onto the stack, use getStackAdress to get the adress of this node
+public String emitCode() throws CodeGenerationException
+{
+  return "loadc " + getStackAdress() + "\n" + "load 1\n";
 }
 
 boolean isprinting = false;

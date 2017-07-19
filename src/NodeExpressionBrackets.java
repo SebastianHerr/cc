@@ -9,15 +9,18 @@ public NodeExpressionBrackets(Node node_, Token token_)
   token = token_;
 }
 
-public boolean compareNodeType(Node otherNode)
+public boolean compareNodeType(Node otherNode) throws TypeCheckingException
 {
   if(!(otherNode instanceof NodeExpressionBrackets))
   {
-    Thread.dumpStack();
-		System.out.println(this.getClass());
-		return false;
+    throw new TypeCheckingException();
   }
   return node.compareNodeType(((NodeExpressionBrackets)otherNode).node);
+}
+
+public String emitCode() throws CodeGenerationException
+{
+  return node.emitCode();
 }
 
 public String toString(String indentation)
@@ -30,7 +33,7 @@ public Node getNodeType()
   return node.getNodeType();
 }
   
-public boolean checkNodeType()
+public boolean checkNodeType() throws TypeCheckingException
 {
   return node.checkNodeType();
 }

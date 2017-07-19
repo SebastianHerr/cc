@@ -8,13 +8,11 @@ public NodeExpressionConstNum(Token token_)
   value = Integer.parseInt(token.image);
 }
 
-public boolean compareNodeType(Node otherNode)
+public boolean compareNodeType(Node otherNode) throws TypeCheckingException
 {
   if(!(otherNode instanceof NodeTypeInt) && !(otherNode instanceof NodeExpressionConstNum))
   {
-    Thread.dumpStack();
-		System.out.println(this.getClass());
-		return false;
+    throw new TypeCheckingException();
   }
   return true;
 }
@@ -24,9 +22,14 @@ public Node getNodeType()
   return new NodeTypeInt();
 }
   
-public boolean checkNodeType()
+public boolean checkNodeType() throws TypeCheckingException
 {
   return true;
+}
+
+public String emitCode() throws CodeGenerationException
+{
+  return "loadc " + value + "\n";
 }
 
 public String toString(String indendation)

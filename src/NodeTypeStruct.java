@@ -13,13 +13,11 @@ public NodeTypeStruct()
   //Dummy Node for type checking
 }
 
-public boolean compareNodeType(Node otherNode)
+public boolean compareNodeType(Node otherNode) throws TypeCheckingException
 {
   if(!(otherNode instanceof NodeTypeStruct))
   {
-    Thread.dumpStack();
-		System.out.println(this.getClass());
-		return false;
+    throw new TypeCheckingException();
   }
   return name.compareNodeType(((NodeTypeStruct)otherNode).name);
 }
@@ -29,9 +27,14 @@ public Node getNodeType()
   return this;
 }
   
-public boolean checkNodeType()
+public boolean checkNodeType() throws TypeCheckingException
 {
   return true;
+}
+
+public String emitCode() throws CodeGenerationException
+{
+  throw new CodeGenerationException("No code generation for type nodes");
 }
 
 public String toString(String indendation)

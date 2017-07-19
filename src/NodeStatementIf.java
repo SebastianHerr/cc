@@ -28,13 +28,11 @@ public Node getNodeType()
   return new NodeTypeVoid();
 }
 
-public boolean compareNodeType(Node otherNode)
+public boolean compareNodeType(Node otherNode) throws TypeCheckingException
 {
   if(!(otherNode instanceof NodeStatementIf))
   {
-    Thread.dumpStack();
-		System.out.println(this.getClass());
-		return false;
+    throw new TypeCheckingException();
   }
   NodeStatementIf otherNodeIf = (NodeStatementIf)otherNode;
   boolean returnValue = condition.compareNodeType(otherNodeIf.condition);
@@ -44,7 +42,7 @@ public boolean compareNodeType(Node otherNode)
   return returnValue;
 }
 
-public boolean checkNodeType()
+public boolean checkNodeType() throws TypeCheckingException
 {
   //The condition needs to be boolean
   if(!condition.getNodeType().compareNodeType(new NodeTypeBool()))
@@ -54,6 +52,29 @@ public boolean checkNodeType()
   return condition.checkNodeType() && ifStatement.checkNodeType() && (elseStatement != null ? elseStatement.checkNodeType() : true);
 }
 
+public String emitCode() throws CodeGenerationException
+{
+  String jumpToElse = "jumpToElse" + JumpPointerManager.getID();
+  String jumpOverElse = "jumpOverElse" + JumpPointerManager.getID();
+  String result = condition.emitCode();
+  
+  if(elseStatement != null)
+  {
+    result += "jumpz " + jumpToElse + "\n";
+    result += ifStatement.emitCode();
+    result += "jump " + jumpOverElse + "\n";
+    result += jumpToElse + ":" + elseStatement.emitCode();
+    result += jumpOverElse + ":" + CMAnop + "\n";
+  }
+  else
+  {
+    result += "jumpz " + jumpOverElse + "\n";
+    result += ifStatement.emitCode();
+    result += jumpOverElse + ":" + CMAnop + "\n";
+  }
+  
+  return result;
+}
 
 public String toString(String indendation)
 {

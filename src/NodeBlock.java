@@ -57,13 +57,11 @@ public Node getNodeType()
   return new NodeTypeVoid();
 }
 
-public boolean compareNodeType(Node otherNode)
+public boolean compareNodeType(Node otherNode) throws TypeCheckingException
 {
   if(!(otherNode instanceof NodeBlock))
   {
-    Thread.dumpStack();
-		System.out.println(this.getClass());
-		return false;
+    throw new TypeCheckingException();
   }
   boolean returnValue = true;
   for(int i = 0; i<statements.size();i++)
@@ -77,7 +75,7 @@ public boolean compareNodeType(Node otherNode)
   return true;
 }
   
-public boolean checkNodeType()
+public boolean checkNodeType() throws TypeCheckingException
 {
   boolean returnValue = true;
   for(int i = 0; i<statements.size();i++)
@@ -87,6 +85,15 @@ public boolean checkNodeType()
       return false;
   }
   return true;
+}
+
+public String emitCode() throws CodeGenerationException
+{
+  String result = "";
+  for (Node statement : statements) {
+    result += statement.emitCode();
+  }
+  return result;
 }
 
 public String toString(String indentation)

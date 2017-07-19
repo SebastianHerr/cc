@@ -22,18 +22,23 @@ public void setSecondary(Node secondary_)
   secondary.setParent(this);
 }
 
-public boolean compareNodeType(Node otherNode)
+public boolean compareNodeType(Node otherNode) throws TypeCheckingException
 {
   if(!(otherNode instanceof NodeExpressionBinary))
   {
-    Thread.dumpStack();
-		System.out.println(this.getClass());
-		return false;
+    throw new TypeCheckingException();
   }
   boolean returnValue = primary.compareNodeType(((NodeExpressionBinary)otherNode).primary);
   returnValue &= secondary.compareNodeType(((NodeExpressionBinary)otherNode).secondary);
   returnValue &= op == ((NodeExpressionBinary)otherNode).op;
   return returnValue;
+}
+
+public String emitCode() throws CodeGenerationException
+{
+  String result = primary.emitCode();
+  result += secondary.emitCode();
+  return result;
 }
 
 public String toString(String indendation)

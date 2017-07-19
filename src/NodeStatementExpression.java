@@ -8,13 +8,11 @@ public NodeStatementExpression(Node expression_)
   expression.setParent(this);
 }
 
-public boolean compareNodeType(Node otherNode)
+public boolean compareNodeType(Node otherNode) throws TypeCheckingException
 {
   if(!(otherNode instanceof NodeStatementExpression))
   {
-    Thread.dumpStack();
-		System.out.println(this.getClass());
-		return false;
+    throw new TypeCheckingException();
   }
   return expression.compareNodeType(((NodeStatementExpression)otherNode).expression);
 }
@@ -24,9 +22,16 @@ public Node getNodeType()
   return new NodeTypeVoid();
 }
 
-public boolean checkNodeType()
+public boolean checkNodeType() throws TypeCheckingException
 {
   return expression.checkNodeType();
+}
+
+public String emitCode() throws CodeGenerationException
+{
+  String result = expression.emitCode();
+  result += "pop\n";
+  return result;
 }
 
 public String toString(String indendation)

@@ -6,13 +6,11 @@ public NodeExpressionUnary()
 {
 }
 
-public boolean compareNodeType(Node otherNode)
+public boolean compareNodeType(Node otherNode) throws TypeCheckingException
 {
   if(!(otherNode instanceof NodeExpressionUnary))
   {
-    Thread.dumpStack();
-		System.out.println(this.getClass());
-		return false;
+    throw new TypeCheckingException();
   }
   return innerNode.compareNodeType(((NodeExpressionUnary)otherNode).innerNode);
 }

@@ -11,13 +11,11 @@ public NodeExpressionFunctionCall(Node name_, NodeFunctionCallArgs args_)
   args.setParent(this);
 }
 
-public boolean compareNodeType(Node otherNode)
+public boolean compareNodeType(Node otherNode) throws TypeCheckingException
 {
   if(!(otherNode instanceof NodeExpressionFunctionCall))
   {
-    Thread.dumpStack();
-		System.out.println(this.getClass());
-		return false;
+    throw new TypeCheckingException();
   }
   boolean returnValue = name.compareNodeType(((NodeExpressionFunctionCall)otherNode).name);
   returnValue &= args.compareNodeType(((NodeExpressionFunctionCall)otherNode).args);
@@ -30,10 +28,20 @@ public Node getNodeType()
   return name.getNodeType();
 }
 
-public boolean checkNodeType()
+public boolean checkNodeType() throws TypeCheckingException
 {
   //TODO proper check for types
   return true;
+}
+  
+public String emitCode() throws CodeGenerationException
+{
+  String result = args.emitCode();
+  result += "mark\n";
+  result += "loadc _" + name.getToken().image + "\n";
+  result += "call\n";
+  result += "slide 0\n"; //TODO find correct value for 0
+  return result;
 }
 
 public String toString(String indendation)

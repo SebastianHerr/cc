@@ -16,13 +16,11 @@ public Node getNodeType()
   return new NodeTypePointer(new NodeTypeInt());
 }
 
-public boolean compareNodeType(Node otherNode)
+public boolean compareNodeType(Node otherNode) throws TypeCheckingException
 {
   if(!(otherNode instanceof NodeExpressionAllocArray))
   {
-    Thread.dumpStack();
-		System.out.println(this.getClass());
-		return false;
+    throw new TypeCheckingException();
   }
   boolean returnValue = type.compareNodeType(((NodeExpressionAllocArray)otherNode).type);
   returnValue &= size.compareNodeType(((NodeExpressionAllocArray)otherNode).size);
@@ -30,9 +28,14 @@ public boolean compareNodeType(Node otherNode)
   return returnValue;
 }
   
-public boolean checkNodeType()
+public boolean checkNodeType() throws TypeCheckingException
 {
   return true; //Nothing to check here, the parser makes sure that the given node is already a type
+}
+
+public String emitCode() throws CodeGenerationException
+{
+  throw new CodeGenerationException("Not implemented");
 }
 
 public String toString(String indendation)

@@ -27,6 +27,8 @@ if test "$COMPILE" ; then
   echo -e "\e[1mCompiling Program\e[0m"
   rm bin/*.class
   rm bin/*.java
+  rm bin/*.cma
+  rm test/**/*.cma
 
   if [ ! -d "bin/" ]
   then

@@ -1,10 +1,10 @@
 public class NodeExpressionVariableDefinition extends Node{
 
 public Node type;
-Node name;
+NodeIdentifier name;
 Node assigment;
 
-public NodeExpressionVariableDefinition(Node type_, Node name_)
+public NodeExpressionVariableDefinition(Node type_, NodeIdentifier name_)
 {
   type = type_;
   type.setParent(this);
@@ -18,13 +18,11 @@ public void setAssignment(Node assigment_)
   assigment.setParent(this);
 }
 
-public boolean compareNodeType(Node otherNode)
+public boolean compareNodeType(Node otherNode) throws TypeCheckingException
 {
   if(!(otherNode instanceof NodeExpressionVariableDefinition))
   {
-    Thread.dumpStack();
-		System.out.println(this.getClass());
-		return false;
+    throw new TypeCheckingException();
   }
   boolean returnValue = type.compareNodeType(((NodeExpressionVariableDefinition)otherNode).type);
   returnValue &= name.compareNodeType(((NodeExpressionVariableDefinition)otherNode).name);
@@ -38,7 +36,7 @@ public Node getNodeType()
   return new NodeTypeVoid();
 }
 
-public boolean checkNodeType()
+public boolean checkNodeType() throws TypeCheckingException
 {
   if(assigment != null)
   {
@@ -48,6 +46,20 @@ public boolean checkNodeType()
     }
   }
   return name.checkNodeType();
+}
+
+public String emitCode() throws CodeGenerationException
+{
+  if(assigment != null)
+  {
+    String result = assigment.emitCode();
+    result += "storea " + name.getStackAdress() + "\n";
+    return result;
+  }
+  else
+  {
+    return "";
+  }
 }
 
 public String toString(String indendation)

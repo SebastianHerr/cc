@@ -34,13 +34,11 @@ public void setLoopBody(Node loopBody_)
   loopBody.setParent(this);
 }
 
-public boolean compareNodeType(Node otherNode)
+public boolean compareNodeType(Node otherNode) throws TypeCheckingException
 {
   if(!(otherNode instanceof NodeStatementFor))
   {
-    Thread.dumpStack();
-		System.out.println(this.getClass());
-		return false;
+    throw new TypeCheckingException();
   }
   NodeStatementFor otherNodeTyped = (NodeStatementFor) otherNode;
   boolean returnValue = init.compareNodeType(otherNodeTyped.init);
@@ -55,7 +53,7 @@ public Node getNodeType()
   return new NodeTypeVoid();
 }
 
-public boolean checkNodeType()
+public boolean checkNodeType() throws TypeCheckingException
 {
   //The condition needs to be boolean
   if(!condition.getNodeType().compareNodeType(new NodeTypeBool()))
@@ -63,6 +61,30 @@ public boolean checkNodeType()
     return false;
   }
   return (init!= null ? init.checkNodeType() : true) && condition.checkNodeType() && (iterator != null? iterator.checkNodeType() : true) && loopBody.checkNodeType();
+}
+
+public String emitCode() throws CodeGenerationException
+{
+  String forStart = "forStart" + JumpPointerManager.getID();
+  String forEnd = "forEnd" + JumpPointerManager.getID();
+  
+  String result = "";
+  if(init != null)
+  {
+    result += init.emitCode();
+    result += "pop\n";
+  }
+  result += forStart + ":" + condition.emitCode();
+  result += "jumpz " + forEnd + "\n";
+  result += loopBody.emitCode();
+  if(iterator != null)
+  {
+    result += iterator.emitCode();
+    result += "pop\n";
+  }
+  result += "jump " + forStart + "\n";
+  result += forEnd + ":" + CMAnop + "\n";
+  return result;
 }
 
 public String toString(String indendation)

@@ -23,13 +23,11 @@ public class NodeFunctionParamArgs extends Node
     return listOfParamters.get(i-1);
   }
 
-  public boolean compareNodeType(Node otherNode)
+  public boolean compareNodeType(Node otherNode) throws TypeCheckingException
   {
     if(!(otherNode instanceof NodeFunctionParamArgs))
-  {
-    Thread.dumpStack();
-		System.out.println(this.getClass());
-		return false;
+    {
+    throw new TypeCheckingException();
     }
     
     boolean returnValue = true;
@@ -46,10 +44,15 @@ public class NodeFunctionParamArgs extends Node
     return new NodeTypeVoid();
   }
 
-  public boolean checkNodeType()
+  public boolean checkNodeType() throws TypeCheckingException
   {
     //TODO proper checking needed
     return true;
+  }
+  
+  public String emitCode() throws CodeGenerationException
+  {
+    throw new CodeGenerationException();
   }
 
   public String toString(String indendation)

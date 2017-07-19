@@ -1,21 +1,19 @@
 public class NodeExpressionDecrement extends Node{
 
-Node innerNode;
+NodeIdentifier innerNode;
 
-public NodeExpressionDecrement(Node innerNode_,Token token_)
+public NodeExpressionDecrement(NodeIdentifier innerNode_,Token token_)
 {
   token = token_;
   innerNode = innerNode_;
   innerNode.setParent(this);
 }
 
-public boolean compareNodeType(Node otherNode)
+public boolean compareNodeType(Node otherNode) throws TypeCheckingException
 {
   if(!(otherNode instanceof NodeExpressionDecrement))
   {
-    Thread.dumpStack();
-		System.out.println(this.getClass());
-		return false;
+    throw new TypeCheckingException();
   }
   return innerNode.compareNodeType(((NodeExpressionDecrement)otherNode).innerNode);
 }
@@ -25,9 +23,22 @@ public Node getNodeType()
   return new NodeTypeInt();
 }
   
-public boolean checkNodeType()
+public boolean checkNodeType() throws TypeCheckingException
 {
   return innerNode.getNodeType().compareNodeType(new NodeTypeInt());
+}
+
+public String emitCode() throws CodeGenerationException
+{
+  String result = "";
+  result += "loadc " + innerNode.getStackAdress() + "\n";
+  result += "load 1\n";
+  result += "loadc 1\n";
+  result += "sub\n";
+  result += "loadc " + innerNode.getStackAdress() + "\n";
+  result += "store 1\n";
+  // += "pop\n";
+  return result;
 }
 
 public String toString(String indendation)

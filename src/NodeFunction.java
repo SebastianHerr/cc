@@ -119,13 +119,11 @@ public IScope getContainingScope()
   return this;
 }
 
-public boolean compareNodeType(Node otherNode)
+public boolean compareNodeType(Node otherNode) throws TypeCheckingException
 {
   if(!(otherNode instanceof NodeFunction))
   {
-    Thread.dumpStack();
-		System.out.println(this.getClass());
-		return false;
+    throw new TypeCheckingException();
   }
   NodeFunction otherNodeCast = (NodeFunction)otherNode;
   NodeFunction thisNode = getFunctionLink();
@@ -142,7 +140,7 @@ public Node getNodeType()
   return type;
 }
 
-public boolean checkNodeType()
+public boolean checkNodeType() throws TypeCheckingException
 {
   //Check if the delcarions and the definition match up
   if(functionLink != null)
@@ -150,6 +148,22 @@ public boolean checkNodeType()
     functionLink.compareNodeType(this);
   }
   return params.checkNodeType() && (nodeFunctionCode!= null ? nodeFunctionCode.checkNodeType() : true);
+}
+
+public String emitCode() throws CodeGenerationException
+{
+  if(functionLink != null)
+  {
+    //Do not emit code for declarations
+    return null;
+  }
+  
+  String result = "_" + name.getToken().image + ":";
+  result += "enter 10\n"; //TODO find correct value for 10
+  result += nodeFunctionCode.emitCode();
+  result += "return\n";
+  result += "slide 0\n"; //TOD find correct value for 0
+  return result;
 }
 
 public String toString(String indendation)
