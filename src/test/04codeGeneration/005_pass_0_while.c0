@@ -1,0 +1,10 @@
+int main()
+{
+  int i = 43;
+  i--;
+  while(i > 0)
+  {
+    i--;
+  }
+  return i;
+}
