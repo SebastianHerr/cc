@@ -2,22 +2,19 @@ import java.util.*;
 public class SymbolTable{
   
   private class Symbol{
-    public ArrayList<IScope> scopes;
     public ArrayList<NodeIdentifier> symbolNodes;
     public int symbolID;
     public String image;
-    public Symbol(IScope scope,NodeIdentifier symbol, int symbolID_)
+    public Symbol(NodeIdentifier symbol, int symbolID_)
     {
-      scopes = new ArrayList<IScope>();
       symbolNodes = new ArrayList<NodeIdentifier>();
       symbolID = symbolID_;
       image = symbol.getToken().image;
-      addAppearance(scope,symbol);
+      addAppearance(symbol);
     }
     
-    public void addAppearance(IScope scope,NodeIdentifier symbol)
+    public void addAppearance(NodeIdentifier symbol)
     {
-      scopes.add(scope);
       symbolNodes.add(symbol);
     }
     
@@ -105,7 +102,7 @@ public class SymbolTable{
     {
       boolean isLastSymbol = i == symbol.symbolNodes.size() - 1;
       NodeIdentifier node = symbol.symbolNodes.get(i);
-      IScope scope = symbol.scopes.get(i);
+      IScope scope = node.getContainingScope();
       
       //System.out.println("New round with " + node.isVariableDefinition() + "" + node.isFunctionDefinition());
       
@@ -248,21 +245,21 @@ public class SymbolTable{
   }
     
   //Adds the symbol if it's not present and returns true, does nothing otherwise and returns false
-  public boolean addSymbol(NodeIdentifier symbol, IScope scope)
+  public boolean addSymbol(NodeIdentifier symbol)
   {
     boolean returnValue;
     String symbolImage = symbol.getToken().image;
     Symbol symbolFromTable = symbols.get(symbolImage);
     if(symbolFromTable != null)
     {
-      symbolFromTable.addAppearance(scope,symbol);
+      symbolFromTable.addAppearance(symbol);
       //System.out.println("Seen  Symbol \"" + symbolImage + "\"\t with ID " + symbolFromTable.symbolID + " in scope " + scope.getScopeID());
       symbol.setSymbolID(symbolFromTable.symbolID);
       returnValue = false;
     }
     else
     {
-      symbolFromTable =  new Symbol(scope,symbol, nextSymbolID);
+      symbolFromTable =  new Symbol(symbol, nextSymbolID);
       symbols.put(symbolImage, symbolFromTable);
       symbol.setSymbolID(symbolFromTable.symbolID);
       //System.out.println("Added Symbol \"" + symbol + "\" in scope " + scope.getScopeID());

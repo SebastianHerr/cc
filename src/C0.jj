@@ -20,7 +20,6 @@ import java.util.*;
 import java.io.*;
 public class C0 {
   
-  static Stack<IScope> scope;
   static SymbolTable vidTable;
   static SymbolTable sidTable;
   static SymbolTable fidTable;
@@ -28,7 +27,6 @@ public class C0 {
   public static void main(String args[]) {
     C0 parser;
     NodeRoot ast;  
-    scope = new Stack<IScope>();
     vidTable = new SymbolTable();
     sidTable = new SymbolTable();
     fidTable = new SymbolTable();
@@ -173,7 +171,6 @@ TOKEN : {
 
 NodeRoot Program () : {NodeRoot root = new NodeRoot(); Node node;}
 {
-  {scope.push(root);}
   
   (
     ( 
@@ -182,22 +179,22 @@ NodeRoot Program () : {NodeRoot root = new NodeRoot(); Node node;}
     <EOF> 
   )
 
-  {scope.pop(); return root;}
+  {return root;}
 }
 
 NodeIdentifier Sid () : {Token name; NodeIdentifier node;}
 {
-   name = <ID> {node = new NodeIdentifier(name,IdentifierType.SID); sidTable.addSymbol(node, scope.peek()); return node;}   // struct name
+   name = <ID> {node = new NodeIdentifier(name,IdentifierType.SID); sidTable.addSymbol(node); return node;}   // struct name
 }
 
 NodeIdentifier Vid () : {Token name; NodeIdentifier node;}
 {
-   name = <ID> {node = new NodeIdentifier(name,IdentifierType.VID); vidTable.addSymbol(node, scope.peek()); return node;}   // variable and function name
+   name = <ID> {node = new NodeIdentifier(name,IdentifierType.VID); vidTable.addSymbol(node); return node;}   // variable and function name
 }
 
 NodeIdentifier Fid () : {Token name; NodeIdentifier node;}
 {
-  name = <ID> {node = new NodeIdentifier(name,IdentifierType.FID); fidTable.addSymbol(node, scope.peek()); return node;} // field name
+  name = <ID> {node = new NodeIdentifier(name,IdentifierType.FID); fidTable.addSymbol(node); return node;} // field name
 }
 
 NodeFunctionParamArgs FunctionParamArgs () : {NodeFunctionParamArgs result; Node type; Node name;}
@@ -222,7 +219,7 @@ Node Declaration_Definition () : {Node result = null; Node type; NodeIdentifier 
 {
   (
     LOOKAHEAD (3)
-    <STRUCT> name = Sid() {resultStruct = new NodeStruct(name);scope.push(resultStruct);}
+    <STRUCT> name = Sid() {resultStruct = new NodeStruct(name);}
       [ 
         // [ ] Warum hier Klammer nicht tokenized?
         "{" 
@@ -230,7 +227,7 @@ Node Declaration_Definition () : {Node result = null; Node type; NodeIdentifier 
       ] 
       ";" {result = resultStruct;}
     |
-    type=Type() name=Vid() {resultFunction = new NodeFunction(type, name);scope.push(resultFunction);}
+    type=Type() name=Vid() {resultFunction = new NodeFunction(type, name);}
     "(" 
     newParams = FunctionParamArgs() {resultFunction.addParameters(newParams);} 
     ")" 
@@ -240,18 +237,18 @@ Node Declaration_Definition () : {Node result = null; Node type; NodeIdentifier 
       ";"
     ) {result = resultFunction;} 
   )
-  {scope.pop(); return result;}
+  {return result;}
 }
 
 NodeBlock Block() : {NodeBlock result; Node newNode; Token token;}
 {
   // [ ] Warum hier Klammer tokenized?
-  token = "{" {result = new NodeBlock(token); scope.push(result);} 
+  token = "{" {result = new NodeBlock(token);} 
   ( 
     newNode=Statement() {result.addStatement(newNode);}
   )* 
   "}"
-  {scope.pop(); return result;}
+  {return result;}
 }
 
 Node Statement () : {Node result = null; NodeStatementIf resultIf;
