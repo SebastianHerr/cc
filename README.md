@@ -53,3 +53,15 @@ The parser can be run manually with following commands
 ```
 src> java -cp bin C0 yourProgram.c0
 ```
+
+### Naming of the tests
+All names for the tests are following this naming convention. 
+With that naming convention the building script can check if a test should pass and 
+with the proper placement inside the test folders it can also correctly check where it failed and if the test was going good enough
+```
+[3 digit test ID]_[pass/fail]_[testname without any underscores].c0
+```
+If a test should also test the return value of the output of the CMA machine then there is another field put after the pass/fail looking like this:
+```
+[3 digit test ID]_[pass/fail]_[return value of CMA]_[testname without any underscores].c0
+```
