@@ -8,58 +8,48 @@
 ./
 |- src/ ................................... Project source code
 |  |- test/ ............................... Test programs
-|  |  |- parsing/ ......................... Test programs for parsing
-|  |  '- type/ ............................ Test programs for type checking
+|  |  |- 01parsing/ ....................... Test programs for parsing
+|  |  |- 02symbolTable/ ................... Test programs for the symbol table
+|  |  |- 03typeChecking/ .................. Test programs for type checking
+|  |  '- 04codeGeneration/ ................ Test programs for code generation
 |  |- C0.jj ............................... C0 parser
-|  |- Node.java ........................... Node used for the AST
-|  |- build.sh ............................ Build script for C0 (Unix)
-|  '- bld.ps1 ............................. Build script for C0 (Windows)
+|  |- Node*.java .......................... Nodes used for the AST
+|  |- *Exception.java ..................... Custom Exceptions for the different stages
+|  |- build.sh ............................ Build script for C0 (Linux/Unix)
+|  '- bld.ps1 ............................. Build script for C0 (Windows) (No longer maintained)
 '- README.md .............................. General hints
 ```
 
 ## How To
 ### Compiling
 ```
-src> javacc -OUTPUT_DIRECTORY:bin C0.jj
-src> javac -d bin bin/*.java
+src> build.sh -c
 ```
 
 ### Testing
 ```
-src> java -cp bin C0
-void main() {
-        int i = 1 + 2 * 3;
-}
-^Z
-[  OK  ]
+src> build.sh -r
 ```
-You can test it with your own files:
+In case of succesful tests it will end with following line:
 ```
-src> java -cp bin C0 Myprogram.java
+  #####################################################
+  Passed all tests.
 ```
-You can print the AST to the console:
+and if some of the tests failed outside of their test scope then it will end with:
 ```
-src> java -cp bin C0 Myprogram.java print
+  #####################################################
+  One or more tests failed
 ```
 
-### Windows (PowerShell)
-This will compile the parser and test it with all files located in the `./test` directory:
+It's possible to only test a subset of the tests with filters. 
+To select a filter you need to have the parameter -f with the paramter `filter`
+To only run test which should pass you can run the following command:
 ```
-PS C:\C0--\src> ./bld -c -r
-```
-This will test the parser with all files containing `pass`:
-```
-PS C:\C0--\src> ./bld -r -filter *pass*
-```
-
-### Unix
-
-This will compile the parser and test it with all files located in the `./test` directory:
-```
-PS C:\C0--\src> build.sh -c -r
-```
-This will test the parser with all files containing `pass`:
-```
-PS C:\C0--\src> build.sh -r -f *pass*
+src> build.sh -r -f *pass*
 ```
 If `-f` is ommited, the default filter `*` will apply.
+
+The parser can be run manually with following commands
+```
+src> java -cp bin C0 yourProgram.c0
+```
