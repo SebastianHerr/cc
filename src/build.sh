@@ -27,8 +27,6 @@ if test "$COMPILE" ; then
   echo -e "\e[1mCompiling Program\e[0m"
   rm bin/*.class
   rm bin/*.java
-  rm bin/*.cma
-  rm test/**/*.cma
 
   if [ ! -d "bin/" ]
   then
@@ -44,6 +42,9 @@ else
 fi
 
 if test "$TESTP" ; then
+  rm bin/*.cma
+  rm test/**/*.cma
+  
   echo -e "\n\e[1mParser will be tested with the filter $FILTER\e[0m \n"
   PASSEDALLTEST=0
   for testfile in `find test -type f -name "$FILTER"`
