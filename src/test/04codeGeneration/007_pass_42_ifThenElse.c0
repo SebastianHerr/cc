@@ -1,0 +1,11 @@
+int main()
+{
+  if(42 == 32)
+  {
+    return 32;
+  }
+  else
+  {
+    return 42;
+  }
+}

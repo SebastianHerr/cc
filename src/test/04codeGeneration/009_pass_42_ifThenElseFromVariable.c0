@@ -1,0 +1,13 @@
+int main()
+{
+  int i =0;
+  if(42 == 32)
+  {
+    i = 32;
+  }
+  else
+  {
+    i = 42;
+  }
+  return i;
+}
