@@ -5,11 +5,12 @@ PARSER='C0'
 unset COMPILE
 unset TESTP
 unset FILTER
+unset PRINTDETAILS
 
 #Set default filter
 FILTER="*"
 
-while getopts "crf:" opt; do
+while getopts "crf:d" opt; do
   case "$opt" in
     c)  COMPILE=" "
         echo -e "\e[1mWill recompile the parser\e[0m"
@@ -18,6 +19,9 @@ while getopts "crf:" opt; do
         echo -e "\e[1mWill use the filder $FILTER\e[0m"
     ;;
     r)  TESTP=" "
+        echo -e "\e[1mWill run the parser\e[0m"
+    ;;
+    d)  PRINTDETAILS="print"
         echo -e "\e[1mWill run the parser\e[0m"
     ;;
  esac
@@ -50,7 +54,7 @@ if test "$TESTP" ; then
   for testfile in `find test -type f -name "$FILTER"`
   do
     echo -e "\e[1m$testfile:\e[0m"
-    java -cp bin $PARSER $testfile print
+    java -cp bin $PARSER $testfile $PRINTDETAILS
     
     #Checking of the return value to further automate the tests
     RETURNVALUE=$?
@@ -67,29 +71,31 @@ if test "$TESTP" ; then
           #Now it needs to be tested that enough of the parser has done it's job
           if [[ $testfile == *"01parsing"* ]]  && [ "$RETURNVALUE" -lt "2" ]; 
           then
-            #Failed in the parsing stage
             echo  -e "\e[31m Test failed in the parsing stage\e[39m"
             PASSEDALLTEST=1
           else
             if [[ $testfile == *"02symbolTable"* ]]  && [ "$RETURNVALUE" -lt "3" ]; 
             then
-              #failed in the symbol table stage
-              echo  -e "\e[31mTets failed in the symbol table stage\e[39m"
+              echo  -e "\e[31mTest failed in the symbol table stage\e[39m"
               PASSEDALLTEST=1
             else 
               if [[ $testfile == *"03typeChecking"* ]]  && [ "$RETURNVALUE" -lt "4" ]; 
               then
-                #failed in the symbol table stage
-                echo  -e "\e[31mTets failed in the type checking stage\e[39m"
+                echo  -e "\e[31mTest failed in the type checking stage\e[39m"
                 PASSEDALLTEST=1
               else 
                 if [[ $testfile == *"04codeGeneration"* ]]  && [ "$RETURNVALUE" -lt "5" ]; 
                 then
-                  #failed in the symbol table stage
-                  echo  -e "\e[31mTets failed in the type checking stage\e[39m"
+                  echo  -e "\e[31mTest failed in the code generation stage\e[39m"
                   PASSEDALLTEST=1
                 else 
-                  echo  -e "\e[32m This test failed, but outside of the scope of the test.\e[39m"
+                  if [ "$RETURNVALUE" -eq "6" ]; 
+                  then
+                    echo  -e "\e[31mTest failed did not return correct result from the CMA\e[39m"
+                    PASSEDALLTEST=1
+                  else 
+                    echo  -e "\e[32m This test failed, but outside of the scope of the test.\e[39m"
+                  fi
                 fi
               fi
             fi

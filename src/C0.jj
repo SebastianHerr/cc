@@ -80,6 +80,8 @@ public class C0 {
       }
       catch(Exception ex)
       {
+        //restore system.out
+        System.setOut(originalStream);
         throw new CodeExecutionException(ex);
       }
       
@@ -136,10 +138,13 @@ public class C0 {
       System.out.println ("[ FAIL CODEGENERATION]\n" + ((args.length > 1) ? ex.getMessage() + "\n\n" : ""));
       System.exit(5);
     }
+    catch (CodeExecutionException ex)
+    {
+      System.out.println ("[ FAIL CODEEXECUTION]\n" + ((args.length > 1) ? ex.getMessage() + "\n\n" : ""));
+      System.exit(6);
+    }
     catch (Exception ex)
     {
-      System.out.println(ex);
-      ex.printStackTrace();
       System.out.println("UNKNOWN ERROR\n" + ((args.length > 1) ? ex.getClass() + "" + ex.getMessage() + "\n\n" : ""));
       System.exit(666);
     }
