@@ -6,6 +6,8 @@ unset COMPILE
 unset TESTP
 unset FILTER
 unset PRINTDETAILS
+ARRAYINDEX=0
+ARRAYOFAILEDTESTS=0
 
 #Set default filter
 FILTER="*"
@@ -72,26 +74,36 @@ if test "$TESTP" ; then
           if [[ $testfile == *"01parsing"* ]]  && [ "$RETURNVALUE" -lt "2" ]; 
           then
             echo  -e "\e[31m Test failed in the parsing stage\e[39m"
+            ARRAYOFAILEDTESTS[ARRAYINDEX]=$testfile
+            ((ARRAYINDEX++))
             PASSEDALLTEST=1
           else
             if [[ $testfile == *"02symbolTable"* ]]  && [ "$RETURNVALUE" -lt "3" ]; 
             then
               echo  -e "\e[31mTest failed in the symbol table stage\e[39m"
+              ARRAYOFAILEDTESTS[ARRAYINDEX]=$testfile
+              ((ARRAYINDEX++))
               PASSEDALLTEST=1
             else 
               if [[ $testfile == *"03typeChecking"* ]]  && [ "$RETURNVALUE" -lt "4" ]; 
               then
                 echo  -e "\e[31mTest failed in the type checking stage\e[39m"
+                ARRAYOFAILEDTESTS[ARRAYINDEX]=$testfile
+                ((ARRAYINDEX++))
                 PASSEDALLTEST=1
               else 
                 if [[ $testfile == *"04codeGeneration"* ]]  && [ "$RETURNVALUE" -lt "5" ]; 
                 then
                   echo  -e "\e[31mTest failed in the code generation stage\e[39m"
+                  ARRAYOFAILEDTESTS[ARRAYINDEX]=$testfile
+                  ((ARRAYINDEX++))
                   PASSEDALLTEST=1
                 else 
                   if [ "$RETURNVALUE" -eq "6" ]; 
                   then
                     echo  -e "\e[31mTest failed did not return correct result from the CMA\e[39m"
+                    ARRAYOFAILEDTESTS[ARRAYINDEX]=$testfile
+                    ((ARRAYINDEX++))
                     PASSEDALLTEST=1
                   else 
                     echo  -e "\e[32m This test failed, but outside of the scope of the test.\e[39m"
@@ -118,7 +130,10 @@ if test "$TESTP" ; then
   then
     echo -e "\e[32mPassed all tests.\e[39m"
   else
-    echo -e "\e[31mOne or more tests failed\e[39m"
+    echo -e "\e[31m$ARRAYINDEX tests failed"
+    echo "Following tests failed: "
+    printf '\t%s\n' "${ARRAYOFAILEDTESTS[@]}"
+    echo -e "\e[39m"
   fi
 else 
   echo -e "\e[1mParser not tested\e[0m"
