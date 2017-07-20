@@ -96,6 +96,10 @@ public class C0 {
         String[] parts = filename.split("_");
         int supposedValue = Integer.parseInt(parts[2]);
         System.out.println("Value is supposed to be " +supposedValue + " and is " + cmaResult);
+        if(supposedValue != cmaResult)
+        {
+          throw new CodeExecutionException();
+        }
         System.out.println ("[  OK  ] Code running complete");
       }
       
