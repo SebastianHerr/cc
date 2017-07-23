@@ -229,6 +229,18 @@ public class Main {
 	case "xor":
 	    instr = new Xor();
 	    break;
+	case "bnot":
+	    instr = new Bnot();
+	    break;
+	case "band":
+	    instr = new Band();
+	    break;
+	case "bor":
+	    instr = new Bor();
+	    break;
+	case "bxor":
+	    instr = new Bxor();
+	    break;
 	case "new":
 	    instr = new New();
 	    break;
