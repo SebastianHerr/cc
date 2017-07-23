@@ -16,7 +16,7 @@ public Node getNodeType()
 
 public boolean compareNodeType(Node otherNode) throws TypeCheckingException
 {
-  if(!(otherNode instanceof NodeTypeInt) && !(otherNode instanceof NodeExpressionConstNum) && !(otherNode instanceof NodeTypePointer))
+  if(!(otherNode instanceof NodeTypeInt || otherNode instanceof NodeExpressionConstNum))
   { 
     throw new TypeCheckingException();
   }

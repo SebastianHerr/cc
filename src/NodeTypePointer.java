@@ -32,7 +32,7 @@ public boolean compareNodeType(Node otherNode) throws TypeCheckingException
 
 public boolean compareNodeType(Node otherNode, boolean onelevel) throws TypeCheckingException
 {
-  if(!(otherNode instanceof NodeTypePointer || otherNode instanceof NodeTypeInt ))
+  if(!(otherNode instanceof NodeTypePointer))
   {
     throw new TypeCheckingException();
   }

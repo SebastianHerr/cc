@@ -10,7 +10,7 @@ public NodeExpressionConstNum(Token token_)
 
 public boolean compareNodeType(Node otherNode) throws TypeCheckingException
 {
-  if(!(otherNode instanceof NodeTypeInt) && !(otherNode instanceof NodeExpressionConstNum))
+  if(!(otherNode instanceof NodeTypeInt || otherNode instanceof NodeExpressionConstNum))
   {
     throw new TypeCheckingException();
   }
