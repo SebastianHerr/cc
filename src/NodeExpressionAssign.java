@@ -12,7 +12,13 @@ public Node getNodeType()
   
 public boolean checkNodeType() throws TypeCheckingException
 {
-  //Both sides need to be the same, no futher conditions
+  //Primary side needs to be assingable...
+  if(!(primary instanceof IAssignable))
+  {    
+    throw new TypeCheckingException("Assigment is not of an assinable type");
+  }
+  
+  //... and both sides need to be the same, no futher conditions
   if(!(primary.getNodeType().compareNodeType(secondary.getNodeType())))
   {
     return false;
@@ -23,7 +29,7 @@ public boolean checkNodeType() throws TypeCheckingException
 public String emitCode() throws CodeGenerationException
 {
   String result = secondary.emitCode();
-  result += primary.emitCode();
+  result += "loadc " + ((IAssignable)primary).getStackAdress() + "\n";
   result += "store\n";
   return result;
 }

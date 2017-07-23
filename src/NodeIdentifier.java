@@ -1,5 +1,5 @@
 import java.util.*;
-public class NodeIdentifier extends Node{
+public class NodeIdentifier extends Node implements IAssignable{
 
 int symbolID;
 boolean isVDef = false;
