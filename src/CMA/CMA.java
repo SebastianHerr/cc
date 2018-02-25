@@ -3,11 +3,11 @@ package CMA;
 public class CMA {
 
      public Instruction[] program;
-     public int PC;
-     public int FP;
-     public int SP;
-     public int EP;
-     public int NP;
+     public int PC; //Program Counter
+     public int FP; //Frame Pointer
+     public int SP; //Stack Pointer
+     public int EP; //Extreme Pointer: Highest stack pointer in current function
+     public int NP; //New Pointer: Lowest occupied memmory cell
      public int max = 1000;
      public int[] stack;
      
