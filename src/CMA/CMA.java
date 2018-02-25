@@ -36,7 +36,7 @@ public class CMA {
 	  Instruction instr;
 	  while (true) {
 	      this.print();
-        System.out.println(program[PC]);
+        System.out.println("  Next instruction is: " + program[PC]);
 	      instr = program[PC];
 	      PC = PC + 1;
 	      if (instr.halt()) break;

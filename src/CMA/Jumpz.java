@@ -17,4 +17,9 @@ public class Jumpz extends Instruction {
 	state.SP--;
     }
 
+    public String toString()
+    {
+      return super.toString() + " A=" + A;
+    }
+
 }

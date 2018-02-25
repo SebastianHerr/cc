@@ -11,5 +11,10 @@ public class Loada extends Instruction {
 	state.stack[state.SP] = state.stack[q];
     }
 
+    public String toString()
+    {
+      return super.toString() + " q=" + q;
+    }
+
     
 }

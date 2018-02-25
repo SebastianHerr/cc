@@ -10,5 +10,8 @@ public class Loadrc extends Instruction {
 	state.stack[state.SP] = state.FP + j;
     }
 
-    
+    public String toString()
+    {
+      return super.toString() + " j=" + j;
+    }
 }

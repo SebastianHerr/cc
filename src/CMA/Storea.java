@@ -10,5 +10,10 @@ public class Storea extends Instruction {
 	state.stack[q] = state.stack[state.SP];
     }
 
+    public String toString()
+    {
+      return super.toString() + " q=" + q;
+    }
+
     
 }

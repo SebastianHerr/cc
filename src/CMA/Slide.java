@@ -11,5 +11,10 @@ public class Slide extends Instruction {
 	state.stack[state.SP] = tmp;
     }
 
+    public String toString()
+    {
+      return super.toString() + " k=" + k;
+    }
+
     
 }

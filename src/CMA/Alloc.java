@@ -9,5 +9,10 @@ public class Alloc extends Instruction {
 	state.SP = state.SP + k;
     }
 
+    public String toString()
+    {
+      return super.toString() + " k=" + k;
+    }
+
     
 }

@@ -11,5 +11,10 @@ public class Enter extends Instruction {
 	    throw new StackOverflow();
     }
 
+    public String toString()
+    {
+      return super.toString() + " q=" + q;
+    }
+
     
 }

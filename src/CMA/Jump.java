@@ -16,4 +16,9 @@ public class Jump extends Instruction {
 	state.PC = A;
     }
 
+    public String toString()
+    {
+      return super.toString() + " A=" + A;
+    }
+
 }

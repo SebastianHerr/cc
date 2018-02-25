@@ -15,5 +15,10 @@ public class Loadc extends Instruction {
 	state.stack[state.SP] = q;
     }
 
+    public String toString()
+    {
+      return super.toString() + " q=" + q;
+    }
+
     
 }

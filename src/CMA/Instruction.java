@@ -13,4 +13,9 @@ public class Instruction {
     }
     public void exec(CMA state) throws BadInstruction, StackOverflow {
     }
+    
+    public String toString()
+    {
+      return this.getClass().getName();
+    }
 }

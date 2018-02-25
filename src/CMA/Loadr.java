@@ -11,5 +11,9 @@ public class Loadr extends Instruction {
 	state.stack[state.SP] = state.stack[state.FP+j];;
     }
 
+    public String toString()
+    {
+      return super.toString() + " j=" + j;
+    }
     
 }
