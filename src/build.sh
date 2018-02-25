@@ -71,7 +71,7 @@ if test "$TESTP" ; then
   
   echo -e "\n\e[1mParser will be tested with the filter $FILTER\e[0m \n"
   PASSEDALLTEST=0
-  for testfile in `find test -type f -name "$FILTER"`
+  for testfile in `find test -type f -wholename "$FILTER"`
   do
     echo -e "\e[1m$testfile:\e[0m"
     java -cp bin $PARSER $testfile $PRINTDETAILS
