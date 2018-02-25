@@ -46,15 +46,17 @@ public class CMA {
     }
 
     public void print() {
-	String s = "PC: " + PC;
-	s = s + " FP: " + FP;
-  s = s + " EP: " + EP;
-	s = s + " SP: " + SP;
-	s = s + " NP: " + NP + " Stack: [";	
-	for (int i=0; i<SP; i++)
-	    s = s + stack[i] +", ";
-	System.out.println(s+stack[SP>=0 ? SP : 0]+"]");
-	    
+      String formatting = "%3d";
+      
+      String s = "PC: " + String.format(formatting, PC);
+      s = s +   " FP: " + String.format(formatting, FP);
+      s = s +   " EP: " + String.format(formatting, EP);
+      s = s +   " SP: " + String.format(formatting, SP);
+      s = s +   " NP: " + String.format(formatting, NP) + " Stack: [";	
+      for (int i=0; i<SP; i++)
+        s = s + String.format(formatting, stack[i]) +", ";
+      System.out.println(s+String.format(formatting, stack[SP>=0 ? SP : 0])+"]");
+
     }
      
 }
