@@ -36,6 +36,7 @@ public class CMA {
 	  Instruction instr;
 	  while (true) {
 	      this.print();
+        System.out.println(program[PC]);
 	      instr = program[PC];
 	      PC = PC + 1;
 	      if (instr.halt()) break;
@@ -47,11 +48,12 @@ public class CMA {
     public void print() {
 	String s = "PC: " + PC;
 	s = s + " FP: " + FP;
+  s = s + " EP: " + EP;
 	s = s + " SP: " + SP;
 	s = s + " NP: " + NP + " Stack: [";	
-	for (int i=SP; i>0; i--)
+	for (int i=0; i<SP; i++)
 	    s = s + stack[i] +", ";
-	System.out.println(s+stack[0]+"]");
+	System.out.println(s+stack[SP>=0 ? SP : 0]+"]");
 	    
     }
      
