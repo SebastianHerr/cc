@@ -6,13 +6,20 @@ unset COMPILE
 unset TESTP
 unset FILTER
 unset PRINTDETAILS
+unset SHOWHELP
 ARRAYINDEX=0
 ARRAYOFAILEDTESTS=0
 
 #Set default filter
 FILTER="*"
 
-while getopts "crf:d" opt; do
+if test "$1" ; then
+  echo ""
+else
+  SHOWHELP=" "
+fi
+
+while getopts "crf:dh" opt; do
   case "$opt" in
     c)  COMPILE=" "
         echo -e "\e[1mWill recompile the parser\e[0m"
@@ -26,8 +33,19 @@ while getopts "crf:d" opt; do
     d)  PRINTDETAILS="print"
         echo -e "\e[1mWill run the parser\e[0m"
     ;;
+    h)  SHOWHELP=" "
+    ;;
  esac
 done
+
+if test "$SHOWHELP" ; then
+  echo "Valid paramters are:"
+  echo "  c = recompile the parser"
+  echo "  r = will run the tests"
+  echo "  d = show extended debug output"
+  echo "  f [filter] = Use the given filter for the test runs"
+  exit
+fi
 
 if test "$COMPILE" ; then
   echo -e "\e[1mCompiling Program\e[0m"
