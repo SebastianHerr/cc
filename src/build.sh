@@ -31,7 +31,7 @@ while getopts "crf:dh" opt; do
         echo -e "\e[1mWill run the parser\e[0m"
     ;;
     d)  PRINTDETAILS="print"
-        echo -e "\e[1mWill run the parser\e[0m"
+        echo -e "\e[1mWill run the parser with extended debug output\e[0m"
     ;;
     h)  SHOWHELP=" "
     ;;
