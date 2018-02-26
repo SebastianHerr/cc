@@ -11,6 +11,9 @@ public class CMA {
      public int max = 1000;
      public int[] stack;
      
+     
+     String formatting = "%3d";
+     
 
      CMA (Instruction[] program) {
 	  this.program = program;
@@ -36,7 +39,7 @@ public class CMA {
 	  Instruction instr;
 	  while (true) {
 	      this.print();
-        System.out.println("  Next instruction is: " + program[PC]);
+        System.out.println("  Next instruction is: @" + String.format(formatting, PC) + " " + program[PC]);
 	      instr = program[PC];
 	      PC = PC + 1;
 	      if (instr.halt()) break;
@@ -46,7 +49,6 @@ public class CMA {
     }
 
     public void print() {
-      String formatting = "%3d";
       
       String s = "PC: " + String.format(formatting, PC);
       s = s +   " FP: " + String.format(formatting, FP);
