@@ -1,0 +1,11 @@
+void main()
+{
+  int b;
+  b = testfunction();
+}
+
+int testfunction()
+{
+  return 0;
+}
+
