@@ -42,14 +42,17 @@ public class C0 {
     boolean printDetails = Arrays.asList(args).contains("print");
     boolean printCMA = Arrays.asList(args).contains("cma");
     
-    System.out.println("The parameters for this execution are");
-    for(int i = 0; i < args.length; i++ )
+    if(printDetails)
     {
-      System.out.println(i + "=" + args[i]);
+      System.out.println("The parameters for this execution are");
+      for(int i = 0; i < args.length; i++ )
+      {
+        System.out.println(i + "=" + args[i]);
+      }
+      System.out.println("Will " + (printDetails?"":"NOT ") + "print details");
+      System.out.println("Will " + (printCMA?"":"NOT ") + "print cma output");
     }
-    System.out.println("Will " + (printDetails?"":"NOT ") + "print details");
-    System.out.println("Will " + (printCMA?"":"NOT ") + "print cma output");
-    
+     
     try {
       if (args.length > 0) {
         filename = args[0];
@@ -113,13 +116,15 @@ public class C0 {
       }
       catch(Exception ex)
       {
-        //restore system.out
-        System.setOut(originalStream);
+        ex.printStackTrace();
         throw new CodeExecutionException(ex);
       }
+      finally
+      {
+        //restore system.out
+        System.setOut(originalStream);
+      }
       
-      //restore system.out
-      System.setOut(originalStream);
 
       //Checking return value
       int count = filename.length() - filename.replace("_", "").length();
