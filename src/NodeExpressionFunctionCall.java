@@ -37,6 +37,8 @@ public boolean checkNodeType() throws TypeCheckingException
 public String emitCode() throws CodeGenerationException
 {
   String result = args.emitCode();
+  //TODO only make place for the return argument when the function called is not void
+  result += "alloc 1\n";
   result += "mark\n";
   result += "loadc _" + name.getToken().image + "\n";
   result += "call\n";
