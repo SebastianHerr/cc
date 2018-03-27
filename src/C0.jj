@@ -25,14 +25,30 @@ public class C0 {
   static AppearanceTable sidTable;
   static AppearanceTable fidTable;
   
+  //First argument must the the c0 code to compiler
+  //if there is an argument with the text "print" then all but the cma debug output will be printed
+  //if there is an argument with the text "cma" then the cma debug output will be printed
   public static void main(String args[]) {
+    System.out.println ("/*");
+    
+    //Variables for the compiler, not for checking the compiler
     C0 parser;
     NodeRoot ast;  
     vidTable = new AppearanceTable();
     sidTable = new AppearanceTable();
     fidTable = new AppearanceTable();
     
-    String filename = "bin/code.cma";
+    String filename = "bin/code.cma";    
+    boolean printDetails = Arrays.asList(args).contains("print");
+    boolean printCMA = Arrays.asList(args).contains("cma");
+    
+    System.out.println("The parameters for this execution are");
+    for(int i = 0; i < args.length; i++ )
+    {
+      System.out.println(i + "=" + args[i]);
+    }
+    System.out.println("Will " + (printDetails?"":"NOT ") + "print details");
+    System.out.println("Will " + (printCMA?"":"NOT ") + "print cma output");
     
     try {
       if (args.length > 0) {
@@ -42,7 +58,6 @@ public class C0 {
         parser = new C0 (System.in);
       }
       
-      System.out.println ("/*");
       
       //Parse
       ast = parser.Program();
@@ -57,7 +72,22 @@ public class C0 {
       {
         throw new Exception("Type");
       }
+      
       System.out.println ("[  OK  ] Typechecking complete");
+      if(printDetails)
+      {
+        //Output information on where which variable is used and where it's defined.
+        System.out.println ("Stats of vidTable");
+        vidTable.printStats();
+        System.out.println ("Stats of sidTable");
+        sidTable.printStats();
+        System.out.println ("Stats of fidTable");
+        fidTable.printStats();
+        System.out.println ("The parsed sourcecode is: */");
+        System.out.println(ast);
+        System.out.println ("/* ");
+      }
+      
       
       String binaryCode = ast.emitCode();
       
@@ -71,7 +101,10 @@ public class C0 {
       //temporarly hide the system.out, because the cma code would spam too much
       PrintStream originalStream = System.out;
       PrintStream dummyStream    = new PrintStream(new OutputStream(){public void write(int b) {/*NO-OP*/}});
-      System.setOut(dummyStream);
+      if(!printCMA)
+      {
+        System.setOut(dummyStream);
+      }
       
       int cmaResult;
       try
@@ -105,51 +138,42 @@ public class C0 {
       
       
       
-      //Output all debug data
-      //System.out.println ("Stats of vidTable");
-      //vidTable.printStats();
-      //System.out.println ("Stats of sidTable");
-      //sidTable.printStats();
-      //System.out.println ("Stats of fidTable");
-      //fidTable.printStats();
-      System.out.println (" */");
-      //System.out.println(ast);
-			System.out.println ("/*\n[  OK  ]\n*/");
+			System.out.println ("\n[  OK  ]\n*/");
       System.exit(0);
 		} 
     catch (ParseException ex) 
     {
-			System.out.println ("[ FAIL PARSE ]\n" + ((args.length > 1) ? ex.getMessage() + "\n\n" : ""));
+			System.out.println ("[ FAIL PARSE ]\n" + ( printDetails ? ex.getMessage() + "\n\n" : ""));
       System.exit(1);
 		} 
     catch (TokenMgrError ex)
     {
-      System.out.println ("[ FAIL TOKEN]\n" + ((args.length > 1) ? ex.getMessage() + "\n\n" : ""));
+      System.out.println ("[ FAIL TOKEN]\n" + (printDetails ? ex.getMessage() + "\n\n" : ""));
       System.exit(2);
     } 
     catch (SymbolTableGenerationException ex)    
     {
-      System.out.println ("[ FAIL SYMBOLTABLE]\n" + ((args.length > 1) ? ex.getMessage() + "\n\n" : ""));
+      System.out.println ("[ FAIL SYMBOLTABLE]\n" + (printDetails ? ex.getMessage() + "\n\n" : ""));
       System.exit(3);
     }  
     catch (TypeCheckingException ex)    
     {
-      System.out.println ("[ FAIL TYPECHECKING]\n" + ((args.length > 1) ? ex.getMessage() + "\n\n" : ""));
+      System.out.println ("[ FAIL TYPECHECKING]\n" + (printDetails ? ex.getMessage() + "\n\n" : ""));
       System.exit(4);
     } 
     catch (CodeGenerationException ex)
     {
-      System.out.println ("[ FAIL CODEGENERATION]\n" + ((args.length > 1) ? ex.getMessage() + "\n\n" : ""));
+      System.out.println ("[ FAIL CODEGENERATION]\n" + (printDetails ? ex.getMessage() + "\n\n" : ""));
       System.exit(5);
     }
     catch (CodeExecutionException ex)
     {
-      System.out.println ("[ FAIL CODEEXECUTION]\n" + ((args.length > 1) ? ex.getMessage() + "\n\n" : ""));
+      System.out.println ("[ FAIL CODEEXECUTION]\n" + (printDetails ? ex.getMessage() + "\n\n" : ""));
       System.exit(6);
     }
     catch (Exception ex)
     {
-      System.out.println("UNKNOWN ERROR\n" + ((args.length > 1) ? ex.getClass() + "" + ex.getMessage() + "\n\n" : ""));
+      System.out.println("UNKNOWN ERROR\n" + (printDetails ? ex.getClass() + "" + ex.getMessage() + "\n\n" : ""));
       System.exit(666);
     }
 	}

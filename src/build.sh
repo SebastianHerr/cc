@@ -6,6 +6,7 @@ unset COMPILE
 unset TESTP
 unset FILTER
 unset PRINTDETAILS
+unset PRINTCMA
 unset SHOWHELP
 ARRAYINDEX=0
 ARRAYOFAILEDTESTS=0
@@ -19,7 +20,7 @@ else
   SHOWHELP=" "
 fi
 
-while getopts "crf:dh" opt; do
+while getopts "crf:dsh" opt; do
   case "$opt" in
     c)  COMPILE=" "
         echo -e "\e[1mWill recompile the parser\e[0m"
@@ -33,6 +34,9 @@ while getopts "crf:dh" opt; do
     d)  PRINTDETAILS="print"
         echo -e "\e[1mWill run the parser with extended debug output\e[0m"
     ;;
+    s)  PRINTCMA="cma"
+        echo -e "\e[1mWill run the parser with extended cma output\e[0m"
+    ;;
     h)  SHOWHELP=" "
     ;;
  esac
@@ -43,6 +47,7 @@ if test "$SHOWHELP" ; then
   echo "  c = recompile the parser"
   echo "  r = will run the tests"
   echo "  d = show extended debug output"
+  echo "  s = show all the steps in the cma execution"
   echo "  f [filter] = Use the given filter for the test runs"
   exit
 fi
@@ -74,7 +79,7 @@ if test "$TESTP" ; then
   for testfile in `find test -type f -wholename "$FILTER"`
   do
     echo -e "\e[1m$testfile:\e[0m"
-    java -cp bin $PARSER $testfile $PRINTDETAILS
+    java -cp bin $PARSER $testfile $PRINTDETAILS $PRINTCMA
     
     #Checking of the return value to further automate the tests
     RETURNVALUE=$?
