@@ -58,13 +58,8 @@ public class C0 {
     }
      
     try {
-      if (args.length > 0) {
-        filename = args[0];
-        parser = new C0 (new java.io.FileInputStream(new java.io.File(filename)));
-      } else {
-        parser = new C0 (System.in);
-      }
-      
+      filename = args[0];
+      parser = new C0 (new java.io.FileInputStream(new java.io.File(filename)));
       
       //Parse
       ast = parser.Program();
