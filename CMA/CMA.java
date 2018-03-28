@@ -59,6 +59,7 @@ public class CMA {
         s = s + String.format(formatting, stack[i]) +", ";
       System.out.println(s+String.format(formatting, stack[SP>=0 ? SP : 0])+"]");
 
+      //System.out.println(java.util.Arrays.toString(stack));
     }
      
 }
