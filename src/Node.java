@@ -5,14 +5,15 @@ import java.util.*;
 public abstract class Node{
   
   Node parent = null;
-  
-  NodeRoot root = null;
+
+  //This field is not garanteed to be set. Use the method getRoot() for reliable access of the root node.
+  private NodeRoot root = null;
   
   Token token = null;
   
   public static String standardIndentation = "  ";
   
-  public static final  String CMAnop = "alloc 0";
+  public static final  String CMAnop = "nop";
   
   //This list is only ever initialized when this is an implementation of IScope
   ArrayList<IScope> subscopes;
