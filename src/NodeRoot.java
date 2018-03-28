@@ -52,6 +52,11 @@ public Hashtable<String,NodeIdentifier> getListOfVidDefines()
   return vidDefineList;
 }
 
+public NodeIdentifier getMainMethod()
+{
+  return getListOfVidDefines().get("main");
+}
+
 public int getOffsetAfterLocalVidTable()
 {
   return 0;
@@ -85,6 +90,8 @@ public boolean compareNodeType(Node otherNode) throws TypeCheckingException
 public boolean checkNodeType() throws TypeCheckingException
 {
   boolean returnValue = true;
+  //Check if main function is an int or void
+  getMainMethod().getNodeType();
   for (int i = 0; i<declarationsOrDefinitions.size();i++) {
     returnValue &= declarationsOrDefinitions.get(i).checkNodeType(); 
   }
@@ -98,7 +105,7 @@ public Node getNodeType()
 
 public String emitCode() throws CodeGenerationException
 {
-  if(getListOfVidDefines().get("main") == null)
+  if(getMainMethod() == null)
   {
     throw new CodeGenerationException("Missing main function");
   }   
