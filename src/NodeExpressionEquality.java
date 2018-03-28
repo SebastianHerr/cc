@@ -1,3 +1,7 @@
+package src;
+
+import src.bin.*;
+
 public class NodeExpressionEquality extends NodeExpressionBinary{
 
 public NodeExpressionEquality(Node primary_)

@@ -1,3 +1,7 @@
+package src;
+
+import src.bin.*;
+
 public class NodeExpressionLogicalOr extends NodeExpressionBinary{
 
 public NodeExpressionLogicalOr(Node primary_)

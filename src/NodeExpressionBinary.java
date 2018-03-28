@@ -1,3 +1,7 @@
+package src;
+
+import src.bin.*;
+
 abstract public class NodeExpressionBinary extends Node{
 
 Node primary;

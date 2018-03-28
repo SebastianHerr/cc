@@ -1,3 +1,7 @@
+package src;
+
+import src.bin.*;
+
 public class NodeExpressionBitShift extends NodeExpressionBinary{
 
 public NodeExpressionBitShift(Node primary_)

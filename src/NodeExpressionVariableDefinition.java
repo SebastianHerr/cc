@@ -1,3 +1,7 @@
+package src;
+
+import src.bin.*;
+
 public class NodeExpressionVariableDefinition extends Node{
 
 public Node type;

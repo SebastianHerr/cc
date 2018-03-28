@@ -1,3 +1,6 @@
+package src;
+
+import src.bin.*;
 
 public class CodeGenerationException extends Exception{
   public CodeGenerationException()

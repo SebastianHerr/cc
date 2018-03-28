@@ -1,3 +1,7 @@
+package src;
+
+import src.bin.*;
+
 public class NodeExpressionConstBoolean extends Node{
 
 boolean value;

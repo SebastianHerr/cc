@@ -16,6 +16,10 @@ options
 }
 
 PARSER_BEGIN(C0)
+package src.bin;
+
+import src.*;
+import src.bin.*;
 import java.util.*;
 import java.io.*;
 import CMA.*;
@@ -28,7 +32,7 @@ public class C0 {
   //First argument must the the c0 code to compiler
   //if there is an argument with the text "print" then all but the cma debug output will be printed
   //if there is an argument with the text "cma" then the cma debug output will be printed
-  public static void main(String args[]) {
+  public static void runTest(String args[]) {
     System.out.println ("/*");
     
     //Variables for the compiler, not for checking the compiler

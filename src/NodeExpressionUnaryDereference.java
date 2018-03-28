@@ -1,3 +1,7 @@
+package src;
+
+import src.bin.*;
+
 public class NodeExpressionUnaryDereference extends NodeExpressionUnary{
 
 public NodeExpressionUnaryDereference(Token token_)

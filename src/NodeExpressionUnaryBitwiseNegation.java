@@ -1,3 +1,7 @@
+package src;
+
+import src.bin.*;
+
 public class NodeExpressionUnaryBitwiseNegation extends NodeExpressionUnary{
 
 public NodeExpressionUnaryBitwiseNegation(Token token_)

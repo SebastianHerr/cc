@@ -1,3 +1,7 @@
+package src;
+
+import src.bin.*;
+
 public class NodeMemberAccessArray extends NodeMemberAccess{
 
 public NodeMemberAccessArray(Node accessingNode_,Token token_)

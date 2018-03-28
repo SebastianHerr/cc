@@ -1,3 +1,7 @@
+package src;
+
+import src.bin.*;
+
 public class NodeStatementWhile extends Node{
 
 Node condition;

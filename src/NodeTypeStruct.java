@@ -1,3 +1,7 @@
+package src;
+
+import src.bin.*;
+
 public class NodeTypeStruct extends Node{
 
 Node name;

@@ -1,3 +1,7 @@
+package src;
+
+import src.bin.*;
+
 public class NodeExpressionConstNull extends Node{
 
 public NodeExpressionConstNull(Token token_)

@@ -1,3 +1,7 @@
+package src;
+
+import src.bin.*;
+
 public class NodeExpressionUnaryNegation extends NodeExpressionUnary{
 
 public NodeExpressionUnaryNegation(Token token_)

@@ -1,3 +1,7 @@
+package src;
+
+import src.bin.*;
+
 public class NodeMemberAccessDot extends NodeMemberAccess{
 
 public NodeMemberAccessDot(Node accessingNode_,Token token_)

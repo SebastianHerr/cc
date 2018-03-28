@@ -1,3 +1,7 @@
+package src;
+
+import src.bin.*;
+
 public class NodeStatementIf extends Node{
 
 Node condition;

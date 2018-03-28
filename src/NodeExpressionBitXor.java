@@ -1,3 +1,7 @@
+package src;
+
+import src.bin.*;
+
 public class NodeExpressionBitXor extends NodeExpressionBinary{
 
 public NodeExpressionBitXor(Node primary_)

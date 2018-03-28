@@ -1,3 +1,7 @@
+package src;
+
+import src.bin.*;
+
 public class NodeTypeBool extends Node{
 
 public NodeTypeBool()

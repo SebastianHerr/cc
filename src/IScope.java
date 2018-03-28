@@ -1,3 +1,7 @@
+package src;
+
+import src.bin.*;
+
 import java.util.*;
 public interface IScope
 {

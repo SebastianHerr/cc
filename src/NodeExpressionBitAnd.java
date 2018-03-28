@@ -1,3 +1,7 @@
+package src;
+
+import src.bin.*;
+
 public class NodeExpressionBitAnd extends NodeExpressionBinary{
 
 public NodeExpressionBitAnd(Node primary_)

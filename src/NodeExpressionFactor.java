@@ -1,3 +1,7 @@
+package src;
+
+import src.bin.*;
+
 public class NodeExpressionFactor extends NodeExpressionBinary{
 
 public NodeExpressionFactor(Node primary_)

@@ -1,3 +1,7 @@
+package src;
+
+import src.bin.*;
+
 public class JumpPointerManager
 {
   public static int i = 0;

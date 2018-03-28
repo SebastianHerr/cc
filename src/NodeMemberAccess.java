@@ -1,3 +1,7 @@
+package src;
+
+import src.bin.*;
+
 public abstract class NodeMemberAccess extends Node{
 
 Node accessedNode;

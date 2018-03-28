@@ -1,3 +1,7 @@
+package src;
+
+import src.bin.*;
+
 public class NodeMemberAccessArrow extends NodeMemberAccess{
 
 public NodeMemberAccessArrow(Node accessingNode_,Token token_)

@@ -1,3 +1,7 @@
+package src;
+
+import src.bin.*;
+
 public class NodeExpressionLogicalAnd extends NodeExpressionBinary{
 
 public NodeExpressionLogicalAnd(Node primary_)

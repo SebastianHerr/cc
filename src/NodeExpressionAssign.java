@@ -1,3 +1,7 @@
+package src;
+
+import src.bin.*;
+
 public class NodeExpressionAssign extends NodeExpressionBinary{
 
 public NodeExpressionAssign(Node primary_)

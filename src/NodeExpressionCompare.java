@@ -1,3 +1,7 @@
+package src;
+
+import src.bin.*;
+
 public class NodeExpressionCompare extends NodeExpressionBinary{
 
 public NodeExpressionCompare(Node primary_)

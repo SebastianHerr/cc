@@ -1,3 +1,7 @@
+package src;
+
+import src.bin.*;
+
 public class NodeTypeArray extends Node{
 
 Node pointingTo;

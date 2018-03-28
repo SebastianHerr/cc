@@ -1,3 +1,7 @@
+package src;
+
+import src.bin.*;
+
 public class NodeExpressionFunctionCall extends Node{
 
 Node name; 

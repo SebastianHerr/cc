@@ -1,3 +1,6 @@
+package src;
+
+import src.bin.*;
 
 public class SymbolTableGenerationException extends Exception{
   public SymbolTableGenerationException()

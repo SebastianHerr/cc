@@ -1,3 +1,7 @@
+package src;
+
+import src.bin.*;
+
 public class NodeExpressionUnaryMinus extends NodeExpressionUnary{
 
 public NodeExpressionUnaryMinus(Token token_)
