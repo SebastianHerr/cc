@@ -24,16 +24,6 @@ public NodeIdentifier(Token token_, IdentifierType type_)
   type = type_;
 }
 
-public Node getParent()
-{
-return parent;
-}
-
-public void setParent(Node newParent)
-{
-parent = newParent;
-}
-
 public void setSymbolID(int symbolID_)
 {
   symbolID = symbolID_;

@@ -13,16 +13,6 @@ public NodeExpressionAlloc(Node type_, Token token_)
   type.setParent(this);
 }
 
-public Node getParent()
-{
-return parent;
-}
-
-public void setParent(Node newParent)
-{
-parent = newParent;
-}
-
 public Node getNodeType()
 {
   return new NodeTypePointer(new NodeTypeInt());
