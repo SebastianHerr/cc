@@ -220,6 +220,9 @@ public class Main {
 	case "not":
 		instr = new Not();
 		break;
+	case "nop":
+		instr = new Nop();
+		break;
 	case "and":
 	    instr = new And();
 	    break;
