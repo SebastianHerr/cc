@@ -56,7 +56,7 @@ public IScope getContainingScope()
   return this;
 }
 
-public Node getNodeType()
+public NodeType getNodeType()
 {
   return new NodeTypeVoid();
 }

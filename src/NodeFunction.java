@@ -5,7 +5,7 @@ import src.bin.*;
 import java.util.*;
 public class NodeFunction extends Node implements IScope{
 
-Node type;
+  NodeType type;
 NodeIdentifier name;
 NodeFunctionParamArgs params;
 
@@ -19,7 +19,7 @@ int scopeID;
   //Definition of functions in this scope
   Hashtable<String,NodeIdentifier> vidDefineList;
 
-public NodeFunction(Node type_, NodeIdentifier name_)
+public NodeFunction(NodeType type_, NodeIdentifier name_)
 {
   super();
   scopeID = AppearanceTable.getNextScopeID();
@@ -139,7 +139,7 @@ public boolean compareNodeType(Node otherNode) throws TypeCheckingException
   return returnValue;
 }
 
-public Node getNodeType()
+public NodeType getNodeType()
 {
   return type;
 }

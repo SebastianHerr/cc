@@ -2,7 +2,7 @@ package src;
 
 import src.bin.*;
 
-public class NodeTypeVoid extends Node{
+public class NodeTypeVoid extends NodeType{
 
 public NodeTypeVoid()
 {
@@ -13,7 +13,7 @@ public NodeTypeVoid(Token token_)
   token = token_;
 }
 
-public Node getNodeType()
+public NodeType getNodeType()
 {
   return this;
 }

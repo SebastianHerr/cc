@@ -18,7 +18,7 @@ public boolean compareNodeType(Node otherNode) throws TypeCheckingException
   return super.compareNodeType((NodeExpressionUnaryDereference)otherNode);
 }
 
-public Node getNodeType()
+public NodeType getNodeType()
 {
   return new NodeTypePointer(innerNode);
 }

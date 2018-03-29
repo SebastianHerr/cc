@@ -15,7 +15,7 @@ public NodeExpressionAllocArray(Node type_, Token token_, Node size_)
    size.setParent(this);
 }
 
-public Node getNodeType()
+public NodeType getNodeType()
 {
   return new NodeTypePointer(new NodeTypeInt());
 }

@@ -20,7 +20,7 @@ public void setLoopBody(Node loopBody_)
   loopBody.setParent(this);
 }
 
-public Node getNodeType()
+public NodeType getNodeType()
 {
   return new NodeTypeVoid();
 }

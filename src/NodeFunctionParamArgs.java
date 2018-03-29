@@ -21,10 +21,10 @@ public class NodeFunctionParamArgs extends Node
     listOfParamters.add(parameterName);
   }
   
-  public Node getTypeOfNode(NodeIdentifier node)
+  public NodeType getTypeOfNode(NodeIdentifier node)
   {
     int i = listOfParamters.indexOf(node);
-    return listOfParamters.get(i-1);
+    return (NodeType)listOfParamters.get(i-1);
   }
 
   public boolean compareNodeType(Node otherNode) throws TypeCheckingException
@@ -43,7 +43,7 @@ public class NodeFunctionParamArgs extends Node
     return returnValue;
   }
 
-  public Node getNodeType()
+  public NodeType getNodeType()
   {
     return new NodeTypeVoid();
   }

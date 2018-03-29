@@ -2,7 +2,7 @@ package src;
 
 import src.bin.*;
 
-public class NodeTypeArray extends Node{
+public class NodeTypeArray extends NodeType{
 
 Node pointingTo;
 
@@ -17,7 +17,7 @@ public NodeTypeArray()
   //Dummy node for type checking
 }
 
-public Node getNodeType()
+public NodeType getNodeType()
 {
   return this;
 }

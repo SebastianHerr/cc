@@ -32,7 +32,7 @@ public String toString(String indentation)
   return "(" + node.toString(indentation) + ")";
 }
 
-public Node getNodeType()
+public NodeType getNodeType()
 {
   return node.getNodeType();
 }

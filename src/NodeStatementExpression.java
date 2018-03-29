@@ -21,7 +21,7 @@ public boolean compareNodeType(Node otherNode) throws TypeCheckingException
   return expression.compareNodeType(((NodeStatementExpression)otherNode).expression);
 }
 
-public Node getNodeType()
+public NodeType getNodeType()
 {
   return new NodeTypeVoid();
 }

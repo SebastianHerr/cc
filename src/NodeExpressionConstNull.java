@@ -18,7 +18,7 @@ public boolean compareNodeType(Node otherNode) throws TypeCheckingException
   return true;
 }
 
-public Node getNodeType()
+public NodeType getNodeType()
 {
   return new NodeTypePointer();
 }

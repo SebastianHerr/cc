@@ -17,7 +17,7 @@ public void setReturnValue(Node returnValue_)
   returnNode.setParent(this);
 }
 
-public Node getNodeType()
+public NodeType getNodeType()
 {
   //return getContainingFunction().getNodeType();
   if(returnNode == null)

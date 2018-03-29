@@ -9,7 +9,7 @@ public NodeExpressionAssign(Node primary_)
   super(primary_);
 }
 
-public Node getNodeType()
+public NodeType getNodeType()
 {
   return primary.getNodeType();
 }

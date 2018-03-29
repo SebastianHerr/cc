@@ -4,11 +4,11 @@ import src.bin.*;
 
 public class NodeExpressionVariableDefinition extends Node{
 
-public Node type;
+public NodeType type;
 NodeIdentifier name;
 Node assigment;
 
-public NodeExpressionVariableDefinition(Node type_, NodeIdentifier name_)
+public NodeExpressionVariableDefinition(NodeType type_, NodeIdentifier name_)
 {
   type = type_;
   type.setParent(this);
@@ -35,7 +35,7 @@ public boolean compareNodeType(Node otherNode) throws TypeCheckingException
   return returnValue;
 }
 
-public Node getNodeType()
+public NodeType getNodeType()
 {
   return new NodeTypeVoid();
 }

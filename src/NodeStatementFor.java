@@ -52,7 +52,7 @@ public boolean compareNodeType(Node otherNode) throws TypeCheckingException
   return returnValue;
 }
 
-public Node getNodeType()
+public NodeType getNodeType()
 {
   return new NodeTypeVoid();
 }

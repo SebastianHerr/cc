@@ -2,7 +2,7 @@ package src;
 
 import src.bin.*;
 
-public class NodeTypePointer extends Node{
+public class NodeTypePointer extends NodeType{
 
 Node pointingTo;
 
@@ -16,7 +16,7 @@ public NodeTypePointer()
 {
 }
 
-public Node getNodeType()
+public NodeType getNodeType()
 {
   return this;
 }

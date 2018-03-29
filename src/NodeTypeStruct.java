@@ -2,7 +2,7 @@ package src;
 
 import src.bin.*;
 
-public class NodeTypeStruct extends Node{
+public class NodeTypeStruct extends NodeType{
 
 Node name;
 
@@ -26,7 +26,7 @@ public boolean compareNodeType(Node otherNode) throws TypeCheckingException
   return name.compareNodeType(((NodeTypeStruct)otherNode).name);
 }
 
-public Node getNodeType()
+public NodeType getNodeType()
 {
   return this;
 }

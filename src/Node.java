@@ -36,7 +36,7 @@ public abstract class Node{
   /*
    * Returns the Type of the node
    */
-  public abstract Node getNodeType();
+  public abstract NodeType getNodeType();
   
   public abstract boolean checkNodeType() throws TypeCheckingException;
   

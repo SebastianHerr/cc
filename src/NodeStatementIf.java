@@ -27,7 +27,7 @@ public void setElse(Node statement)
   elseStatement.setParent(this);
 }
 
-public Node getNodeType()
+public NodeType getNodeType()
 {
   return new NodeTypeVoid();
 }

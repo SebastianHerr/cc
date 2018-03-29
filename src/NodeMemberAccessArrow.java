@@ -14,7 +14,7 @@ public boolean compareNodeType(Node otherNode) throws TypeCheckingException
   return super.compareNodeType(otherNode);
 }
 
-public Node getNodeType()
+public NodeType getNodeType()
 {
   return accessedNode.getNodeType();
 }

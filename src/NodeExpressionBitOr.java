@@ -35,7 +35,7 @@ public String emitCode() throws CodeGenerationException
   return result;
 } 
 
-public Node getNodeType()
+public NodeType getNodeType()
 {
   return new NodeTypeInt();
 }

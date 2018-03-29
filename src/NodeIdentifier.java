@@ -151,7 +151,7 @@ public boolean compareNodeType(Node otherNode) throws TypeCheckingException
   }
 }
 
-public Node getNodeType()
+public NodeType getNodeType()
 {
   if(!(isVDef || isFDef || isFCall))
   {

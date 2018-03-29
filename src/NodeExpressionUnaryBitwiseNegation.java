@@ -18,7 +18,7 @@ public boolean compareNodeType(Node otherNode) throws TypeCheckingException
   return super.compareNodeType((NodeExpressionUnaryBitwiseNegation)otherNode);
 }
 
-public Node getNodeType()
+public NodeType getNodeType()
 {
   return new NodeTypeInt();
 }

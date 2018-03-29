@@ -22,7 +22,7 @@ public boolean compareNodeType(Node otherNode) throws TypeCheckingException
   return innerNode.compareNodeType(((NodeExpressionIncrement)otherNode).innerNode);
 }
 
-public Node getNodeType()
+public NodeType getNodeType()
 {
   return new NodeTypeInt();
 }

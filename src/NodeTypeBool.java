@@ -2,7 +2,7 @@ package src;
 
 import src.bin.*;
 
-public class NodeTypeBool extends Node{
+public class NodeTypeBool extends NodeType{
 
 public NodeTypeBool()
 {
@@ -13,7 +13,7 @@ public NodeTypeBool(Token token_)
   token = token_;
 }
 
-public Node getNodeType()
+public NodeType getNodeType()
 {
   return this;
 }

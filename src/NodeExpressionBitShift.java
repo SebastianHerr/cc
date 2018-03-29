@@ -33,7 +33,7 @@ public String emitCode() throws CodeGenerationException
   throw new CodeGenerationException("Not implemented");
 }
 
-public Node getNodeType()
+public NodeType getNodeType()
 {
   return new NodeTypeInt();
 }
