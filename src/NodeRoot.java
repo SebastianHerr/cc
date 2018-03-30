@@ -95,7 +95,19 @@ public boolean checkNodeType() throws TypeCheckingException
 {
   boolean returnValue = true;
   //Check if main function is an int or void
-  getMainMethod().getNodeType();
+  NodeIdentifier mainMethodName =  getMainMethod();
+  if(mainMethodName == null)
+  {
+    throw new TypeCheckingException("The program is missing the main method");
+  }
+  else
+  {
+    if (! (mainMethodName.getNodeType() instanceof NodeTypeInt))
+    {
+      throw new TypeCheckingException("The main method needs to have a return type of integer");
+    }
+
+  }
   for (int i = 0; i<declarationsOrDefinitions.size();i++) {
     returnValue &= declarationsOrDefinitions.get(i).checkNodeType(); 
   }
