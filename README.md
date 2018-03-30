@@ -6,7 +6,8 @@
 
 ```
 ./
-|- CMA/ ................................... CMA virtual machine (original provided by Prof. Dr. Jörg Kreiker)
+|- CMA/ ................................... CMA virtual machine
+|                                           (original provided by Prof. Dr. Jörg Kreiker but heavily modified)
 |- src/ ................................... Project source code
 |  |- bin/ ................................ Place for the generated javacc file
 |  |- C0.jj ............................... C0 parser
