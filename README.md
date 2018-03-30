@@ -6,52 +6,52 @@
 
 ```
 ./
+|- CMA/ ................................... CMA virtual machine (original provided by Prof. Dr. Jörg Kreiker)
 |- src/ ................................... Project source code
-|  |- test/ ............................... Test programs
-|  |  |- 01parsing/ ....................... Test programs for parsing
-|  |  |- 02symbolTable/ ................... Test programs for the symbol table
-|  |  |- 03typeChecking/ .................. Test programs for type checking
-|  |  '- 04codeGeneration/ ................ Test programs for code generation
+|  |- bin/ ................................ Place for the generated javacc file
 |  |- C0.jj ............................... C0 parser
 |  |- Node*.java .......................... Nodes used for the AST
 |  |- *Exception.java ..................... Custom Exceptions for the different stages
-|  |- build.sh ............................ Build script for C0 (Linux/Unix)
-|  '- bld.ps1 ............................. Build script for C0 (Windows) (No longer maintained)
+|  '- TestMain.java ....................... Main entry point for running the tets
+|- testfiles/ ............................. Test programs
+|  |- 01parsing/ .......................... Test programs for parsing
+|  |- 02symbolTable/ ...................... Test programs for the symbol table
+|  |- 03typeChecking/ ..................... Test programs for type checking
+|  '- 04codeGeneration/ ................... Test programs for code generation
 '- README.md .............................. General hints
 ```
 
 ## How To
-### Compiling
-```
-src> build.sh -c
-```
-
 ### Testing
+To run the tests you need to call the main method in the class TestMain with following parameters:
 ```
-src> build.sh -r
+parameters: * [print] [cma]
 ```
-In case of succesful tests it will end with following line:
+The `*` is the filter about which tests are being run
+
+In case of successful tests it will end with following line:
 ```
   #####################################################
-  Passed all tests.
+  All tests passed
 ```
 and if some of the tests failed outside of their test scope then it will end with:
 ```
   #####################################################
-  One or more tests failed
+  Following tests failed:
+  [List of failed tests]
 ```
+The optional parameter `print` enables expanded debug output.
+The optional parameter `cma` enables the output of each step of the cma execution (Warning can be very long output)
 
-It's possible to only test a subset of the tests with filters. 
-To select a filter you need to have the parameter -f with the paramter `filter`
-To only run test which should pass you can run the following command:
+It's possible to only test a subset of the tests with filters.
+The wildcard is the standard way to select which tests to run. The matching is run against [name of the testfolder eg. "01parsing"]/[name of the test]
+To only run test which should pass you can run the following first parameter:
 ```
-src> build.sh -r -f *pass*
+parameters: *_pass*
 ```
-If `-f` is ommited, the default filter `*` will apply.
-
-The parser can be run manually with following commands
+To only run test which should are in the type checking you can run the following first parameter:
 ```
-src> java -cp bin C0 yourProgram.c0
+parameters: 03*
 ```
 
 ### Naming of the tests

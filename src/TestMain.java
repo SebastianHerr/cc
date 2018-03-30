@@ -92,6 +92,7 @@ class TestMain
       System.out.println("Total testing time: " + (endTime - startTime) + "milliseconds");
       if(failedTests.size() != 0)
       {
+        System.out.println(ANSI_RED + "###############################################################" + ANSI_RESET);
         System.out.println(ANSI_RED + "Following tests failed:");
         for (String item :
                 failedTests) {
@@ -101,6 +102,7 @@ class TestMain
       }
       else
       {
+        System.out.println(ANSI_GREEN + "###############################################################" + ANSI_RESET);
         System.out.println(ANSI_GREEN + "All tests passed" + ANSI_RESET);
       }
     }
